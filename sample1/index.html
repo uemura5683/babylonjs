@@ -36,6 +36,12 @@
             const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 10, 0), scene);
             // 箱 (豆腐) を作成
             const box = BABYLON.MeshBuilder.CreateBox("box", {}, scene);
+            // 円柱を作成
+            const cylinder = new BABYLON.MeshBuilder.CreateCylinder("cylinder", {});
+            cylinder.position.x = 1.5;
+
+            
+
             return scene;
           }
           
