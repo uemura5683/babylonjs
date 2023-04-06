@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Babylon.js Viewer 1 Example</title>
+    <!-- ビューアライブラリの読み込み -->
+    <script src="https://cdn.babylonjs.com/viewer/babylon.viewer.js"></script>
+    <!-- stylesheet などの記載略 -->    
+    <style type="text/css">
+      html, body {
+        margin: 0;
+        padding: 0;
+      }
+      #header {
+        font-size: 6em;
+        padding: 5px;
+      }
+      .cell_wrap {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .cell {
+        width: calc(100% / 3 - 22px);
+        height: 300px;
+        margin: 8px;
+        padding: 3px;
+        background-color: #BBBBBB;
+      }
+    </style>
+  </head>
+  <body>
+      <!-- https://zenn.dev/chomado/books/babylonjs-tutorial-ja/viewer/1-02 -->
+      <div id="header">
+          Viewer News
+      </div>
+      <div class="cell_wrap">
+          <div class="cell babylon">
+              <!-- モデルファイル .glb 読み込み & ビューアの機能で表示 -->
+              <babylon model="https://assets.babylonjs.com/meshes/box.glb"></babylon>
+          </div>
+          <div class="cell">
+              Lorem ipsum dolor sit amet,（サンプルテキスト）
+          </div>
+          <div class="cell">
+              Lorem ipsum dolor sit amet,（サンプルテキスト）
+          </div>
+          <div class="cell">
+              Lorem ipsum dolor sit amet,（サンプルテキスト）
+          </div>
+          <div class="cell">
+              Lorem ipsum dolor sit amet,（サンプルテキスト）
+          </div>
+          <div class="cell">
+              Lorem ipsum dolor sit amet,（サンプルテキスト）
+          </div>
+      </div>
+</body>
+</html>
