@@ -20,7 +20,7 @@
             
             const scene = new BABYLON.Scene(engine);
 
-            const camera = new BABYLON.ArcRotateCamera("camera", degree(-90), degree(0), 2, new BABYLON.Vector3(0, 0, 0));
+            const camera = new BABYLON.ArcRotateCamera("camera", degree(0), degree(0), 2, new BABYLON.Vector3(0, 0, 0));
             camera.attachControl(canvas, true);
             const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0));
 
@@ -89,12 +89,12 @@
               ]
 
               // カーブした前面
-              for (let i = 0; i < 20; i++) {
+              for (let i = 0; i < 40; i++) {
                   console.log(i * Math.PI / 40);
                   outline.push( new BABYLON.Vector3(
-                                      .2 * Math.cos(i * Math.PI / 40),
+                                      .2 * Math.cos(i * Math.PI / 80),
                                       0,
-                                      .2 * Math.sin(i * Math.PI / 40) - .1
+                                      .2 * Math.sin(i * Math.PI / 80) - .1
                                     )
                               );
               }
@@ -111,7 +111,7 @@
 
               // マテリアル
               const carMat = new BABYLON.StandardMaterial("carMat");
-              carMat.diffuseTexture = new BABYLON.Texture("https://assets.babylonjs.com/environments/car.png");
+              carMat.diffuseTexture = new BABYLON.Texture("car.png");
 
               const car = BABYLON.MeshBuilder.ExtrudePolygon(
                   "car", 
@@ -123,6 +123,10 @@
                   }
               );
               car.material = carMat;
+
+              car.rotation.x = degree(0);
+              car.rotation.y = -degree(90);
+              car.rotation.z = -degree(270);
 
               return car;
           }
