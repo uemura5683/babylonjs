@@ -41,19 +41,19 @@
 
             //Create Village ground
             const groundMat = new BABYLON.StandardMaterial("groundMat");
-            groundMat.diffuseTexture = new BABYLON.Texture("https://assets.babylonjs.com/environments/villagegreen.png");
+            groundMat.diffuseTexture = new BABYLON.Texture("ground/villagegreen.png");
             groundMat.diffuseTexture.hasAlpha = true;
 
             const ground = BABYLON.MeshBuilder.CreateGround("ground", {width:24, height:24});
             ground.material = groundMat;
             ground.rotation.y = degree(90);
             ground.position.y = -0.5;
-
+            ground.position.z = 0.3;
             // //large ground
             const largeGroundMat = new BABYLON.StandardMaterial("largeGroundMat");
-            largeGroundMat.diffuseTexture = new BABYLON.Texture("https://assets.babylonjs.com/environments/valleygrass.png");
+            largeGroundMat.diffuseTexture = new BABYLON.Texture("ground/valleygrass.png");
             
-            const largeGround = BABYLON.MeshBuilder.CreateGroundFromHeightMap("largeGround", "https://assets.babylonjs.com/environments/villageheightmap.png", {width:100, height:100, subdivisions: 20, minHeight:0, maxHeight: 10});
+            const largeGround = BABYLON.MeshBuilder.CreateGroundFromHeightMap("largeGround", "ground/villageheightmap.png", {width:100, height:100, subdivisions: 10, minHeight:0, maxHeight: 5});
             largeGround.material = largeGroundMat;
             largeGround.rotation.y = degree(90);
             largeGround.position.y = -0.6;
@@ -67,11 +67,11 @@
 
               carKeys.push({
                 frame: 0,
-                value: -20
+                value: -15
               });
               carKeys.push({
                 frame: 150,
-                value: 20
+                value: 15
               });
 
               animCar.setKeys(carKeys);
@@ -85,8 +85,8 @@
               car_top.rotation.x = degree(-90);
               car_bottom.rotation.x = degree(-90);
 
-              car_top.position.z = -4.1;
-              car_bottom.position.z = -4.1;
+              car_top.position.z = -4.3;
+              car_bottom.position.z = -4.3;
 
               scene.beginAnimation(car_top, 0, 150, true);
               scene.beginAnimation(car_bottom, 0, 150, true);
