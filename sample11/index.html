@@ -20,9 +20,9 @@
             
             const scene = new BABYLON.Scene(engine);
 
-            const camera = new BABYLON.ArcRotateCamera("camera", degree(90), degree(160), 2, new BABYLON.Vector3(0, 0, 0));
+            const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 2, new BABYLON.Vector3(0, 0, 0));
             camera.attachControl(canvas, true);
-            const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(2, 2, 2));
+            const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0));
 
             const car = buildCar();
             const car2 = buildCar_bottom();
@@ -33,7 +33,7 @@
             wheelUV[2] = new BABYLON.Vector4(0, 0, 1, 1);
 
             const wheelMat = new BABYLON.StandardMaterial("wheelMat");
-            wheelMat.diffuseTexture = new BABYLON.Texture("https://assets.babylonjs.com/environments/wheel.png");
+            wheelMat.diffuseTexture = new BABYLON.Texture("wheel.png");
             
             const wheelRB = BABYLON.MeshBuilder.CreateCylinder("wheelRB", {diameter: 0.125, height: 0.05, faceUV: wheelUV})
             wheelRB.parent = car2;
@@ -89,7 +89,7 @@
               
               // ベース
               const outline = [
-                  new BABYLON.Vector3(-0.3, 0, -0.1),
+                  new BABYLON.Vector3(-0.32, 0, -0.1),
                   new BABYLON.Vector3(0.2, 0, -0.1),
               ]
 
@@ -105,7 +105,17 @@
 
               // 上部
               outline.push(new BABYLON.Vector3(0, 0, 0.1));
-              outline.push(new BABYLON.Vector3(-0.3, 0, 0.1));
+              outline.push(new BABYLON.Vector3(-0.25, 0, 0.1));
+
+              for (let i = 0; i < 40; i++) {
+                  outline.push( new BABYLON.Vector3(
+                          .05 * Math.cos(i * Math.PI / 40) - .25,
+                          0,
+                          .05 * Math.sin(i * Math.PI / 40) + .05
+                        )
+                  );
+              }
+
 
               // 面の UV
               const faceUV = [];
@@ -134,36 +144,35 @@
               
               // ベース
               const outline = [
-                  new BABYLON.Vector3(-0.3, 0, -0.2),
-                  new BABYLON.Vector3(0.2, 0, -0.2),
+                  new BABYLON.Vector3(-0.33, 0, -0.2),
+                  new BABYLON.Vector3(0.23, 0, -0.2),
               ]
 
               // カーブした前面
               for (let i = 0; i < 160; i++) {
                   outline.push( new BABYLON.Vector3(
-                                      .05 * Math.cos(i * Math.PI / 80) + .2,
+                                      .05 * Math.cos(i * Math.PI / 160) + .2,
                                       0,
-                                      .05 * Math.sin(i * Math.PI / 80) - .15
+                                      .05 * Math.sin(i * Math.PI / 160) - .15
                                     )
                               );
               }
 
               // 上部
-              outline.push(new BABYLON.Vector3(0.2, 0, - 0.1));
+              outline.push(new BABYLON.Vector3(0.2, 0, -0.1));
               outline.push(new BABYLON.Vector3(-0.3, 0, -0.1));
 
               // カーブした前面
               for (let i = 0; i < 160; i++) {
                   outline.push( new BABYLON.Vector3(
-                                      .05 * Math.cos(i * Math.PI / 80) - .3,
+                                      .05 * Math.cos(i * Math.PI / 160) - .3,
                                       0,
-                                      .05 * Math.sin(i * Math.PI / 80) - .15
+                                      .05 * Math.sin(i * Math.PI / 160) - .15
                                     )
                               );
               }
 
-
-              // // // 面の UV
+              // 面の UV
               const faceUV = [];
               faceUV[0] = new BABYLON.Vector4(0, 0.5, 0.38, 1);
               faceUV[1] = new BABYLON.Vector4(0, 0, 1, 0.5);
