@@ -30,7 +30,7 @@
             wheelUV[2] = new BABYLON.Vector4(0, 0, 1, 1);
 
             const wheelMat = new BABYLON.StandardMaterial("wheelMat");
-            wheelMat.diffuseTexture = new BABYLON.Texture("wheel.png");
+            wheelMat.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/sample11/wheel.png");
             
             const wheelRB = BABYLON.MeshBuilder.CreateCylinder("wheelRB", {diameter: 0.125, height: 0.05, faceUV: wheelUV})
             wheelRB.parent = car2;
@@ -74,9 +74,6 @@
             wheelLF = wheelRF.clone("wheelLF");
             wheelLF.position.y = -0.4 - 0.035;
 
-
-
-
             scene.beginAnimation(wheelRB, 0, 30, true);
             scene.beginAnimation(wheelRF, 0, 30, true);
             scene.beginAnimation(wheelLB, 0, 30, true);
@@ -116,7 +113,6 @@
                   );
               }
 
-
               // 面の UV
               const faceUV = [];
               faceUV[0] = new BABYLON.Vector4(0, 0.5, 0.38, 1);
@@ -125,10 +121,10 @@
 
               // マテリアル
               const carMat = new BABYLON.StandardMaterial("carMat");
-              carMat.diffuseTexture = new BABYLON.Texture("car.png");
+              carMat.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/sample11/car.png");
 
               const car = BABYLON.MeshBuilder.ExtrudePolygon(
-                  "car", 
+                  "car_top", 
                   {
                       shape: outline, 
                       depth: 0.4, 
@@ -179,10 +175,10 @@
               faceUV[2] = new BABYLON.Vector4(0.38, 1, 0, 0.5);
 
               // マテリアル
-              const carMat = new BABYLON.StandardMaterial("carMat");
+              const carMat_bottom = new BABYLON.StandardMaterial("carMat_bottom");
 
               const car = BABYLON.MeshBuilder.ExtrudePolygon(
-                  "car", 
+                  "car_bottom", 
                   {
                       shape: outline, 
                       depth: 0.4, 
@@ -190,9 +186,9 @@
                       wrap: true
                   }
               );
-              carMat.diffuseColor = new BABYLON.Color3(.3, .5, .7);
+              carMat_bottom.diffuseColor = new BABYLON.Color3(.3, .5, .7);
 
-              car.material = carMat;
+              car.material = carMat_bottom;
               return car;
           }
 
