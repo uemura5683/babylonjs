@@ -47,7 +47,7 @@
             const ground = BABYLON.MeshBuilder.CreateGround("ground", {width:24, height:24});
             ground.material = groundMat;
             ground.rotation.y = degree(90);
-            ground.position.y = -0.5;
+            ground.position.y = -0.3;
             ground.position.z = 0.3;
 
             //large ground
@@ -57,7 +57,7 @@
             const largeGround = BABYLON.MeshBuilder.CreateGroundFromHeightMap("largeGround", "ground/villageheightmap.png", {width:100, height:100, subdivisions: 10, minHeight:0, maxHeight: 5});
             largeGround.material = largeGroundMat;
             largeGround.rotation.y = degree(90);
-            largeGround.position.y = -0.6;
+            largeGround.position.y = -0.5;
 
             // tree
             const spriteManagerTrees = new BABYLON.SpriteManager("treesManager", "textures/palm.png", 2000, {width: 512, height: 1024}, scene);
@@ -68,13 +68,22 @@
                 tree.position.x = Math.random() * (-20) - 2;
                 tree.position.z = Math.random() * 15 + 1;
                 tree.position.y = 0;
-            }
 
-            for (let i = 0; i < 1000; i++) {
-                const tree = new BABYLON.Sprite("tree", spriteManagerTrees);
-                tree.position.x = Math.random() * (25) - 17;
-                tree.position.z = Math.random() * -35  - 8;
-                tree.position.y = 0;
+                const tree2 = new BABYLON.Sprite("tree", spriteManagerTrees);
+                tree2.position.x = Math.random() * (25) - 17;
+                tree2.position.z = Math.random() * -35  - 8;
+                tree2.position.y = 0;
+
+                switch(true) {
+                  case i < 125:
+                    const tree3 = new BABYLON.Sprite("tree", spriteManagerTrees);
+                    tree3.position.x = Math.random() * (-12) + 15;
+                    tree3.position.z = Math.random() * 15 + 1;
+                    tree3.position.y = 0;
+                    break;
+                  default:
+                    break;
+                }
             }
             
 
@@ -108,8 +117,6 @@
               car_top.position.z = -3.5;
               car_bottom.position.z = -3.5;
 
-              car_top.position.y = -0.3;
-              car_bottom.position.y = -0.3;
 
               scene.beginAnimation(car_top, 0, 150, true);
               scene.beginAnimation(car_bottom, 0, 150, true);
@@ -125,8 +132,49 @@
               scene.beginAnimation(wheelLF, 0, 30, true);
             });
 
+            buildDwellings();
+
             return scene;
           };
+
+          const buildDwellings = () => {
+
+            const detached_house = buildHouse(1);
+            detached_house.rotation.y = degree(90);
+            detached_house.position.x = 0.7;
+            detached_house.position.z = -0.8;
+
+            const places = [];
+            places.push([1, degree(90), 0.3, 0.7 ]);
+            places.push([1, degree(90), -0.1, 2.0 ]);
+            places.push([1, degree(90), -0.5, 3.7 ]);
+            places.push([1, degree(90), -0.9, 5.2 ]);
+
+            const houses = [];
+            for (let i = 0; i < places.length; i++) {
+                houses[i] = detached_house.createInstance("house" + i);
+
+                houses[i].rotation.y = places[i][1];
+                houses[i].position.x = places[i][2];
+                houses[i].position.z = places[i][3];
+            }
+          }
+
+          const buildHouse = (width) => {
+            const box = buildBox(width);
+            return BABYLON.Mesh.MergeMeshes([box], true, false, null, false, true);
+          }
+          
+          const buildBox = (width) => {
+              const boxMat = new BABYLON.StandardMaterial("roofMat");
+              boxMat.diffuseTexture = new BABYLON.Texture("textures/home.jpg");   
+
+              const box = BABYLON.MeshBuilder.CreateSphere("icosphere", {radius:.75, subdivisions: 16, flat: false});
+              box.material = boxMat;
+              box.position.y = -0.30;
+              return box;
+          }
+
 
           const scene = createScene();
           
