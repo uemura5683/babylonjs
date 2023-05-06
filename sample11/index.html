@@ -169,7 +169,9 @@
               const boxMat = new BABYLON.StandardMaterial("roofMat");
               boxMat.diffuseTexture = new BABYLON.Texture("textures/home.jpg");   
 
-              const box = BABYLON.MeshBuilder.CreateSphere("icosphere", {radius:.75, subdivisions: 16, flat: false});
+              const box = BABYLON.MeshBuilder.CreateSphere("icosphere", {slice: 0.5});
+              // segment 角度
+
               box.material = boxMat;
               box.position.y = -0.30;
               return box;
