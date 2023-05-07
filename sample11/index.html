@@ -60,32 +60,50 @@
             largeGround.position.y = -0.5;
 
             // tree
-            const spriteManagerTrees = new BABYLON.SpriteManager("treesManager", "textures/palm.png", 2000, {width: 512, height: 1024}, scene);
+            const spritetree = new BABYLON.SpriteManager("treesManager", "textures/palm.png", 1000, {width: 512, height: 1024}, scene);
+            const spritegrass = new BABYLON.SpriteManager("grassManager", "textures/grass.png", 1000, {width: 108, height: 26}, scene);
 
             //We create trees at random positions
-            for (let i = 0; i < 250; i++) {
-                const tree = new BABYLON.Sprite("tree", spriteManagerTrees);
+            for (let i = 0; i < 200; i++) {
+                const tree = new BABYLON.Sprite("tree", spritetree);
                 tree.position.x = Math.random() * (-20) - 2;
                 tree.position.z = Math.random() * 15 + 1;
                 tree.position.y = 0;
 
-                const tree2 = new BABYLON.Sprite("tree", spriteManagerTrees);
+                const grass = new BABYLON.Sprite("grass", spritegrass);
+                grass.position.x = Math.random() * (-20) - 2;
+                grass.position.z = Math.random() * 15 + 1;
+                grass.position.y = -.65;
+
+                const tree2 = new BABYLON.Sprite("tree", spritetree);
                 tree2.position.x = Math.random() * (25) - 17;
                 tree2.position.z = Math.random() * -35  - 8;
                 tree2.position.y = 0;
 
+                const grass2 = new BABYLON.Sprite("grass2", spritegrass);
+                grass2.position.x = Math.random() * (25) - 17;
+                grass2.position.z = Math.random() * -35  - 8;
+                grass2.position.y = -.65;
+
                 switch(true) {
                   case i < 125:
-                    const tree3 = new BABYLON.Sprite("tree", spriteManagerTrees);
+                    const tree3 = new BABYLON.Sprite("tree", spritetree);
                     tree3.position.x = Math.random() * (-12) + 15;
                     tree3.position.z = Math.random() * 15 + 1;
                     tree3.position.y = 0;
+
+                    const grass3 = new BABYLON.Sprite("grass3", spritegrass);
+                    grass3.position.x = Math.random() * (-12) + 15;
+                    grass3.position.z = Math.random() * 15 + 1;
+                    grass3.position.y = -.65;
+
                     break;
                   default:
                     break;
                 }
             }
             
+            buildDwellings();
 
             // car
             BABYLON.SceneLoader.ImportMeshAsync("", "", "car.babylon").then(() =>  {
@@ -132,27 +150,82 @@
               scene.beginAnimation(wheelLF, 0, 30, true);
             });
 
-            buildDwellings();
+
+            const fountainProfile = [
+              new BABYLON.Vector3(0, 0, 0),
+              new BABYLON.Vector3(10 / 13, 0, 0),
+              new BABYLON.Vector3(10 / 13, 4 / 13, 0),
+              new BABYLON.Vector3(8 / 13, 4 / 13, 0),
+              new BABYLON.Vector3(8 / 13, 1 / 13, 0),
+              new BABYLON.Vector3(1 / 13, 2 / 13, 0),
+              new BABYLON.Vector3(1 / 13, 10 / 13, 0),
+              new BABYLON.Vector3(3 / 13, 12 / 13, 0)
+            ];
+            
+            //Create lathe
+            const fountain = BABYLON.MeshBuilder.CreateLathe("fountain", {shape: fountainProfile, sideOrientation: BABYLON.Mesh.DOUBLESIDE}, scene);
+            fountain.position.x = 4.7;
+            fountain.position.y = -0.3;
+            fountain.position.z = -6.8;
 
             return scene;
           };
 
           const buildDwellings = () => {
 
-            const detached_house = buildHouse(1);
-            detached_house.rotation.y = degree(90);
+            const detached_house = buildHouse();
+            detached_house.rotation.y = degree(270);
             detached_house.position.x = 0.7;
             detached_house.position.z = -0.8;
 
+            const detached_house_large = buildHouse_large();
+            detached_house_large.rotation.y = degree(230);
+            detached_house_large.position.x = 3.5;
+            detached_house_large.position.z = -5.3;
+
             const places = [];
-            places.push([1, degree(90), 0.3, 0.7 ]);
-            places.push([1, degree(90), -0.1, 2.0 ]);
-            places.push([1, degree(90), -0.5, 3.7 ]);
-            places.push([1, degree(90), -0.9, 5.2 ]);
+            places.push([1, degree(180), 2.3, -4.8 ]);
+            places.push([2, degree(180), 0.8, -4.8 ]);
+            places.push([1, degree(180), -0.7, -4.8 ]);
+            places.push([1, degree(180), -2.2, -4.8 ]);
+            places.push([1, degree(180), -3.7, -4.8 ]);
+            places.push([2, degree(180), -5.2, -4.8 ]);
+            places.push([1, degree(180), -6.7, -4.8 ]);
+            places.push([1, degree(180), -8.2, -4.8 ]);
+            places.push([1, degree(180), -9.7, -4.8 ]);
+            places.push([1, degree(180), -11.2, -4.8 ]);
+
+            places.push([1, degree(0), -0.7, -1.0 ]);
+            places.push([2, degree(0), -2.2, -1.0 ]);
+            places.push([1, degree(0), -3.7, -1.0 ]);
+            places.push([1, degree(0), -5.2, -1.0 ]);
+            places.push([2, degree(0), -6.7, -1.0 ]);
+            places.push([2, degree(0), -8.2, -1.0 ]);
+            places.push([1, degree(0), -9.7, -1.0 ]);
+            places.push([1, degree(0), -11.2, -1.0 ]);
+
+            places.push([1, degree(270), 0.3, 0.7 ]);
+            places.push([2, degree(270), -0.1, 2.0 ]);
+            places.push([1, degree(270), -0.5, 3.7 ]);
+            places.push([1, degree(270), -0.9, 5.2 ]);
+
+            places.push([1, degree(70), 4.3, 0.1 ]);
+
+            places.push([1, degree(0), 4.9, -1.3 ]);
+            places.push([2, degree(0), 6.3, -1.3 ]);
+            places.push([1, degree(0), 7.7, -1.3 ]);
+            places.push([1, degree(0), 9.1, -1.3 ]);
+
+            places.push([2, degree(180), 9.4, -5.4 ]);
+            places.push([1, degree(180), 10.8, -5.4 ]);
 
             const houses = [];
             for (let i = 0; i < places.length; i++) {
-                houses[i] = detached_house.createInstance("house" + i);
+                if(places[i][0] == 2) {
+                  houses[i] = detached_house_large.createInstance("house" + i);
+                } else {
+                  houses[i] = detached_house.createInstance("house" + i);
+                }
 
                 houses[i].rotation.y = places[i][1];
                 houses[i].position.x = places[i][2];
@@ -160,23 +233,53 @@
             }
           }
 
-          const buildHouse = (width) => {
-            const box = buildBox(width);
-            return BABYLON.Mesh.MergeMeshes([box], true, false, null, false, true);
+          const buildHouse_large = () => {
+            const house = new BABYLON.StandardMaterial("house");
+            house.diffuseTexture = new BABYLON.Texture("textures/chimney.jpg");   
+            const hoysesphere = BABYLON.MeshBuilder.CreateCylinder("icosphere", {});
+            hoysesphere.material = house;
+            hoysesphere.position.y = -0.30;
+
+            const chimney = new BABYLON.StandardMaterial("chimney");
+            chimney.diffuseTexture = new BABYLON.Texture("textures/chimney.jpg");   
+            const chimneybox = BABYLON.MeshBuilder.CreateBox("box", {width: .2, height: .7, depth: .2}); 
+            chimneybox.material = chimney;            
+            chimneybox.position.x = 0.30;
+            chimneybox.position.y = 0.5;
+
+            const door = new BABYLON.StandardMaterial("door");
+            door.diffuseTexture = new BABYLON.Texture("textures/door.jpg");   
+            const doorbox = BABYLON.MeshBuilder.CreateBox("boor", {width: .3, height: .3, depth: .3}); 
+            doorbox.material = door;
+            doorbox.position.y = -0.2;
+            doorbox.position.z = -0.35;
+
+            return BABYLON.Mesh.MergeMeshes([hoysesphere, chimneybox, doorbox], true, false, null, false, true);
+          }
+
+          const buildHouse = () => {
+            const house = new BABYLON.StandardMaterial("house");
+            house.diffuseTexture = new BABYLON.Texture("textures/home.jpg");   
+            const hoysesphere = BABYLON.MeshBuilder.CreateSphere("icosphere", {slice: 0.5});
+            hoysesphere.material = house;
+            hoysesphere.position.y = -0.30;
+
+            const chimney = new BABYLON.StandardMaterial("chimney");
+            chimney.diffuseTexture = new BABYLON.Texture("textures/chimney.jpg");   
+            const chimneybox = BABYLON.MeshBuilder.CreateBox("box", {width: .2, height: .7, depth: .2}); 
+            chimneybox.material = chimney;            
+            chimneybox.position.x = -0.20;
+
+            const door = new BABYLON.StandardMaterial("door");
+            door.diffuseTexture = new BABYLON.Texture("textures/door.jpg");   
+            const doorbox = BABYLON.MeshBuilder.CreateBox("boor", {width: .3, height: .3, depth: .3}); 
+            doorbox.material = door;
+            doorbox.position.y = -0.2;
+            doorbox.position.z = -0.35;
+
+            return BABYLON.Mesh.MergeMeshes([hoysesphere, chimneybox, doorbox], true, false, null, false, true);
           }
           
-          const buildBox = (width) => {
-              const boxMat = new BABYLON.StandardMaterial("roofMat");
-              boxMat.diffuseTexture = new BABYLON.Texture("textures/home.jpg");   
-
-              const box = BABYLON.MeshBuilder.CreateSphere("icosphere", {slice: 0.5});
-              // segment 角度
-
-              box.material = boxMat;
-              box.position.y = -0.30;
-              return box;
-          }
-
 
           const scene = createScene();
           
