@@ -3,296 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Babylon.js Viewer kirby</title>
+    <title>Babylon.js Viewer 10 Example</title>
     <script src="https://preview.babylonjs.com/babylon.js"></script>
     <script src="https://code.jquery.com/pep/0.4.1/pep.js"></script>
     <script src="https://unpkg.com/earcut@latest/dist/earcut.min.js"></script>
-    <script>
-
-        function main() {
-          const canvas = document.getElementById('renderCanvas');
-          const engine = new BABYLON.Engine(canvas);
-
-          function degree(degrees) {
-            return degrees * (Math.PI / 180);
-          }
-
-          const createScene = () => {
-            
-            const scene = new BABYLON.Scene(engine);
-
-            const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 15, new BABYLON.Vector3(0, 0, 0));
-            camera.upperBetaLimit = Math.PI / 2.2;
-
-            camera.attachControl(canvas, true);
-            const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0));
-
-            // skybox
-            const skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size:150}, scene);
-            const skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
-            skyboxMaterial.backFaceCulling = false;
-
-            skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("textures/skybox", scene);
-            skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
-
-            skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
-            skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-            skybox.material = skyboxMaterial;
-
-            //Create Village ground
-            const groundMat = new BABYLON.StandardMaterial("groundMat");
-            groundMat.diffuseTexture = new BABYLON.Texture("ground/villagegreen.png");
-            groundMat.diffuseTexture.hasAlpha = true;
-
-            const ground = BABYLON.MeshBuilder.CreateGround("ground", {width:24, height:24});
-            ground.material = groundMat;
-            ground.rotation.y = degree(90);
-            ground.position.y = -0.3;
-            ground.position.z = 0.3;
-
-            //large ground
-            const largeGroundMat = new BABYLON.StandardMaterial("largeGroundMat");
-            largeGroundMat.diffuseTexture = new BABYLON.Texture("ground/valleygrass.png");
-            
-            const largeGround = BABYLON.MeshBuilder.CreateGroundFromHeightMap("largeGround", "ground/villageheightmap.png", {width:100, height:100, subdivisions: 10, minHeight:0, maxHeight: 5});
-            largeGround.material = largeGroundMat;
-            largeGround.rotation.y = degree(90);
-            largeGround.position.y = -0.5;
-
-            // tree
-            const spritetree = new BABYLON.SpriteManager("treesManager", "textures/palm.png", 1000, {width: 512, height: 1024}, scene);
-            const spritegrass = new BABYLON.SpriteManager("grassManager", "textures/grass.png", 1000, {width: 108, height: 26}, scene);
-
-            //We create trees at random positions
-            for (let i = 0; i < 200; i++) {
-                const tree = new BABYLON.Sprite("tree", spritetree);
-                tree.position.x = Math.random() * (-20) - 2;
-                tree.position.z = Math.random() * 15 + 1;
-                tree.position.y = 0;
-
-                const grass = new BABYLON.Sprite("grass", spritegrass);
-                grass.position.x = Math.random() * (-20) - 2;
-                grass.position.z = Math.random() * 15 + 1;
-                grass.position.y = -.65;
-
-                const tree2 = new BABYLON.Sprite("tree", spritetree);
-                tree2.position.x = Math.random() * (25) - 17;
-                tree2.position.z = Math.random() * -35  - 8;
-                tree2.position.y = 0;
-
-                const grass2 = new BABYLON.Sprite("grass2", spritegrass);
-                grass2.position.x = Math.random() * (25) - 17;
-                grass2.position.z = Math.random() * -35  - 8;
-                grass2.position.y = -.65;
-
-                switch(true) {
-                  case i < 125:
-                    const tree3 = new BABYLON.Sprite("tree", spritetree);
-                    tree3.position.x = Math.random() * (-12) + 15;
-                    tree3.position.z = Math.random() * 15 + 1;
-                    tree3.position.y = 0;
-
-                    const grass3 = new BABYLON.Sprite("grass3", spritegrass);
-                    grass3.position.x = Math.random() * (-12) + 15;
-                    grass3.position.z = Math.random() * 15 + 1;
-                    grass3.position.y = -.65;
-
-                    break;
-                  default:
-                    break;
-                }
-            }
-            
-            buildDwellings();
-
-            // car
-            BABYLON.SceneLoader.ImportMeshAsync("", "", "car.babylon").then(() =>  {
-              const car_top = scene.getMeshByName("car_top");
-              const car_bottom = scene.getMeshByName("car_bottom");              
-              const animCar = new BABYLON.Animation("carAnimation", "position.x", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
-              const carKeys = []; 
-
-              carKeys.push({
-                frame: 0,
-                value: -11
-              });
-              carKeys.push({
-                frame: 150,
-                value: 10
-              });
-
-              animCar.setKeys(carKeys);
-
-              car_top.animations = [];
-              car_top.animations.push(animCar);
-
-              car_bottom.animations = [];
-              car_bottom.animations.push(animCar);
-
-              car_top.rotation.x = degree(-90);
-              car_bottom.rotation.x = degree(-90);
-
-              car_top.position.z = -3.5;
-              car_bottom.position.z = -3.5;
-
-
-              scene.beginAnimation(car_top, 0, 150, true);
-              scene.beginAnimation(car_bottom, 0, 150, true);
-
-              const wheelRB = scene.getMeshByName("wheelRB");
-              const wheelRF = scene.getMeshByName("wheelRF");
-              const wheelLB = scene.getMeshByName("wheelLB");
-              const wheelLF = scene.getMeshByName("wheelLF");
-              
-              scene.beginAnimation(wheelRB, 0, 30, true);
-              scene.beginAnimation(wheelRF, 0, 30, true);
-              scene.beginAnimation(wheelLB, 0, 30, true);
-              scene.beginAnimation(wheelLF, 0, 30, true);
-            });
-
-
-            const fountainProfile = [
-              new BABYLON.Vector3(0, 0, 0),
-              new BABYLON.Vector3(10 / 13, 0, 0),
-              new BABYLON.Vector3(10 / 13, 4 / 13, 0),
-              new BABYLON.Vector3(8 / 13, 4 / 13, 0),
-              new BABYLON.Vector3(8 / 13, 1 / 13, 0),
-              new BABYLON.Vector3(1 / 13, 2 / 13, 0),
-              new BABYLON.Vector3(1 / 13, 10 / 13, 0),
-              new BABYLON.Vector3(3 / 13, 12 / 13, 0)
-            ];
-            
-            //Create lathe
-            const fountain = BABYLON.MeshBuilder.CreateLathe("fountain", {shape: fountainProfile, sideOrientation: BABYLON.Mesh.DOUBLESIDE}, scene);
-            fountain.position.x = 4.7;
-            fountain.position.y = -0.3;
-            fountain.position.z = -6.8;
-
-            return scene;
-          };
-
-          const buildDwellings = () => {
-
-            const detached_house = buildHouse();
-            detached_house.rotation.y = degree(270);
-            detached_house.position.x = 0.7;
-            detached_house.position.z = -0.8;
-
-            const detached_house_large = buildHouse_large();
-            detached_house_large.rotation.y = degree(230);
-            detached_house_large.position.x = 3.5;
-            detached_house_large.position.z = -5.3;
-
-            const places = [];
-            places.push([1, degree(180), 2.3, -4.8 ]);
-            places.push([2, degree(180), 0.8, -4.8 ]);
-            places.push([1, degree(180), -0.7, -4.8 ]);
-            places.push([1, degree(180), -2.2, -4.8 ]);
-            places.push([1, degree(180), -3.7, -4.8 ]);
-            places.push([2, degree(180), -5.2, -4.8 ]);
-            places.push([1, degree(180), -6.7, -4.8 ]);
-            places.push([1, degree(180), -8.2, -4.8 ]);
-            places.push([1, degree(180), -9.7, -4.8 ]);
-            places.push([1, degree(180), -11.2, -4.8 ]);
-
-            places.push([1, degree(0), -0.7, -1.0 ]);
-            places.push([2, degree(0), -2.2, -1.0 ]);
-            places.push([1, degree(0), -3.7, -1.0 ]);
-            places.push([1, degree(0), -5.2, -1.0 ]);
-            places.push([2, degree(0), -6.7, -1.0 ]);
-            places.push([2, degree(0), -8.2, -1.0 ]);
-            places.push([1, degree(0), -9.7, -1.0 ]);
-            places.push([1, degree(0), -11.2, -1.0 ]);
-
-            places.push([1, degree(270), 0.3, 0.7 ]);
-            places.push([2, degree(270), -0.1, 2.0 ]);
-            places.push([1, degree(270), -0.5, 3.7 ]);
-            places.push([1, degree(270), -0.9, 5.2 ]);
-
-            places.push([1, degree(70), 4.3, 0.1 ]);
-
-            places.push([1, degree(0), 4.9, -1.3 ]);
-            places.push([2, degree(0), 6.3, -1.3 ]);
-            places.push([1, degree(0), 7.7, -1.3 ]);
-            places.push([1, degree(0), 9.1, -1.3 ]);
-
-            places.push([2, degree(180), 9.4, -5.4 ]);
-            places.push([1, degree(180), 10.8, -5.4 ]);
-
-            const houses = [];
-            for (let i = 0; i < places.length; i++) {
-                if(places[i][0] == 2) {
-                  houses[i] = detached_house_large.createInstance("house" + i);
-                } else {
-                  houses[i] = detached_house.createInstance("house" + i);
-                }
-
-                houses[i].rotation.y = places[i][1];
-                houses[i].position.x = places[i][2];
-                houses[i].position.z = places[i][3];
-            }
-          }
-
-          const buildHouse_large = () => {
-            const house = new BABYLON.StandardMaterial("house");
-            house.diffuseTexture = new BABYLON.Texture("textures/chimney.jpg");   
-            const hoysesphere = BABYLON.MeshBuilder.CreateCylinder("icosphere", {});
-            hoysesphere.material = house;
-            hoysesphere.position.y = -0.30;
-
-            const chimney = new BABYLON.StandardMaterial("chimney");
-            chimney.diffuseTexture = new BABYLON.Texture("textures/chimney.jpg");   
-            const chimneybox = BABYLON.MeshBuilder.CreateBox("box", {width: .2, height: .7, depth: .2}); 
-            chimneybox.material = chimney;            
-            chimneybox.position.x = 0.30;
-            chimneybox.position.y = 0.5;
-
-            const door = new BABYLON.StandardMaterial("door");
-            door.diffuseTexture = new BABYLON.Texture("textures/door.jpg");   
-            const doorbox = BABYLON.MeshBuilder.CreateBox("boor", {width: .3, height: .3, depth: .3}); 
-            doorbox.material = door;
-            doorbox.position.y = -0.2;
-            doorbox.position.z = -0.35;
-
-            return BABYLON.Mesh.MergeMeshes([hoysesphere, chimneybox, doorbox], true, false, null, false, true);
-          }
-
-          const buildHouse = () => {
-            const house = new BABYLON.StandardMaterial("house");
-            house.diffuseTexture = new BABYLON.Texture("textures/home.jpg");   
-            const hoysesphere = BABYLON.MeshBuilder.CreateSphere("icosphere", {slice: 0.5});
-            hoysesphere.material = house;
-            hoysesphere.position.y = -0.30;
-
-            const chimney = new BABYLON.StandardMaterial("chimney");
-            chimney.diffuseTexture = new BABYLON.Texture("textures/chimney.jpg");   
-            const chimneybox = BABYLON.MeshBuilder.CreateBox("box", {width: .2, height: .7, depth: .2}); 
-            chimneybox.material = chimney;            
-            chimneybox.position.x = -0.20;
-
-            const door = new BABYLON.StandardMaterial("door");
-            door.diffuseTexture = new BABYLON.Texture("textures/door.jpg");   
-            const doorbox = BABYLON.MeshBuilder.CreateBox("boor", {width: .3, height: .3, depth: .3}); 
-            doorbox.material = door;
-            doorbox.position.y = -0.2;
-            doorbox.position.z = -0.35;
-
-            return BABYLON.Mesh.MergeMeshes([hoysesphere, chimneybox, doorbox], true, false, null, false, true);
-          }
-          
-
-          const scene = createScene();
-          
-          engine.runRenderLoop(() => {
-            scene.render();
-          });
-          
-          window.addEventListener('resize', () => {
-            engine.resize();
-          });
-        }
-        window.addEventListener('DOMContentLoaded', main);
-    </script>
     <style>
       html, body {
         width: 100%;
@@ -309,5 +23,96 @@
   </head>
   <body>
     <canvas id="renderCanvas"></canvas>
+    <script>
+        function main() {
+          const canvas = document.getElementById('renderCanvas');
+          const engine = new BABYLON.Engine(canvas);
+
+          const createScene =  () => {
+            const scene = new BABYLON.Scene(engine);
+
+            const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 15, new BABYLON.Vector3(0, 0, 0));
+            camera.attachControl(canvas, true);
+            const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0));
+
+            const fountainProfile = [
+              new BABYLON.Vector3(0, 0, 0),
+              new BABYLON.Vector3(10, 0, 0),
+                  new BABYLON.Vector3(10, 4, 0),
+              new BABYLON.Vector3(8, 4, 0),
+                  new BABYLON.Vector3(8, 1, 0),
+                  new BABYLON.Vector3(1, 2, 0),
+              new BABYLON.Vector3(1, 15, 0),
+              new BABYLON.Vector3(3, 17, 0)
+            ];
+            
+            //Create lathe
+            const fountain = BABYLON.MeshBuilder.CreateLathe("fountain", {shape: fountainProfile, sideOrientation: BABYLON.Mesh.DOUBLESIDE}, scene);
+            fountain.position.y = -5;
+              
+              // Create a particle system
+              var particleSystem = new BABYLON.ParticleSystem("particles", 5000, scene);
+
+              //Texture of each particle
+              particleSystem.particleTexture = new BABYLON.Texture("textures/flare.png", scene);
+
+              // Where the particles come from
+              particleSystem.emitter = new BABYLON.Vector3(0, 10, 0); // the starting object, the emitter
+              particleSystem.minEmitBox = new BABYLON.Vector3(-1, 0, 0); // Starting all from
+              particleSystem.maxEmitBox = new BABYLON.Vector3(1, 0, 0); // To...
+
+              // Colors of all particles
+              particleSystem.color1 = new BABYLON.Color4(0.7, 0.8, 1.0, 1.0);
+              particleSystem.color2 = new BABYLON.Color4(0.2, 0.5, 1.0, 1.0);
+              particleSystem.colorDead = new BABYLON.Color4(0, 0, 0.2, 0.0);
+
+              // Size of each particle (random between...
+              particleSystem.minSize = 0.1;
+              particleSystem.maxSize = 0.5;
+
+              // Life time of each particle (random between...
+              particleSystem.minLifeTime = 2;
+              particleSystem.maxLifeTime = 3.5;
+
+              // Emission rate
+              particleSystem.emitRate = 1500;
+
+              // Blend mode : BLENDMODE_ONEONE, or BLENDMODE_STANDARD
+              particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
+
+              // Set the gravity of all particles
+              particleSystem.gravity = new BABYLON.Vector3(0, -9.81, 0);
+
+              // Direction of each particle after it has been emitted
+              particleSystem.direction1 = new BABYLON.Vector3(-2, 8, 2);
+              particleSystem.direction2 = new BABYLON.Vector3(2, 8, -2);
+
+              // Angular speed, in radians
+              particleSystem.minAngularSpeed = 0;
+              particleSystem.maxAngularSpeed = Math.PI;
+
+              // Speed
+              particleSystem.minEmitPower = 1;
+              particleSystem.maxEmitPower = 3;
+              particleSystem.updateSpeed = 0.025;
+
+              // Start the particle system
+              particleSystem.start();
+
+            return scene;
+          }
+          
+          const scene = createScene();
+          
+          engine.runRenderLoop(() => {
+            scene.render();
+          });
+          
+          window.addEventListener('resize', () => {
+            engine.resize();
+          });
+        }
+        window.addEventListener('DOMContentLoaded', main);
+    </script>
   </body>
 </html>
