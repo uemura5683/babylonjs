@@ -103,7 +103,8 @@
                 }
             }
             
-            buildDwellings();
+            // village;
+            BABYLON.SceneLoader.ImportMeshAsync("", "", "village.babylon").then();
 
             // car
             BABYLON.SceneLoader.ImportMeshAsync("", "", "car.babylon").then(() =>  {
@@ -135,7 +136,6 @@
               car_top.position.z = -3.5;
               car_bottom.position.z = -3.5;
 
-
               scene.beginAnimation(car_top, 0, 150, true);
               scene.beginAnimation(car_bottom, 0, 150, true);
 
@@ -151,135 +151,17 @@
             });
 
 
-            const fountainProfile = [
-              new BABYLON.Vector3(0, 0, 0),
-              new BABYLON.Vector3(10 / 13, 0, 0),
-              new BABYLON.Vector3(10 / 13, 4 / 13, 0),
-              new BABYLON.Vector3(8 / 13, 4 / 13, 0),
-              new BABYLON.Vector3(8 / 13, 1 / 13, 0),
-              new BABYLON.Vector3(1 / 13, 2 / 13, 0),
-              new BABYLON.Vector3(1 / 13, 10 / 13, 0),
-              new BABYLON.Vector3(3 / 13, 12 / 13, 0)
-            ];
-            
-            //Create lathe
-            const fountain = BABYLON.MeshBuilder.CreateLathe("fountain", {shape: fountainProfile, sideOrientation: BABYLON.Mesh.DOUBLESIDE}, scene);
-            fountain.position.x = 4.7;
-            fountain.position.y = -0.3;
-            fountain.position.z = -6.8;
+            // village;
+            BABYLON.SceneLoader.ImportMeshAsync("", "", "fountain.babylon").then(() =>  {
+              const fountain = scene.getMeshByName("fountain");
+              fountain.position.x = 4.7;
+              fountain.position.y = -0.3;
+              fountain.position.z = -6.8;              
+            });
 
             return scene;
           };
 
-          const buildDwellings = () => {
-
-            const detached_house = buildHouse();
-            detached_house.rotation.y = degree(270);
-            detached_house.position.x = 0.7;
-            detached_house.position.z = -0.8;
-
-            const detached_house_large = buildHouse_large();
-            detached_house_large.rotation.y = degree(230);
-            detached_house_large.position.x = 3.5;
-            detached_house_large.position.z = -5.3;
-
-            const places = [];
-            places.push([1, degree(180), 2.3, -4.8 ]);
-            places.push([2, degree(180), 0.8, -4.8 ]);
-            places.push([1, degree(180), -0.7, -4.8 ]);
-            places.push([1, degree(180), -2.2, -4.8 ]);
-            places.push([1, degree(180), -3.7, -4.8 ]);
-            places.push([2, degree(180), -5.2, -4.8 ]);
-            places.push([1, degree(180), -6.7, -4.8 ]);
-            places.push([1, degree(180), -8.2, -4.8 ]);
-            places.push([1, degree(180), -9.7, -4.8 ]);
-            places.push([1, degree(180), -11.2, -4.8 ]);
-
-            places.push([1, degree(0), -0.7, -1.0 ]);
-            places.push([2, degree(0), -2.2, -1.0 ]);
-            places.push([1, degree(0), -3.7, -1.0 ]);
-            places.push([1, degree(0), -5.2, -1.0 ]);
-            places.push([2, degree(0), -6.7, -1.0 ]);
-            places.push([2, degree(0), -8.2, -1.0 ]);
-            places.push([1, degree(0), -9.7, -1.0 ]);
-            places.push([1, degree(0), -11.2, -1.0 ]);
-
-            places.push([1, degree(270), 0.3, 0.7 ]);
-            places.push([2, degree(270), -0.1, 2.0 ]);
-            places.push([1, degree(270), -0.5, 3.7 ]);
-            places.push([1, degree(270), -0.9, 5.2 ]);
-
-            places.push([1, degree(70), 4.3, 0.1 ]);
-
-            places.push([1, degree(0), 4.9, -1.3 ]);
-            places.push([2, degree(0), 6.3, -1.3 ]);
-            places.push([1, degree(0), 7.7, -1.3 ]);
-            places.push([1, degree(0), 9.1, -1.3 ]);
-
-            places.push([2, degree(180), 9.4, -5.4 ]);
-            places.push([1, degree(180), 10.8, -5.4 ]);
-
-            const houses = [];
-            for (let i = 0; i < places.length; i++) {
-                if(places[i][0] == 2) {
-                  houses[i] = detached_house_large.createInstance("house" + i);
-                } else {
-                  houses[i] = detached_house.createInstance("house" + i);
-                }
-
-                houses[i].rotation.y = places[i][1];
-                houses[i].position.x = places[i][2];
-                houses[i].position.z = places[i][3];
-            }
-          }
-
-          const buildHouse_large = () => {
-            const house = new BABYLON.StandardMaterial("house");
-            house.diffuseTexture = new BABYLON.Texture("textures/chimney.jpg");   
-            const hoysesphere = BABYLON.MeshBuilder.CreateCylinder("icosphere", {});
-            hoysesphere.material = house;
-            hoysesphere.position.y = -0.30;
-
-            const chimney = new BABYLON.StandardMaterial("chimney");
-            chimney.diffuseTexture = new BABYLON.Texture("textures/chimney.jpg");   
-            const chimneybox = BABYLON.MeshBuilder.CreateBox("box", {width: .2, height: .7, depth: .2}); 
-            chimneybox.material = chimney;            
-            chimneybox.position.x = 0.30;
-            chimneybox.position.y = 0.5;
-
-            const door = new BABYLON.StandardMaterial("door");
-            door.diffuseTexture = new BABYLON.Texture("textures/door.jpg");   
-            const doorbox = BABYLON.MeshBuilder.CreateBox("boor", {width: .3, height: .3, depth: .3}); 
-            doorbox.material = door;
-            doorbox.position.y = -0.2;
-            doorbox.position.z = -0.35;
-
-            return BABYLON.Mesh.MergeMeshes([hoysesphere, chimneybox, doorbox], true, false, null, false, true);
-          }
-
-          const buildHouse = () => {
-            const house = new BABYLON.StandardMaterial("house");
-            house.diffuseTexture = new BABYLON.Texture("textures/home.jpg");   
-            const hoysesphere = BABYLON.MeshBuilder.CreateSphere("icosphere", {slice: 0.5});
-            hoysesphere.material = house;
-            hoysesphere.position.y = -0.30;
-
-            const chimney = new BABYLON.StandardMaterial("chimney");
-            chimney.diffuseTexture = new BABYLON.Texture("textures/chimney.jpg");   
-            const chimneybox = BABYLON.MeshBuilder.CreateBox("box", {width: .2, height: .7, depth: .2}); 
-            chimneybox.material = chimney;            
-            chimneybox.position.x = -0.20;
-
-            const door = new BABYLON.StandardMaterial("door");
-            door.diffuseTexture = new BABYLON.Texture("textures/door.jpg");   
-            const doorbox = BABYLON.MeshBuilder.CreateBox("boor", {width: .3, height: .3, depth: .3}); 
-            doorbox.material = door;
-            doorbox.position.y = -0.2;
-            doorbox.position.z = -0.35;
-
-            return BABYLON.Mesh.MergeMeshes([hoysesphere, chimneybox, doorbox], true, false, null, false, true);
-          }
-          
 
           const scene = createScene();
           
