@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Babylon.js Viewer 7 Example</title>
+    <script src="https://preview.babylonjs.com/babylon.js"></script>
+    <script src="https://code.jquery.com/pep/0.4.1/pep.js"></script>
+    <script src="https://unpkg.com/earcut@latest/dist/earcut.min.js"></script>
+    <script>
+        function main() {
+          const canvas = document.getElementById('renderCanvas');
+          const engine = new BABYLON.Engine(canvas);
+          const createScene = () => {
+            
+            const scene = new BABYLON.Scene(engine);
+
+            const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 2, new BABYLON.Vector3(0, 0, 0));
+            camera.attachControl(canvas, true);
+            const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0));
+        
+            BABYLON.SceneLoader.ImportMeshAsync("", "https://assets.babylonjs.com/meshes/", "car.babylon").then(() =>  {
+              const wheelRB = scene.getMeshByName("wheelRB");
+              const wheelRF = scene.getMeshByName("wheelRF");
+              const wheelLB = scene.getMeshByName("wheelLB");
+              const wheelLF = scene.getMeshByName("wheelLF");
+              console.log(wheelRB.animations)
+              scene.beginAnimation(wheelRB, 0, 30, true);
+              scene.beginAnimation(wheelRF, 0, 30, true);
+              scene.beginAnimation(wheelLB, 0, 30, true);
+              scene.beginAnimation(wheelLF, 0, 30, true);
+            });
+
+            return scene;
+        };
+          const scene = createScene();
+          
+          engine.runRenderLoop(() => {
+            scene.render();
+          });
+          
+          window.addEventListener('resize', () => {
+            engine.resize();
+          });
+        }
+        window.addEventListener('DOMContentLoaded', main);
+    </script>
+    <style>
+      html, body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        margin: 0;
+      }
+      #renderCanvas {
+        width   : 100%;
+        height  : 100%;
+        touch-action: none;
+      }
+    </style>
+    <!-- https://zenn.dev/chomado/books/babylonjs-tutorial-ja/viewer/3-02 -->
+    <!-- https://zenn.dev/chomado/books/babylonjs-tutorial-ja/viewer/3-03 -->
+  </head>
+  <body>
+    <canvas id="renderCanvas"></canvas>
+  </body>
+</html>
