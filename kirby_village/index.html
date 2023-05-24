@@ -41,7 +41,7 @@
 
             //Create Village ground
             const groundMat = new BABYLON.StandardMaterial("groundMat");
-            groundMat.diffuseTexture = new BABYLON.Texture("ground/villagegreen.png");
+            groundMat.diffuseTexture = new BABYLON.Texture("textures/ground/villagegreen.png");
             groundMat.diffuseTexture.hasAlpha = true;
 
             const ground = BABYLON.MeshBuilder.CreateGround("ground", {width:24, height:24});
@@ -52,9 +52,9 @@
 
             //large ground
             const largeGroundMat = new BABYLON.StandardMaterial("largeGroundMat");
-            largeGroundMat.diffuseTexture = new BABYLON.Texture("ground/valleygrass.png");
+            largeGroundMat.diffuseTexture = new BABYLON.Texture("textures/ground/valleygrass.png");
             
-            const largeGround = BABYLON.MeshBuilder.CreateGroundFromHeightMap("largeGround", "ground/villageheightmap.png", {width:100, height:100, subdivisions: 10, minHeight:0, maxHeight: 5});
+            const largeGround = BABYLON.MeshBuilder.CreateGroundFromHeightMap("largeGround", "textures/ground/villageheightmap.png", {width:100, height:100, subdivisions: 10, minHeight:0, maxHeight: 5});
             largeGround.material = largeGroundMat;
             largeGround.rotation.y = degree(90);
             largeGround.position.y = -0.5;
