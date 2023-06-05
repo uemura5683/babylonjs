@@ -39,7 +39,7 @@
               const scene = new BABYLON.Scene(engine);
 
               const camera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 0, BABYLON.Vector3.Zero(), scene);
-              camera.position = new BABYLON.Vector3(180, 20, 30);
+              camera.position = new BABYLON.Vector3(200, 100, 150);
               camera.setTarget(new BABYLON.Vector3(160/2, 0, 46/2));
               camera.attachControl(canvas, true);
               camera.wheelDeltaPercentage = 0.005;
@@ -47,7 +47,7 @@
               const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
               light.intensity = 0.8;
 
-              // Sky
+              // 空
               const skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size: 1000}, scene);
               const skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
                     skyboxMaterial.backFaceCulling = false;
@@ -59,7 +59,7 @@
                     skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
                     skybox.material = skyboxMaterial;
               
-              //Create Village ground
+              // グランド
               const groundMat = new BABYLON.StandardMaterial("groundMat");
               groundMat.diffuseTexture = new BABYLON.Texture("textures/ground/villagegreen.png");
               groundMat.diffuseTexture.hasAlpha = true;
@@ -76,14 +76,14 @@
               wallMaterial.specularColor = new BABYLON.Color3(0.5, 0.6, 0.87);
               wallMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
               wallMaterial.ambientColor = new BABYLON.Color3(0.23, 0.98, 0.53);
-              wallMaterial.alpha = 0.5;
+              wallMaterial.alpha = 0.9;
 
               const doorMaterial = new BABYLON.StandardMaterial("doorMaterial", scene);
               doorMaterial.diffuseColor = new BABYLON.Color3(1, 0, 1);
               doorMaterial.specularColor = new BABYLON.Color3(0.5, 0.6, 0.87);
               doorMaterial.emissiveColor = new BABYLON.Color3(0.75, 0.24, 0.24);
               doorMaterial.ambientColor = new BABYLON.Color3(0.23, 0.98, 0.53);
-              doorMaterial.alpha = 0.9;
+              doorMaterial.alpha = 1;
 
 
               // 壁
@@ -98,7 +98,7 @@
                   createPillar(pDt[i].id, pDt[i].x, pDt[i].y, pDt[i].z, pDt[i].r, pDt[i].h, pDt[i].shape, wallMaterial);
               }
 
-              // 出入口
+              // ドア
               let brDt = getDoorData();
               for (let i = 0; brDt.length > i; i++) {
                   createBox(brDt[i].id, brDt[i].x1, brDt[i].y1, brDt[i].z1, brDt[i].x2, brDt[i].y2, brDt[i].z2, doorMaterial);
@@ -187,81 +187,88 @@
               }
           }
 
+          // 壁
           function getWallData() {
               let boxData = [
 
-                  { "x1": 140.8, "y1": 0, "z1": 0, "x2": 140.8, "y2": 20, "z2": 44.8 },
-                  { "x1": 6.4, "y1": 0, "z1": 0, "x2": 6.4, "y2": 20, "z2": 44.8 },
-                  { "x1": 140.8, "y1": 0, "z1": 44.8, "x2": 6.4, "y2": 20, "z2": 44.8 },
-                  { "x1": 140.8, "y1": 0, "z1": 0, "x2": 6.4, "y2": 20, "z2": 0 },
-                  { "x1": 6.4, "y1": 20, "z1": 0, "x2": 140.8, "y2": 20, "z2": 44.8 },
+                  // 外壁
+                  { "x1": 140.8 + 1.1, "y1": 0, "z1": 0, "x2": 140.8 - 1.1, "y2": 20, "z2": 44.8 },
+                  { "x1": 6.4 + 1.1, "y1": 0, "z1": 0, "x2": 6.4 - 1.1, "y2": 20, "z2": 44.8 },
+                  { "x1": 140, "y1": 0, "z1": 44.8 + 1.1, "x2": 6.4, "y2": 20, "z2": 44.8 - 1.1 },
+                  { "x1": 140, "y1": 0, "z1": 0 + 1.1, "x2": 6.4, "y2": 20, "z2": 0 - 1.1 },
+
+                  // 内装(横)
+                  { "x1": 140.8, "y1": 0, "z1": 29.6 + 1.1, "x2": 82.4, "y2": 20, "z2": 29.6 - 1.1 },
+                  { "x1": 58.4, "y1": 0, "z1": 29.6 + 1.1, "x2": 6.4, "y2": 20, "z2": 29.6 - 1.1 },
+                  { "x1": 140.8, "y1": 0, "z1": 14.8 + 1.1, "x2": 6.4, "y2": 20, "z2": 14.8 - 1.1 },
+
+                  // 内装(縦)
+                  { "x1": 108.8 + 1.1, "y1": 0, "z1": 0, "x2": 108.8 - 1.1, "y2": 20, "z2": 14.8 },
+                  { "x1": 108.8 + 1.1, "y1": 0, "z1": 29.6, "x2": 108.8 - 1.1, "y2": 20, "z2": 44.8 },
+
+                  { "x1": 83.2 + 1.1, "y1": 0, "z1": 0, "x2": 83.2 - 1.1, "y2": 20, "z2": 14.8 },
+                  { "x1": 83.2 + 1.1, "y1": 0, "z1": 29.6, "x2": 83.2 - 1.1, "y2": 20, "z2": 44.8 },
+
+                  { "x1": 57.6 + 1.1, "y1": 0, "z1": 0, "x2": 57.6 - 1.1, "y2": 20, "z2": 14.8 },
+                  { "x1": 57.6 + 1.1, "y1": 0, "z1": 29.6, "x2": 57.6 - 1.1, "y2": 20, "z2": 44.8 },
+
+                  { "x1": 32 + 1.1, "y1": 0, "z1": 0, "x2": 32 - 1.1, "y2": 20, "z2": 14.8 },
+                  { "x1": 32 + 1.1, "y1": 0, "z1": 29.6, "x2": 32 - 1.1, "y2": 20, "z2": 44.8 },
+
+                  // 床
+                  { "x1": 6.4, "y1": 1, "z1": 0, "x2": 140.8, "y2": 1, "z2": 44.8 },
 
               ];
               return boxData;
           }
 
+          // ドア
           function getDoorData() {
               let boxData = [
-                  { "x1": 44.6, "y1": 0, "z1": 30, "x2": 46, "y2": 2.8, "z2": 28 },
+                  // 入口
+                  { "x1": 77, "y1": 0, "z1": 44, "x2": 63, "y2": 16, "z2": 46 },
               ];
               return boxData; 
           }
 
+          // 柱
           function getPillarData() {
               let pData = [
-                  { "x": 6.4, "y": 0, "z": 0, "r": 1, "h": 20, "shape": "box" },
-                  { "x": 32, "y": 0, "z": 0, "r": 1, "h": 20, "shape": "box" },
-                  { "x": 57.6, "y": 0, "z": 0, "r": 1, "h": 20, "shape": "box" },
-                  { "x": 83.2, "y": 0, "z": 0, "r": 1, "h": 20, "shape": "box" },
-                  { "x": 108.8, "y": 0, "z": 0, "r": 1, "h": 20, "shape": "box" },
-                  { "x": 140.8, "y": 0, "z": 0, "r": 1, "h": 20, "shape": "box" },
+                  { "x": 6.4, "y": 0, "z": 0, "r": 2, "h": 20, "shape": "box" },
+                  { "x": 32, "y": 0, "z": 0, "r": 2, "h": 20, "shape": "box" },
+                  { "x": 57.6, "y": 0, "z": 0, "r": 2, "h": 20, "shape": "box" },
+                  { "x": 83.2, "y": 0, "z": 0, "r": 2, "h": 20, "shape": "box" },
+                  { "x": 108.8, "y": 0, "z": 0, "r": 2, "h": 20, "shape": "box" },
+                  { "x": 140.8, "y": 0, "z": 0, "r": 2, "h": 20, "shape": "box" },
 
-                  { "x": 6.4, "y": 0, "z": 14.8, "r": 1, "h": 20, "shape": "circle" },
-                  { "x": 32, "y": 0, "z": 14.8, "r": 1, "h": 20, "shape": "circle" },
-                  { "x": 57.6, "y": 0, "z": 14.8, "r": 1, "h": 20, "shape": "circle" },
-                  { "x": 83.2, "y": 0, "z": 14.8, "r": 1, "h": 20, "shape": "circle" },
-                  { "x": 108.8, "y": 0, "z": 14.8, "r": 1, "h": 20, "shape": "circle" },
-                  { "x": 140.8, "y": 0, "z": 14.8, "r": 1, "h": 20, "shape": "circle" },
+                  { "x": 6.4, "y": 0, "z": 14.8, "r": 2, "h": 20, "shape": "box" },
+                  { "x": 32, "y": 0, "z": 14.8, "r": 2, "h": 20, "shape": "box" },
+                  { "x": 57.6, "y": 0, "z": 14.8, "r": 2, "h": 20, "shape": "box" },
+                  { "x": 83.2, "y": 0, "z": 14.8, "r": 2, "h": 20, "shape": "box" },
+                  { "x": 108.8, "y": 0, "z": 14.8, "r": 2, "h": 20, "shape": "box" },
+                  { "x": 140.8, "y": 0, "z": 14.8, "r": 2, "h": 20, "shape": "box" },
 
-                  { "x": 6.4, "y": 0, "z": 29.6, "r": 1, "h": 20, "shape": "box" },
-                  { "x": 32, "y": 0, "z": 29.6, "r": 1, "h": 20, "shape": "box" },
-                  { "x": 57.6, "y": 0, "z": 29.6, "r": 1, "h": 20, "shape": "box" },
-                  { "x": 83.2, "y": 0, "z": 29.6, "r": 1, "h": 20, "shape": "box" },
-                  { "x": 108.8, "y": 0, "z": 29.6, "r": 1, "h": 20, "shape": "box" },
-                  { "x": 140.8, "y": 0, "z": 29.6, "r": 1, "h": 20, "shape": "box" },
+                  { "x": 6.4, "y": 0, "z": 29.6, "r": 2, "h": 20, "shape": "box" },
+                  { "x": 32, "y": 0, "z": 29.6, "r": 2, "h": 20, "shape": "box" },
+                  { "x": 57.6, "y": 0, "z": 29.6, "r": 2, "h": 20, "shape": "box" },
+                  { "x": 83.2, "y": 0, "z": 29.6, "r": 2, "h": 20, "shape": "box" },
+                  { "x": 108.8, "y": 0, "z": 29.6, "r": 2, "h": 20, "shape": "box" },
+                  { "x": 140.8, "y": 0, "z": 29.6, "r": 2, "h": 20, "shape": "box" },
 
-                  { "x": 6.4, "y": 0, "z": 44.8, "r": 1, "h": 20, "shape": "box" },
-                  { "x": 32, "y": 0, "z": 44.8, "r": 1, "h": 20, "shape": "circle" },
-                  { "x": 57.6, "y": 0, "z": 44.8, "r": 1, "h": 20, "shape": "circle" },
-                  { "x": 83.2, "y": 0, "z": 44.8, "r": 1, "h": 20, "shape": "circle" },
-                  { "x": 108.8, "y": 0, "z": 44.8, "r": 1, "h": 20, "shape": "circle" },
-                  { "x": 140.8, "y": 0, "z": 44.8, "r": 1, "h": 20, "shape": "circle" },
+                  { "x": 6.4, "y": 0, "z": 44.8, "r": 2, "h": 20, "shape": "box" },
+                  { "x": 32, "y": 0, "z": 44.8, "r": 2, "h": 20, "shape": "box" },
+                  { "x": 57.6, "y": 0, "z": 44.8, "r": 2, "h": 20, "shape": "box" },
+                  { "x": 83.2, "y": 0, "z": 44.8, "r": 2, "h": 20, "shape": "box" },
+                  { "x": 108.8, "y": 0, "z": 44.8, "r": 2, "h": 20, "shape": "box" },
+                  { "x": 140.8, "y": 0, "z": 44.8, "r": 2, "h": 20, "shape": "box" },
               ];
               return pData;
           }
 
           function getBoothData() {
               let boothData = [
+                  
                   { "id": "A1", "x1": 44.4, "y1": 0, "z1": 17.5, "x2": 44.85, "y2": 0.7, "z2": 19.3 },
-                  { "id": "A2", "x1": 44.4, "y1": 0, "z1": 15.5, "x2": 44.85, "y2": 0.7, "z2": 17.3 },
-                  { "id": "A3", "x1": 44.4, "y1": 0, "z1": 13.5, "x2": 44.85, "y2": 0.7, "z2": 15.3 },
-                  { "id": "A4", "x1": 44.4, "y1": 0, "z1": 11.5, "x2": 44.85, "y2": 0.7, "z2": 13.3 },
-                  { "id": "A5", "x1": 44.4, "y1": 0, "z1": 9.5, "x2": 44.85, "y2": 0.7, "z2": 11.3 },
-                  { "id": "A6", "x1": 42.4, "y1": 0, "z1": 17.5, "x2": 42.85, "y2": 0.7, "z2": 19.3 },
-                  { "id": "A7", "x1": 42.4, "y1": 0, "z1": 15.5, "x2": 42.85, "y2": 0.7, "z2": 17.3 },
-                  { "id": "A8", "x1": 42.4, "y1": 0, "z1": 13.5, "x2": 42.85, "y2": 0.7, "z2": 15.3 },
-                  { "id": "A9", "x1": 42.4, "y1": 0, "z1": 11.5, "x2": 42.85, "y2": 0.7, "z2": 13.3 },
-                  { "id": "A10", "x1": 42.4, "y1": 0, "z1": 9.5, "x2": 42.85, "y2": 0.7, "z2": 11.3 },
-                  { "id": "A11", "x1": 37.9, "y1": 0, "z1": 9.5, "x2": 38.35, "y2": 0.7, "z2": 11.3 },
-                  { "id": "A12", "x1": 37.9, "y1": 0, "z1": 11.5, "x2": 38.35, "y2": 0.7, "z2": 13.3 },
-                  { "id": "A13", "x1": 37.9, "y1": 0, "z1": 13.5, "x2": 38.35, "y2": 0.7, "z2": 15.3 },
-                  { "id": "A14", "x1": 37.9, "y1": 0, "z1": 15.5, "x2": 38.35, "y2": 0.7, "z2": 17.3 },
-                  { "id": "A15", "x1": 37.9, "y1": 0, "z1": 17.5, "x2": 38.35, "y2": 0.7, "z2": 19.3 },
-                  { "id": "A16", "x1": 35.9, "y1": 0, "z1": 17.5, "x2": 36.35, "y2": 0.7, "z2": 19.3 },
-                  { "id": "A17", "x1": 35.9, "y1": 0, "z1": 15.5, "x2": 36.35, "y2": 0.7, "z2": 17.3 },
-                  { "id": "A18", "x1": 35.9, "y1": 0, "z1": 13.5, "x2": 36.35, "y2": 0.7, "z2": 15.3 },
-                  { "id": "A19", "x1": 35.9, "y1": 0, "z1": 11.5, "x2": 36.35, "y2": 0.7, "z2": 13.3 },
-                  { "id": "A20", "x1": 35.9, "y1": 0, "z1": 9.5, "x2": 36.35, "y2": 0.7, "z2": 11.3 },
               ];
               return boothData;
           }
