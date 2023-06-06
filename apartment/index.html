@@ -72,17 +72,17 @@
               ground.position.z = 44;
 
               const wallMaterial = new BABYLON.StandardMaterial("wallMaterial", scene);
-              wallMaterial.diffuseColor = new BABYLON.Color3(1, 0, 1);
+              wallMaterial.diffuseColor = new BABYLON.Color3(.5, .5, 1);
               wallMaterial.specularColor = new BABYLON.Color3(0.5, 0.6, 0.87);
-              wallMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
+              wallMaterial.emissiveColor = new BABYLON.Color3(.5, .5, .5);
               wallMaterial.ambientColor = new BABYLON.Color3(0.23, 0.98, 0.53);
               wallMaterial.alpha = 0.9;
 
               const doorMaterial = new BABYLON.StandardMaterial("doorMaterial", scene);
-              doorMaterial.diffuseColor = new BABYLON.Color3(1, 0, 1);
+              doorMaterial.diffuseColor = new BABYLON.Color3(1, 0, 0);
               doorMaterial.specularColor = new BABYLON.Color3(0.5, 0.6, 0.87);
-              doorMaterial.emissiveColor = new BABYLON.Color3(0.75, 0.24, 0.24);
-              doorMaterial.ambientColor = new BABYLON.Color3(0.23, 0.98, 0.53);
+              doorMaterial.emissiveColor = new BABYLON.Color3(0.1, 0.1, 0.1);
+              doorMaterial.ambientColor = new BABYLON.Color3(0.23, 0.24, 0.24);
               doorMaterial.alpha = 1;
 
 
@@ -192,14 +192,14 @@
               let boxData = [
 
                   // 外壁
-                  { "x1": 140.8 + 1.1, "y1": 0, "z1": 0, "x2": 140.8 - 1.1, "y2": 20, "z2": 44.8 },
-                  { "x1": 6.4 + 1.1, "y1": 0, "z1": 0, "x2": 6.4 - 1.1, "y2": 20, "z2": 44.8 },
+                  { "x1": 140.8 + 1.1, "y1": 0, "z1": 0 - 1.1, "x2": 140.8 - 1.1, "y2": 20, "z2": 44.8 + 1.1 },
+                  { "x1": 6.4 + 1.1, "y1": 0, "z1": 0 - 1.1, "x2": 6.4 - 1.1, "y2": 20, "z2": 44.8 + 1.1  },
                   { "x1": 140, "y1": 0, "z1": 44.8 + 1.1, "x2": 6.4, "y2": 20, "z2": 44.8 - 1.1 },
                   { "x1": 140, "y1": 0, "z1": 0 + 1.1, "x2": 6.4, "y2": 20, "z2": 0 - 1.1 },
 
                   // 内装(横)
-                  { "x1": 140.8, "y1": 0, "z1": 29.6 + 1.1, "x2": 82.4, "y2": 20, "z2": 29.6 - 1.1 },
-                  { "x1": 58.4, "y1": 0, "z1": 29.6 + 1.1, "x2": 6.4, "y2": 20, "z2": 29.6 - 1.1 },
+                  { "x1": 140.8, "y1": 0, "z1": 29.6 + 1.1, "x2": 82.4 - 0.5, "y2": 20, "z2": 29.6 - 1.1 },
+                  { "x1": 58.4 + .5, "y1": 0, "z1": 29.6 + 1.1, "x2": 6.4, "y2": 20, "z2": 29.6 - 1.1 },
                   { "x1": 140.8, "y1": 0, "z1": 14.8 + 1.1, "x2": 6.4, "y2": 20, "z2": 14.8 - 1.1 },
 
                   // 内装(縦)
@@ -227,7 +227,16 @@
               let boxData = [
                   // 入口
                   { "x1": 77, "y1": 0, "z1": 44, "x2": 63, "y2": 16, "z2": 46 },
-              ];
+                  { "x1": 135, "y1": 0, "z1": 28.2, "x2": 125, "y2": 13, "z2": 31.2 },
+                  { "x1": 105, "y1": 0, "z1": 28.2, "x2": 95, "y2": 13, "z2": 31.2 },
+                  { "x1": 53, "y1": 0, "z1": 28.2, "x2": 43, "y2": 13, "z2": 31.2 },
+                  { "x1": 27, "y1": 0, "z1": 28.2, "x2": 17, "y2": 13, "z2": 31.2 },
+                  { "x1": 135, "y1": 0, "z1": 13.2, "x2": 125, "y2": 13, "z2": 16.2 },
+                  { "x1": 105, "y1": 0, "z1": 13.2, "x2": 95, "y2": 13, "z2": 16.2 },
+                  { "x1": 77, "y1": 0, "z1": 13.2, "x2": 63, "y2": 16, "z2": 16.2 },
+                  { "x1": 53, "y1": 0, "z1": 13.2, "x2": 43, "y2": 13, "z2": 16.2 },
+                  { "x1": 27, "y1": 0, "z1": 13.2, "x2": 17, "y2": 13, "z2": 16.2 },
+                ];
               return boxData; 
           }
 
