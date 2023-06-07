@@ -76,7 +76,7 @@
               wallMaterial.specularColor = new BABYLON.Color3(0.5, 0.6, 0.87);
               wallMaterial.emissiveColor = new BABYLON.Color3(.5, .5, .5);
               wallMaterial.ambientColor = new BABYLON.Color3(0.23, 0.98, 0.53);
-              wallMaterial.alpha = 0.9;
+              wallMaterial.alpha = .9;
 
               const doorMaterial = new BABYLON.StandardMaterial("doorMaterial", scene);
               doorMaterial.diffuseColor = new BABYLON.Color3(1, 0, 0);
@@ -109,6 +109,25 @@
               for (let i = 0; btDt.length > i; i++) {
                   createBooth(btDt[i].id, btDt[i].x1, btDt[i].y1, btDt[i].z1, btDt[i].x2, btDt[i].y2, btDt[i].z2, wallMaterial);
               }
+
+              //base
+              const outline = [
+                  new BABYLON.Vector3(1.1, 0, - 1.1),
+                  new BABYLON.Vector3(-58.4, 0, - 1.1),
+                  new BABYLON.Vector3(-58.4, 0, 14.1),
+                  new BABYLON.Vector3(-82.5, 0, 14.1),
+                  new BABYLON.Vector3(-82.5, 0, - 1.1),
+                  new BABYLON.Vector3(-135.5, 0, - 1.1),
+                  new BABYLON.Vector3(-135.5, 0, 45.9),
+                  new BABYLON.Vector3(1.1, 0, 45.9),
+                ]
+
+              const slub = BABYLON.MeshBuilder.ExtrudePolygon("car", {shape: outline});      
+              BABYLON.StandardMaterial        
+              slub.position.x =  140.8;              
+              slub.position.y =  20.1;
+
+              slub.material = wallMaterial;          
 
               // ターゲットブース
               const myBooth = scene.getMeshById(`booth_${TARGET_BOOTH_ID}`);
@@ -276,7 +295,6 @@
 
           function getBoothData() {
               let boothData = [
-                  
                   { "id": "A1", "x1": 44.4, "y1": 0, "z1": 17.5, "x2": 44.85, "y2": 0.7, "z2": 19.3 },
               ];
               return boothData;
