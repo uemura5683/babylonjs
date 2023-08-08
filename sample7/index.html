@@ -8,42 +8,41 @@
     <script src="https://code.jquery.com/pep/0.4.1/pep.js"></script>
     <script src="https://unpkg.com/earcut@latest/dist/earcut.min.js"></script>
     <script>
-        function main() {
-          const canvas = document.getElementById('renderCanvas');
-          const engine = new BABYLON.Engine(canvas);
-          const createScene = () => {
-            
-            const scene = new BABYLON.Scene(engine);
+      function main() {
+        const canvas = document.getElementById('renderCanvas');
+        const engine = new BABYLON.Engine(canvas);
+        const createScene = () => {
+          
+          const scene = new BABYLON.Scene(engine);
 
-            const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 2, new BABYLON.Vector3(0, 0, 0));
-            camera.attachControl(canvas, true);
-            const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0));
-        
-            BABYLON.SceneLoader.ImportMeshAsync("", "https://assets.babylonjs.com/meshes/", "car.babylon").then(() =>  {
-              const wheelRB = scene.getMeshByName("wheelRB");
-              const wheelRF = scene.getMeshByName("wheelRF");
-              const wheelLB = scene.getMeshByName("wheelLB");
-              const wheelLF = scene.getMeshByName("wheelLF");
-              console.log(wheelRB.animations)
-              scene.beginAnimation(wheelRB, 0, 30, true);
-              scene.beginAnimation(wheelRF, 0, 30, true);
-              scene.beginAnimation(wheelLB, 0, 30, true);
-              scene.beginAnimation(wheelLF, 0, 30, true);
-            });
-
-            return scene;
+          const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 2, new BABYLON.Vector3(0, 0, 0));
+          camera.attachControl(canvas, true);
+          const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0));
+      
+          BABYLON.SceneLoader.ImportMeshAsync("", "https://assets.babylonjs.com/meshes/", "car.babylon").then(() =>  {
+            const wheelRB = scene.getMeshByName("wheelRB");
+            const wheelRF = scene.getMeshByName("wheelRF");
+            const wheelLB = scene.getMeshByName("wheelLB");
+            const wheelLF = scene.getMeshByName("wheelLF");
+            console.log(wheelRB.animations)
+            scene.beginAnimation(wheelRB, 0, 30, true);
+            scene.beginAnimation(wheelRF, 0, 30, true);
+            scene.beginAnimation(wheelLB, 0, 30, true);
+            scene.beginAnimation(wheelLF, 0, 30, true);
+          });
+          return scene;
         };
-          const scene = createScene();
-          
-          engine.runRenderLoop(() => {
-            scene.render();
-          });
-          
-          window.addEventListener('resize', () => {
-            engine.resize();
-          });
-        }
-        window.addEventListener('DOMContentLoaded', main);
+        const scene = createScene();
+        
+        engine.runRenderLoop(() => {
+          scene.render();
+        });
+        
+        window.addEventListener('resize', () => {
+          engine.resize();
+        });
+      }
+      window.addEventListener('DOMContentLoaded', main);
     </script>
     <style>
       html, body {
