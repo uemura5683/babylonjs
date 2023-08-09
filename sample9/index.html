@@ -24,78 +24,77 @@
   <body>
     <canvas id="renderCanvas"></canvas>
     <script>
-        function main() {
-          const canvas = document.getElementById('renderCanvas');
-          const engine = new BABYLON.Engine(canvas);
+      function main() {
+        const canvas = document.getElementById('renderCanvas');
+        const engine = new BABYLON.Engine(canvas);
 
-          const createScene = function () {
-    
-            const scene = new BABYLON.Scene(engine);
+        const createScene = function () {
+  
+          const scene = new BABYLON.Scene(engine);
 
-            const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 50, new BABYLON.Vector3(0, 0, 0));
-            camera.attachControl(canvas, true);
-            const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0));
+          const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 50, new BABYLON.Vector3(0, 0, 0));
+          camera.attachControl(canvas, true);
+          const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0));
 
-            // 直径 0.25 の球
-            const sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 0.25});
-            sphere.position = new BABYLON.Vector3(2, 0, 2);
+          // 直径 0.25 の球
+          const sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 0.25});
+          sphere.position = new BABYLON.Vector3(2, 0, 2);
 
-            // 三角形
-            const points = []; // 頂点の入る配列
-            points.push(new BABYLON.Vector3(2, 0, 2));
-            points.push(new BABYLON.Vector3(2, 0, -2));
-            points.push(new BABYLON.Vector3(-2, 0, -2));
-            points.push(points[0]); // 三角形を終わらせる;
+          // 三角形
+          const points = []; // 頂点の入る配列
+          points.push(new BABYLON.Vector3(2, 0, 2));
+          points.push(new BABYLON.Vector3(2, 0, -2));
+          points.push(new BABYLON.Vector3(-2, 0, -2));
+          points.push(points[0]); // 三角形を終わらせる;
 
-            BABYLON.MeshBuilder.CreateLines("triangle", {points: points})
+          BABYLON.MeshBuilder.CreateLines("triangle", {points: points})
 
-            const slide = function (turn, dist) { //after covering dist apply turn
-              this.turn = turn; // 回転値
-              this.dist = dist; // 距離
-            }
-            // ↓追跡用の配列の入れ物を作る
-            const track = [];
-            // ↓最初の辺の長さが4
-            track.push(new slide(Math.PI / 2, 4));
-            // ↓二番目の辺を走り終えるときの距離は 4 + 4
-            track.push(new slide(3 * Math.PI / 4, 8));
-            // ↓すべての辺を走り終えるときの距離は 4 + 4 + 4 * sqrt(2)
-            track.push(new slide(3 * Math.PI / 4, 8 + 4 * Math.sqrt(2)));
+          const slide = function (turn, dist) { 
+            this.turn = turn; // 回転値
+            this.dist = dist; // 距離
+          }
+          // ↓追跡用の配列の入れ物を作る
+          const track = [];
+          // ↓最初の辺の長さが4
+          track.push(new slide(Math.PI / 2, 4));
+          // ↓二番目の辺を走り終えるときの距離は 4 + 4
+          track.push(new slide(3 * Math.PI / 4, 8));
+          // ↓すべての辺を走り終えるときの距離は 4 + 4 + 4 * sqrt(2)
+          track.push(new slide(3 * Math.PI / 4, 8 + 4 * Math.sqrt(2)));
 
-            let distance = 0;
-            let step = 0.05;
-            let p = 0;
+          let distance = 0;
+          let step = 0.05;
+          let p = 0;
 
-            // 球を動かす
-            scene.onBeforeRenderObservable.add(() => {
-            sphere.movePOV(0, 0, step);
-                distance += step;
-                      
-                if (distance > track[p].dist) {        
-                    sphere.rotate(BABYLON.Axis.Y, track[p].turn, BABYLON.Space.LOCAL);
-                    p +=1;
-                    p %= track.length;
-                    if (p === 0) {
-                        distance = 0;
-                        sphere.position = new BABYLON.Vector3(2, 0, 2);
-                        sphere.rotation = BABYLON.Vector3.Zero();
-                    }
-                }
-            });
-            return scene;
-          };
-          
-          const scene = createScene();
-          
-          engine.runRenderLoop(() => {
-            scene.render();
+          // 球を動かす
+          scene.onBeforeRenderObservable.add(() => {
+          sphere.movePOV(0, 0, step);
+              distance += step;
+              if (distance > track[p].dist) {        
+                  sphere.rotate(BABYLON.Axis.Y, track[p].turn, BABYLON.Space.LOCAL);
+                  p +=1;
+                  p %= track.length;
+                  if (p === 0) {
+                      distance = 0;
+                      sphere.position = new BABYLON.Vector3(2, 0, 2);
+                      sphere.rotation = BABYLON.Vector3.Zero();
+                  }
+              }
           });
-          
-          window.addEventListener('resize', () => {
-            engine.resize();
-          });
-        }
-        window.addEventListener('DOMContentLoaded', main);
+          return scene;
+        };
+        
+        const scene = createScene();
+        
+        engine.runRenderLoop(() => {
+          scene.render();
+        });
+        
+        window.addEventListener('resize', () => {
+          engine.resize();
+        });
+      }
+      window.addEventListener('DOMContentLoaded', main);
     </script>
   </body>
 </html>
