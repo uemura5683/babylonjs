@@ -32,8 +32,8 @@
 	
           var light1 = new BABYLON.HemisphericLight("DirectionalLight", new BABYLON.Vector3(0, -1, 0), scene);
           var light2 = new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, 1, -1), scene);   
-          light1.intensity =0.5;
-          light2.intensity =0.5; 
+          light1.intensity =1;
+          light2.intensity =1; 
 
           var frameRate = 20;
 
@@ -48,18 +48,53 @@
           camera.attachControl(canvas, true);
           
           //door
-          var door = BABYLON.MeshBuilder.CreateBox("door", {width:2, height:4, depth:0.1}, scene);
-
           const door_texture = new BABYLON.StandardMaterial("");
           door_texture.diffuseTexture = new BABYLON.Texture("texture/door.png");
 
-          door.material = door_texture;
-
+          var door =  BABYLON.MeshBuilder.CreateBox("door", {width:2, height:4, depth:0.2}, scene);
           var hinge = BABYLON.MeshBuilder.CreateBox("hinge", {}, scene)
           hinge.isVisible = false;
           door.parent = hinge;
           hinge.position.y = 2;
           door.position.x = -1;
+
+          door.material = door_texture;          
+
+          const door_texture_big = new BABYLON.StandardMaterial("");
+          door_texture_big.diffuseTexture = new BABYLON.Texture("texture/door.png");
+          door_texture_big.diffuseTexture.uScale = 2;
+          door_texture_big.diffuseTexture.vScale = 1;  
+
+          var door2 =  BABYLON.MeshBuilder.CreateBox("door", {width:4, height:4, depth:0.2}, scene);
+          door2.rotation.y = Math.PI/2;
+          door2.position.x = -3.65;
+          door2.position.y = 2;
+          door2.position.z = 19;
+
+          var door3 = door2.clone();
+          door3.position.z = 29;
+
+          door2.material = door3.material =door_texture_big;
+
+          const door_texture_mdl = new BABYLON.StandardMaterial("");
+          door_texture_mdl.diffuseTexture = new BABYLON.Texture("texture/door.png");
+
+          var door4 =  BABYLON.MeshBuilder.CreateBox("door", {width:2, height:4, depth:0.2}, scene);
+          door4.rotation.y = Math.PI/2;
+          door4.position.x = -3.65;
+          door4.position.y = 2;
+          door4.position.z = 10;
+
+          var door5 = door4.clone();
+          door5.position.z = 6;
+
+          var door6 = door5.clone();
+          door6.rotation.y = -Math.PI;
+          door6.position.x = -9.5;
+          door6.position.z = 8;
+
+
+          door4.material = door5.material = door6.material = door_texture_mdl;
           
           //lights
 
@@ -89,7 +124,7 @@
           // }
 
           /*********animations*************/
-          //for camera to sweep round
+          // for camera to sweep round
           var rotate = new BABYLON.Animation("rotate", "rotation.y", frameRate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
           
           var rotate_keys = []; 
@@ -133,7 +168,7 @@
 
             movein_keys.push({
                 frame: 8 * frameRate,
-                value: new BABYLON.Vector3(-2, 2, 3)
+                value: new BABYLON.Vector3(-2, 2, 20)
             });
 
             movein.setKeys(movein_keys);
@@ -179,6 +214,8 @@
             /**************Peripherals of Scene***************/
             const floor_texture = new BABYLON.StandardMaterial("");
             floor_texture.diffuseTexture = new BABYLON.Texture("texture/floor.jpg");
+            floor_texture.diffuseTexture.uScale = 3;
+            floor_texture.diffuseTexture.vScale = 3;            
 
             const cross_material = new BABYLON.StandardMaterial("");
             cross_texture = new BABYLON.Texture("texture/cross.jpg");
@@ -196,45 +233,105 @@
             const ground = BABYLON.MeshBuilder.CreateGround("ground", {width:30, height:60}, scene);
             ground.position.z = 10;
           
-            const wall1 = BABYLON.MeshBuilder.CreateBox("cross", {width:9, height:9, depth:0.1}, scene);
+
+            // outer wall
+            const wall1 = BABYLON.MeshBuilder.CreateBox("cross", {width:9, height:6, depth:0.2}, scene);
             wall1.position.x = -6.5;
             wall1.position.y = 3;
 
-            const wall2 = BABYLON.MeshBuilder.CreateBox("cross", {width:9, height:9, depth:0.1}, scene);
+            const wall2 = BABYLON.MeshBuilder.CreateBox("cross", {width:9, height:6, depth:0.2}, scene);
             wall2.position.x = 4.5;
             wall2.position.y = 3;
 
-            const wall3 = BABYLON.MeshBuilder.CreateBox("cross", {width:2, height:3.5, depth:0.1}, scene);
+            const wall3 = BABYLON.MeshBuilder.CreateBox("cross", {width:2, height:2, depth:0.2}, scene);
             wall3.position.x = -1;
-            wall3.position.y = 5.75;
+            wall3.position.y = 5;
 
-            const wall4 = BABYLON.MeshBuilder.CreateBox("cross", {width:20, height:9, depth:0.1}, scene);
+            const wall4 = BABYLON.MeshBuilder.CreateBox("cross", {width:20, height:6, depth:0.2}, scene);
             wall4.position.x = -1;
             wall4.position.y = 3;
             wall4.position.z = 36;
 
-            const wall5 = BABYLON.MeshBuilder.CreateBox("cross", {width:36, height:9, depth:0.1}, scene);
+            const wall5 = BABYLON.MeshBuilder.CreateBox("cross", {width:36, height:6, depth:0.2}, scene);
             wall5.rotation.y = Math.PI/2;
             wall5.position.x = -11;
             wall5.position.y = 3;
             wall5.position.z = 18;
 
-            const wall6 = BABYLON.MeshBuilder.CreateBox("cross", {width:36, height:9, depth:0.1}, scene);
+            const wall6 = wall5.clone();
             wall6.rotation.y = Math.PI/2;
             wall6.position.x = 9;
             wall6.position.y = 3;
             wall6.position.z = 18;
 
+            //inner wall
+            const wall7 = BABYLON.MeshBuilder.CreateBox("cross", {width:7.2, height:6, depth:0.2}, scene);
+            wall7.position.x = -7.5;
+            wall7.position.y = 3;
+            wall7.position.z = 22;
+
+            const wall8 = BABYLON.MeshBuilder.CreateBox("cross", {width:4.9, height:6, depth:0.2}, scene);
+            wall8.position.x = -6;
+            wall8.position.y = 3;
+            wall8.position.z = 8;
+
+            const wall9 = BABYLON.MeshBuilder.CreateBox("cross", {width:.5, height:6, depth:0.2}, scene);
+            wall9.position.x = -10.8;
+            wall9.position.y = 3;
+            wall9.position.z = 8;
+
+            const wall10 = BABYLON.MeshBuilder.CreateBox("cross", {width:7.2, height:6, depth:3}, scene);
+            wall10.position.x = -7.5;
+            wall10.position.y = 3;
+            wall10.position.z = 1.5;
+
+            const wall11 = BABYLON.MeshBuilder.CreateBox("cross", {width:5, height:6, depth:0.2}, scene);
+            wall11.rotation.y = Math.PI/2;
+            wall11.position.x = -3.65;
+            wall11.position.y = 3;
+            wall11.position.z = 2.5;
+
+            const wall12 = BABYLON.MeshBuilder.CreateBox("cross", {width:2, height:6, depth:0.2}, scene);
+            wall12.rotation.y = Math.PI/2;
+            wall12.position.x = -3.65;
+            wall12.position.y = 3;
+            wall12.position.z = 8;
+
+            const wall13 = BABYLON.MeshBuilder.CreateBox("cross", {width:6, height:6, depth:0.2}, scene);
+            wall13.rotation.y = Math.PI/2;
+            wall13.position.x = -3.65;
+            wall13.position.y = 3;
+            wall13.position.z = 14;
+
+            const wall14 = wall13.clone();
+            wall14.position.z = 24;
+
+            const wall15 = BABYLON.MeshBuilder.CreateBox("cross", {width:5, height:6, depth:0.2}, scene);
+            wall15.rotation.y = Math.PI/2;
+            wall15.position.x = -3.65;
+            wall15.position.y = 3;
+            wall15.position.z = 33.5;
+
+            const wall16 = wall11.clone();
+            wall16.position.x = -7;
+            wall16.position.z = 5;
+
             // ceiling
-            const roof = BABYLON.MeshBuilder.CreateBox("cross", {width:20, height:36, depth:0.1}, scene);
+            const roof = BABYLON.MeshBuilder.CreateBox("cross", {width:20, height:36, depth:0.2}, scene);
             roof.rotation.x = Math.PI/2;
             roof.position.x = -1;
-            roof.position.y = 7.5;
+            roof.position.y = 6;
             roof.position.z = 18;
+            
+            roof.material = cross_material_big;
 
-            ground.material = floor_texture;            
+            ground.material = floor_texture;
+
             wall3.material = cross_material;  
-            wall1.material = wall2.material = wall4.material = wall5.material = wall6.material = roof.material = cross_material_big;
+            wall1.material = wall2.material = wall4.material = wall5.material = wall6.material = wall7.material = wall8.material = wall9.material = wall10.material = wall11.material = wall12.material = wall13.material = wall14.material = wall15.material = wall16.material = cross_material_big;
+
+            
+
 
             }
 
