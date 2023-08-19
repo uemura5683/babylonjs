@@ -39,20 +39,19 @@
 
           /*********performers*********/
           //camera
-          var camera = new BABYLON.UniversalCamera("UniversalCamera", new BABYLON.Vector3(0, 3, -30), scene);
+          // var camera = new BABYLON.UniversalCamera("UniversalCamera", new BABYLON.Vector3(0, 3, -30), scene);
           
-          // const camera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 0, BABYLON.Vector3.Zero(), scene);
-          // camera.position = new BABYLON.Vector3(100, 50, 75);
-          // camera.setTarget(new BABYLON.Vector3(80/2, 0, 23/2));          
+          const camera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 0, BABYLON.Vector3.Zero(), scene);
+          camera.position = new BABYLON.Vector3(50, 25, 37.5);
+          camera.setTarget(new BABYLON.Vector3(-40/2, 0, -15/2));          
           
           camera.attachControl(canvas, true);
           
           //door
           const door_texture = new BABYLON.StandardMaterial("");
           door_texture.diffuseTexture = new BABYLON.Texture("texture/door.png");
-
-          var door =  BABYLON.MeshBuilder.CreateBox("door", {width:2, height:4, depth:0.2}, scene);
-          var hinge = BABYLON.MeshBuilder.CreateBox("hinge", {}, scene)
+          const door =  BABYLON.MeshBuilder.CreateBox("door", {width:2, height:4, depth:0.2}, scene);
+          const hinge = BABYLON.MeshBuilder.CreateBox("hinge", {}, scene)
           hinge.isVisible = false;
           door.parent = hinge;
           hinge.position.y = 2;
@@ -60,44 +59,58 @@
 
           door.material = door_texture;          
 
-          const door_texture_big = new BABYLON.StandardMaterial("");
-          door_texture_big.diffuseTexture = new BABYLON.Texture("texture/door.png");
-          door_texture_big.diffuseTexture.uScale = 2;
-          door_texture_big.diffuseTexture.vScale = 1;  
+          //one door          
+          const door_texture_one = new BABYLON.StandardMaterial("");
+          door_texture_one.diffuseTexture = new BABYLON.Texture("texture/door.png");
 
-          var door2 =  BABYLON.MeshBuilder.CreateBox("door", {width:4, height:4, depth:0.2}, scene);
-          door2.rotation.y = Math.PI/2;
-          door2.position.x = -3.65;
-          door2.position.y = 2;
-          door2.position.z = 19;
+          const door1_1 =  BABYLON.MeshBuilder.CreateBox("door", {width:2, height:4, depth:0.2}, scene);
+          door1_1.rotation.y = Math.PI/2;
+          door1_1.position.x = -3.65;
+          door1_1.position.y = 2;
+          door1_1.position.z = 10;
 
-          var door3 = door2.clone();
-          door3.position.z = 29;
+          const door1_2 = door1_1.clone();
+          door1_2.position.z = 6;
 
-          door2.material = door3.material =door_texture_big;
+          const door1_3 = door1_2.clone();
+          door1_3.rotation.y = -Math.PI;
+          door1_3.position.x = -9.5;
+          door1_3.position.z = 8;
 
-          const door_texture_mdl = new BABYLON.StandardMaterial("");
-          door_texture_mdl.diffuseTexture = new BABYLON.Texture("texture/door.png");
-
-          var door4 =  BABYLON.MeshBuilder.CreateBox("door", {width:2, height:4, depth:0.2}, scene);
-          door4.rotation.y = Math.PI/2;
-          door4.position.x = -3.65;
-          door4.position.y = 2;
-          door4.position.z = 10;
-
-          var door5 = door4.clone();
-          door5.position.z = 6;
-
-          var door6 = door5.clone();
-          door6.rotation.y = -Math.PI;
-          door6.position.x = -9.5;
-          door6.position.z = 8;
+          door1_1.material = door1_2.material = door1_3.material = door_texture_one;
 
 
-          door4.material = door5.material = door6.material = door_texture_mdl;
+          //two door
+          const door_texture_two = new BABYLON.StandardMaterial("");
+          door_texture_two.diffuseTexture = new BABYLON.Texture("texture/door.png");
+          door_texture_two.diffuseTexture.uScale = 2;
+          door_texture_two.diffuseTexture.vScale = 1;  
+
+          const door2_1 =  BABYLON.MeshBuilder.CreateBox("door", {width:4, height:4, depth:0.2}, scene);
+          door2_1.rotation.y = Math.PI/2;
+          door2_1.position.x = -3.65;
+          door2_1.position.y = 2;
+          door2_1.position.z = 19;
+
+          const door2_2 = door2_1.clone();
+          door2_2.position.z = 29;
+
+          door2_1.material = door2_2.material = door_texture_two;          
+
+          // one dooe2
+          const door_texture_one_type2 = new BABYLON.StandardMaterial("");
+          door_texture_one_type2.diffuseTexture = new BABYLON.Texture("texture/door3.png");
+
+          const door3_1 =  BABYLON.MeshBuilder.CreateBox("door", {width:3, height:4, depth:0.2}, scene);
+          door3_1.rotation.y = Math.PI/2;
+          door3_1.position.x = 1.35;
+          door3_1.position.y = 2;
+          door3_1.position.z = 2;
           
-          //lights
+          door3_1.material = door_texture_one_type2;  
 
+
+          //lights
           //light positions
           // var sphereLight = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 0.2}, scene);
           // sphereLight.material = new BABYLON.StandardMaterial("", scene);
@@ -125,107 +138,112 @@
 
           /*********animations*************/
           // for camera to sweep round
-          var rotate = new BABYLON.Animation("rotate", "rotation.y", frameRate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+          // var rotate = new BABYLON.Animation("rotate", "rotation.y", frameRate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
           
-          var rotate_keys = []; 
+          // var rotate_keys = []; 
 
-            rotate_keys.push({
-                frame: 0,
-                value: 0
-            });
+          //   rotate_keys.push({
+          //       frame: 0,
+          //       value: 0
+          //   });
 
-            rotate_keys.push({
-                frame: 9 * frameRate,
-                value: 0
-            });
+          //   rotate_keys.push({
+          //       frame: 11 * frameRate,
+          //       value: 0
+          //   });
 
-            rotate_keys.push({
-                frame: 14 * frameRate,
-                value: Math. PI
-            });
+          //   rotate_keys.push({
+          //       frame: 16 * frameRate,
+          //       value: Math. PI
+          //   });
 
-            rotate.setKeys(rotate_keys);
+          //   rotate.setKeys(rotate_keys);
           
-            //for camera move forward
-            var movein = new BABYLON.Animation("movein", "position", frameRate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+          //   //for camera move forward
+          //   var movein = new BABYLON.Animation("movein", "position", frameRate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
             
-            var movein_keys = []; 
+          //   var movein_keys = []; 
 
-            movein_keys.push({
-                frame: 0,
-                value: new BABYLON.Vector3(0, 5, -30)
-            });
+          //   movein_keys.push({
+          //       frame: 0,
+          //       value: new BABYLON.Vector3(0, 5, -30)
+          //   });
 
-            movein_keys.push({
-                frame: 3 * frameRate,
-                value: new BABYLON.Vector3(0, 2, -10)
-            });
+          //   movein_keys.push({
+          //       frame: 3 * frameRate,
+          //       value: new BABYLON.Vector3(0, 2, -10)
+          //   });
 
-            movein_keys.push({
-                frame: 5 * frameRate,
-                value: new BABYLON.Vector3(0, 2, -10)
-            });
+          //   movein_keys.push({
+          //       frame: 5 * frameRate,
+          //       value: new BABYLON.Vector3(0, 2, -10)
+          //   });
 
-            movein_keys.push({
-                frame: 8 * frameRate,
-                value: new BABYLON.Vector3(-2, 2, 20)
-            });
+          //   movein_keys.push({
+          //       frame: 8 * frameRate,
+          //       value: new BABYLON.Vector3(-2, 2, 3)
+          //   });
 
-            movein.setKeys(movein_keys);
+          //   movein_keys.push({
+          //       frame: 11 * frameRate,
+          //       value: new BABYLON.Vector3(0, 2, 25)
+          //   });
+
+          //   movein.setKeys(movein_keys);
 
           
-            //for door to open and close
-            var sweep = new BABYLON.Animation("sweep", "rotation.y", frameRate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+          //   //for door to open and close
+          //   var sweep = new BABYLON.Animation("sweep", "rotation.y", frameRate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
 
-            var sweep_keys = []; 
+          //   var sweep_keys = []; 
 
-            sweep_keys.push({
-                frame: 0,
-                value: 0
-            });
+          //   sweep_keys.push({
+          //       frame: 0,
+          //       value: 0
+          //   });
 
-            sweep_keys.push({
-                frame: 3 * frameRate,
-                value: 0
-            });
+          //   sweep_keys.push({
+          //       frame: 3 * frameRate,
+          //       value: 0
+          //   });
 
-            sweep_keys.push({
-                frame: 5 * frameRate,
-                value: Math.PI/3
-            });
+          //   sweep_keys.push({
+          //       frame: 5 * frameRate,
+          //       value: Math.PI/3
+          //   });
 
-            sweep_keys.push({
-                frame: 13 * frameRate,
-                value: Math.PI/3
-            });
+          //   sweep_keys.push({
+          //       frame: 17 * frameRate,
+          //       value: Math.PI/3
+          //   });
 
-            sweep_keys.push({
-                frame: 15 * frameRate,
-                value: 0
-            });
+          //   sweep_keys.push({
+          //       frame: 19 * frameRate,
+          //       value: 0
+          //   });
 
-            sweep.setKeys(sweep_keys);
+          //   sweep.setKeys(sweep_keys);
           
-            /*******Run Clips**********/
+          //   /*******Run Clips**********/
 
-            scene.beginDirectAnimation(camera, [movein, rotate], 0, 25 * frameRate, false);
-            scene.beginDirectAnimation(hinge, [sweep], 0, 25 * frameRate, false);
+          //   scene.beginDirectAnimation(camera, [movein, rotate], 0, 25 * frameRate, false);
+          //   scene.beginDirectAnimation(hinge, [sweep], 0, 25 * frameRate, false);
 
             /**************Peripherals of Scene***************/
             const floor_texture = new BABYLON.StandardMaterial("");
-            floor_texture.diffuseTexture = new BABYLON.Texture("texture/floor.jpg");
-            floor_texture.diffuseTexture.uScale = 3;
-            floor_texture.diffuseTexture.vScale = 3;            
+            floor_texture.diffuseTexture = new BABYLON.Texture("texture/floor.png");
+            floor_texture.diffuseTexture.uScale = 6;
+            floor_texture.diffuseTexture.vScale = 6;            
 
             const cross_material = new BABYLON.StandardMaterial("");
-            cross_texture = new BABYLON.Texture("texture/cross.jpg");
+            cross_texture = new BABYLON.Texture("texture/cross.png");
             cross_material.diffuseTexture = cross_texture;
             cross_material.diffuseTexture.uScale = 2;
             cross_material.diffuseTexture.vScale = 2;
 
 
             const cross_material_big = new BABYLON.StandardMaterial("");
-            cross_texture_big = new BABYLON.Texture("texture/cross.jpg");
+            cross_texture_big = new BABYLON.Texture("texture/cross.png");
             cross_material_big.diffuseTexture = cross_texture_big;
             cross_material_big.diffuseTexture.uScale = 8;
             cross_material_big.diffuseTexture.vScale = 8;
@@ -317,13 +335,13 @@
             wall16.position.z = 5;
 
             // ceiling
-            const roof = BABYLON.MeshBuilder.CreateBox("cross", {width:20, height:36, depth:0.2}, scene);
-            roof.rotation.x = Math.PI/2;
-            roof.position.x = -1;
-            roof.position.y = 6;
-            roof.position.z = 18;
+            // const roof = BABYLON.MeshBuilder.CreateBox("cross", {width:20, height:36, depth:0.2}, scene);
+            // roof.rotation.x = Math.PI/2;
+            // roof.position.x = -1;
+            // roof.position.y = 6;
+            // roof.position.z = 18;
             
-            roof.material = cross_material_big;
+            // roof.material = cross_material_big;
 
             ground.material = floor_texture;
 
