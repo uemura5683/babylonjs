@@ -43,7 +43,7 @@
           
           const camera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 0, BABYLON.Vector3.Zero(), scene);
           camera.position = new BABYLON.Vector3(50, 25, 37.5);
-          camera.setTarget(new BABYLON.Vector3(-40/2, 0, -15/2));          
+          camera.setTarget(new BABYLON.Vector3(-20/2, 0, -7.5/2));          
           
           camera.attachControl(canvas, true);
           
@@ -265,17 +265,40 @@
             ground.position.z = 10;            
             ground.material = floor_texture;            
 
+            const bathinnerfloor_texture = new BABYLON.StandardMaterial("");
+            bathinnerfloor_texture.diffuseTexture = new BABYLON.Texture("texture/bath_floor.png");
+            bathinnerfloor_texture.diffuseTexture.uScale = 10;
+            bathinnerfloor_texture.diffuseTexture.vScale = 17;     
 
-            const bathfloor_texture = new BABYLON.StandardMaterial("");
-            bathfloor_texture.diffuseTexture = new BABYLON.Texture("texture/bath_floor.png");
-            bathfloor_texture.diffuseTexture.uScale = 10;
-            bathfloor_texture.diffuseTexture.vScale = 17;     
+            const bathinnerground = BABYLON.MeshBuilder.CreateGround("ground", {width:4, height:5.5}, scene);
+            bathinnerground.position.x = 4.2;
+            bathinnerground.position.y = .1;            
+            bathinnerground.position.z = 8.7;
+            bathinnerground.material = bathinnerfloor_texture;
 
-            const bathground = BABYLON.MeshBuilder.CreateGround("ground", {width:4, height:5.5}, scene);
-            bathground.position.x = 4.2;
-            bathground.position.y = .1;            
-            bathground.position.z = 8.7;
-            bathground.material = bathfloor_texture;      
+            const bathouterfloor_texture = new BABYLON.StandardMaterial("");
+            bathouterfloor_texture.diffuseTexture = new BABYLON.Texture("texture/toilet_floor.png");
+            bathouterfloor_texture.diffuseTexture.uScale = 6;
+            bathouterfloor_texture.diffuseTexture.vScale = 3;
+
+            const bathouterground = BABYLON.MeshBuilder.CreateGround("ground", {width:8, height:6}, scene);
+            bathouterground.position.x = 5.2;
+            bathouterground.position.y = .1;
+            bathouterground.position.z = 3;
+            bathouterground.material = bathouterfloor_texture;    
+            
+
+            const toiletfloor_texture = new BABYLON.StandardMaterial("");
+            toiletfloor_texture.diffuseTexture = new BABYLON.Texture("texture/toilet_floor.png");
+            toiletfloor_texture.diffuseTexture.uScale = 3;
+            toiletfloor_texture.diffuseTexture.vScale = 3;
+
+            const toiletground = BABYLON.MeshBuilder.CreateGround("ground", {width:3.2, height:6}, scene);
+            toiletground.position.x = -5.4;
+            toiletground.position.y = .1;
+            toiletground.position.z = 5;
+            toiletground.material = toiletfloor_texture;
+
 
             const cross_material = new BABYLON.StandardMaterial("");
             cross_texture = new BABYLON.Texture("texture/cross.png");
