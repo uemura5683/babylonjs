@@ -256,6 +256,8 @@
           //   scene.beginDirectAnimation(hinge, [sweep], 0, 25 * frameRate, false);
 
             /**************Peripherals of Scene***************/
+
+            // floor
             const floor_texture = new BABYLON.StandardMaterial("");
             floor_texture.diffuseTexture = new BABYLON.Texture("texture/floor.png");
             floor_texture.diffuseTexture.uScale = 6;
@@ -286,7 +288,6 @@
             bathouterground.position.y = .1;
             bathouterground.position.z = 3;
             bathouterground.material = bathouterfloor_texture;    
-            
 
             const toiletfloor_texture = new BABYLON.StandardMaterial("");
             toiletfloor_texture.diffuseTexture = new BABYLON.Texture("texture/toilet_floor.png");
@@ -299,7 +300,18 @@
             toiletground.position.z = 5;
             toiletground.material = toiletfloor_texture;
 
+            const entrance_texture = new BABYLON.StandardMaterial("");
+            entrance_texture.diffuseTexture = new BABYLON.Texture("texture/entrance_floor.png");
+            entrance_texture.diffuseTexture.uScale = 5;
+            entrance_texture.diffuseTexture.vScale = 4;
 
+            const entranceground = BABYLON.MeshBuilder.CreateGround("ground", {width:5, height:4}, scene);
+            entranceground.position.x = -1.3;
+            entranceground.position.y = .1;
+            entranceground.position.z = 2;
+            entranceground.material = entrance_texture;
+
+            // cross
             const cross_material = new BABYLON.StandardMaterial("");
             cross_texture = new BABYLON.Texture("texture/cross.png");
             cross_material.diffuseTexture = cross_texture;
@@ -456,6 +468,11 @@
             wall28.position.y = 3;   
             wall28.position.z = 18.8;
 
+            const wall29 = BABYLON.MeshBuilder.CreateBox("cross", {width:2, height:6, depth:2.5}, scene);
+            wall29.position.x = 8;
+            wall29.position.y = 3;
+            wall29.position.z = 1.25;       
+
             // ceiling
             // const roof = BABYLON.MeshBuilder.CreateBox("cross", {width:20, height:36, depth:0.2}, scene);
             // roof.rotation.x = Math.PI/2;
@@ -466,7 +483,7 @@
             // roof.material = cross_material_big;
 
             wall3.material = cross_material;  
-            wall1.material = wall2.material = wall4.material = wall5.material = wall6.material = wall7.material = wall8.material = wall9.material = wall10.material = wall11.material = wall12.material = wall13.material = wall14.material = wall15.material = wall16.material = wall17.material = wall18.material = wall19.material = wall20.material = wall21.material = wall22.material = wall23.material = wall24.material = wall25.material = wall26.material = wall27.material = wall28.material = cross_material_big;
+            wall1.material = wall2.material = wall4.material = wall5.material = wall6.material = wall7.material = wall8.material = wall9.material = wall10.material = wall11.material = wall12.material = wall13.material = wall14.material = wall15.material = wall16.material = wall17.material = wall18.material = wall19.material = wall20.material = wall21.material = wall22.material = wall23.material = wall24.material = wall25.material = wall26.material = wall27.material = wall28.material = wall29.material = cross_material_big;
 
             
 
