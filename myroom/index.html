@@ -140,6 +140,20 @@
           
           door5_1.material = door_texture_bath;
 
+
+          const door_texture_bathcloset = new BABYLON.StandardMaterial("");
+          door_texture_bathcloset.diffuseTexture = new BABYLON.Texture("texture/bath_closet.png");
+
+          door_texture_bathcloset.diffuseTexture.uScale = 1;
+          door_texture_bathcloset.diffuseTexture.vScale = 2;            
+
+          const door6_1 =  BABYLON.MeshBuilder.CreateBox("door", {width:1.5, height:6, depth:0.2}, scene);
+          door6_1.position.x = 5.9;
+          door6_1.position.y = 3;
+          door6_1.position.z = 2;
+          
+          door6_1.material = door_texture_bathcloset;
+
           //lights
           //light positions
           // var sphereLight = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 0.2}, scene);
@@ -273,11 +287,11 @@
 
             const bathinnerfloor_texture = new BABYLON.StandardMaterial("");
             bathinnerfloor_texture.diffuseTexture = new BABYLON.Texture("texture/bath_floor.png");
-            bathinnerfloor_texture.diffuseTexture.uScale = 10;
-            bathinnerfloor_texture.diffuseTexture.vScale = 17;     
+            bathinnerfloor_texture.diffuseTexture.uScale = 18;
+            bathinnerfloor_texture.diffuseTexture.vScale = 18;     
 
-            const bathinnerground = BABYLON.MeshBuilder.CreateGround("ground", {width:4, height:5.5}, scene);
-            bathinnerground.position.x = 4.2;
+            const bathinnerground = BABYLON.MeshBuilder.CreateGround("ground", {width:6.8, height:5.5}, scene);
+            bathinnerground.position.x = 5.6;
             bathinnerground.position.y = .1;            
             bathinnerground.position.z = 8.7;
             bathinnerground.material = bathinnerfloor_texture;
@@ -314,6 +328,17 @@
             entranceground.position.y = .1;
             entranceground.position.z = 2;
             entranceground.material = entrance_texture;
+
+
+            const shoescloset_texture = new BABYLON.StandardMaterial("");
+            shoescloset_texture.diffuseTexture = new BABYLON.Texture("texture/shoescloset.png");
+
+            const shoesclosetground = BABYLON.MeshBuilder.CreateGround("ground", {width:1.5, height:3.5}, scene);
+            shoesclosetground.position.x = 2.3;
+            shoesclosetground.position.y = .2;
+            shoesclosetground.position.z = 1.9;
+            shoesclosetground.material = shoescloset_texture;
+
 
             // cross
             const cross_material = new BABYLON.StandardMaterial("");
@@ -498,6 +523,28 @@
             wall34.position.x = -9.75;
             wall34.position.z = 34.75;
 
+            const wall35 = BABYLON.MeshBuilder.CreateBox("cross", {width:7.25, height:.25, depth:1.5}, scene);
+            wall35.position.x = -7.25;
+            wall35.position.y = 4.5;
+            wall35.position.z = 3.25;    
+
+            const wall36 = BABYLON.MeshBuilder.CreateBox("cross", {width:1.5, height:.25, depth:2.75}, scene);
+            wall36.position.x = -10.25;
+            wall36.position.y = 4.5;
+            wall36.position.z = 23.5;
+
+            const wall37 = BABYLON.MeshBuilder.CreateBox("cross", {width:2, height:6, depth:0.2}, scene);
+            wall37.rotation.y = Math.PI/2;
+            wall37.position.x = 5.25;
+            wall37.position.y = 3;
+            wall37.position.z = 1;
+
+
+            const wall38 = BABYLON.MeshBuilder.CreateBox("cross", {width:1.5, height:.25, depth:2}, scene);
+            wall38.position.x = 6;
+            wall38.position.y = 3;
+            wall38.position.z = 1;
+
             // ceiling
             // const roof = BABYLON.MeshBuilder.CreateBox("cross", {width:20, height:36, depth:0.2}, scene);
             // roof.rotation.x = Math.PI/2;
@@ -508,10 +555,7 @@
             // roof.material = cross_material_big;
 
             wall3.material = cross_material;  
-            wall1.material = wall2.material = wall4.material = wall5.material = wall6.material = wall7.material = wall8.material = wall9.material = wall10.material = wall11.material = wall12.material = wall13.material = wall14.material = wall15.material = wall16.material = wall17.material = wall18.material = wall19.material = wall20.material = wall21.material = wall22.material = wall23.material = wall24.material = wall25.material = wall26.material = wall27.material = wall28.material = wall30.material = wall31.material = wall32.material = wall33.material = wall34.material = cross_material_big;
-
-            
-
+            wall1.material = wall2.material = wall4.material = wall5.material = wall6.material = wall7.material = wall8.material = wall9.material = wall10.material = wall11.material = wall12.material = wall13.material = wall14.material = wall15.material = wall16.material = wall17.material = wall18.material = wall19.material = wall20.material = wall21.material = wall22.material = wall23.material = wall24.material = wall25.material = wall26.material = wall27.material = wall28.material = wall29.material = wall30.material = wall31.material = wall32.material = wall33.material = wall34.material = wall35.material = wall36.material = wall37.material = wall38.material = cross_material_big;
 
             }
 
