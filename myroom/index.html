@@ -81,7 +81,11 @@
           door1_4.position.x = 1.35;
           door1_4.position.z = 4.8;
 
-          door1_1.material = door1_2.material = door1_3.material = door1_4.material = door_texture_one;
+          const door1_5 = door1_1.clone();
+          door1_5.position.x = -9.1;
+          door1_5.position.z = 23.5;
+
+          door1_1.material = door1_2.material = door1_3.material = door1_4.material = door1_5.material = door_texture_one;
 
 
           //two door
@@ -463,15 +467,36 @@
             wall27.position.y = 3;   
             wall27.position.z = 11.3;
 
-            const wall28 = BABYLON.MeshBuilder.CreateBox("cross", {width:3, height:6, depth:0.2}, scene);
-            wall28.position.x = 7.5;
+            const wall28 = BABYLON.MeshBuilder.CreateBox("cross", {width:2, height:6, depth:0.2}, scene);
+            wall28.position.x = -10;
             wall28.position.y = 3;   
-            wall28.position.z = 18.8;
+            wall28.position.z = 25;
 
-            const wall29 = BABYLON.MeshBuilder.CreateBox("cross", {width:2, height:6, depth:2.5}, scene);
-            wall29.position.x = 8;
-            wall29.position.y = 3;
-            wall29.position.z = 1.25;       
+            const wall29 = BABYLON.MeshBuilder.CreateBox("cross", {width:3, height:6, depth:0.2}, scene);
+            wall29.position.x = 7.5;
+            wall29.position.y = 3;   
+            wall29.position.z = 18.8;
+
+            const wall30 = BABYLON.MeshBuilder.CreateBox("cross", {width:.4, height:6, depth:0.2}, scene);
+            wall30.rotation.y = Math.PI/2;            
+            wall30.position.x = -9.1;
+            wall30.position.y = 3;
+            wall30.position.z = 22.3;
+
+            const wall31 = wall30.clone();
+            wall31.position.z = 24.7;
+
+            const wall32 = BABYLON.MeshBuilder.CreateBox("cross", {width:2.5, height:6, depth:2.5}, scene);
+            wall32.position.x = 7.75;
+            wall32.position.y = 3;
+            wall32.position.z = 1.25;
+
+            const wall33 = wall32.clone();
+            wall33.position.z = 34.75;
+
+            const wall34 = wall32.clone();
+            wall34.position.x = -9.75;
+            wall34.position.z = 34.75;
 
             // ceiling
             // const roof = BABYLON.MeshBuilder.CreateBox("cross", {width:20, height:36, depth:0.2}, scene);
@@ -483,7 +508,7 @@
             // roof.material = cross_material_big;
 
             wall3.material = cross_material;  
-            wall1.material = wall2.material = wall4.material = wall5.material = wall6.material = wall7.material = wall8.material = wall9.material = wall10.material = wall11.material = wall12.material = wall13.material = wall14.material = wall15.material = wall16.material = wall17.material = wall18.material = wall19.material = wall20.material = wall21.material = wall22.material = wall23.material = wall24.material = wall25.material = wall26.material = wall27.material = wall28.material = wall29.material = cross_material_big;
+            wall1.material = wall2.material = wall4.material = wall5.material = wall6.material = wall7.material = wall8.material = wall9.material = wall10.material = wall11.material = wall12.material = wall13.material = wall14.material = wall15.material = wall16.material = wall17.material = wall18.material = wall19.material = wall20.material = wall21.material = wall22.material = wall23.material = wall24.material = wall25.material = wall26.material = wall27.material = wall28.material = wall30.material = wall31.material = wall32.material = wall33.material = wall34.material = cross_material_big;
 
             
 
