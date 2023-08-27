@@ -559,9 +559,35 @@
 
             }
 
+            const bath = buildbath();
+
             return scene;
         };
         
+        const buildbath = () => {
+          const box_bottom = BABYLON.MeshBuilder.CreateBox("box1", {width:3.4, height:0.2, depth:4.6});
+
+          const box_side   = BABYLON.MeshBuilder.CreateBox("box2", {width:3.4, height:1.5, depth:.2});
+          box_side.position.y = .6;
+          box_side.position.z = 2.4;
+
+          const box_side2 = box_side.clone();
+          box_side2.position.z = -2.4;
+
+          const box_side3   = BABYLON.MeshBuilder.CreateBox("box3", {width:0.2, height:1.5, depth:4.6});
+          box_side3.position.x = 1.6;
+          box_side3.position.y = .6;
+
+          const box_side4 = box_side3.clone();
+          box_side4.position.x = -1.6;   
+
+          const bath = BABYLON.Mesh.MergeMeshes([box_bottom, box_side,box_side2,box_side3,box_side4], true, false, null, false, true)
+          bath.position.x = 7.2;
+          bath.position.y = .1;
+          bath.position.z = 8.7;          
+        }
+
+
         const scene = createScene();
         
         engine.runRenderLoop(() => {
