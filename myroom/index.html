@@ -21,6 +21,7 @@
     <script src="https://preview.babylonjs.com/babylon.js"></script>
     <script src="https://cdn.babylonjs.com/materialsLibrary/babylon.gridMaterial.js"></script>
     <script src="https://code.jquery.com/pep/0.4.1/pep.js"></script>
+    <script src="https://unpkg.com/earcut@latest/dist/earcut.min.js"></script>
     <script type="text/javascript">
 
       function main() {
@@ -42,7 +43,7 @@
           //var camera = new BABYLON.UniversalCamera("UniversalCamera", new BABYLON.Vector3(0, 3, -30), scene);
           
           const camera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 0, BABYLON.Vector3.Zero(), scene);
-          camera.position = new BABYLON.Vector3(50, 25, 37.5);
+          camera.position = new BABYLON.Vector3(50, 25, 57.5);
           camera.setTarget(new BABYLON.Vector3(-20/2, 0, -7.5/2));          
           
           camera.attachControl(canvas, true);
@@ -561,6 +562,8 @@
 
             const bath = buildbath();
 
+            const toilet = buildtoilet();
+
             return scene;
         };
         
@@ -568,7 +571,7 @@
           const box_bottom = BABYLON.MeshBuilder.CreateBox("box1", {width:3.4, height:0.2, depth:4.6});
 
           const box_side   = BABYLON.MeshBuilder.CreateBox("box2", {width:3.4, height:1.5, depth:.2});
-          box_side.position.y = .6;
+          box_side.position.y = .65;
           box_side.position.z = 2.4;
 
           const box_side2 = box_side.clone();
@@ -576,7 +579,7 @@
 
           const box_side3   = BABYLON.MeshBuilder.CreateBox("box3", {width:0.2, height:1.5, depth:4.6});
           box_side3.position.x = 1.6;
-          box_side3.position.y = .6;
+          box_side3.position.y = .65;
 
           const box_side4 = box_side3.clone();
           box_side4.position.x = -1.6;   
@@ -585,6 +588,46 @@
           bath.position.x = 7.2;
           bath.position.y = .1;
           bath.position.z = 8.7;          
+        }
+
+        const buildtoilet = () => {
+
+          const toilet_before_parts = [
+            new BABYLON.Vector3(0, 0, 0),
+            new BABYLON.Vector3(.8, 0, 0),
+            new BABYLON.Vector3(1, 1.75, 0),
+            new BABYLON.Vector3(.8, 1.75, 0),
+            new BABYLON.Vector3(.65, .5, 0),
+            new BABYLON.Vector3(0, .5, 0),
+            new BABYLON.Vector3(0, .5, 0),
+            new BABYLON.Vector3(0, .5, 0)
+          ];
+          
+          const toilet_before = BABYLON.MeshBuilder.CreateLathe("toilet_before", {shape: toilet_before_parts, sideOrientation: BABYLON.Mesh.DOUBLESIDE});
+
+          const toilet_after_parts = [
+            new BABYLON.Vector3(-.5, 0, 0.15),
+            new BABYLON.Vector3(-.25, 0, 0.3),
+            new BABYLON.Vector3(0, 0, 0.35),
+            new BABYLON.Vector3(.25, 0, 0.3),
+            new BABYLON.Vector3(.5, 0, 0.15),
+            new BABYLON.Vector3(.5, 0, 1),
+            new BABYLON.Vector3(-.5, 0, 1),  
+          ]
+
+          const toilet_after = BABYLON.MeshBuilder.ExtrudePolygon("toilet_after", {shape: toilet_after_parts, depth: 1.75});     
+          toilet_after.position.y = 1.75;
+          toilet_after.position.z = .5;
+      
+          const toilet_box = BABYLON.MeshBuilder.CreateBox("toilet_box", {width:1.6, height:1.5, depth:.75});
+          toilet_box.position.y = 2.5;
+          toilet_box.position.z = 1.2;
+
+          const toilet = BABYLON.Mesh.MergeMeshes([toilet_before, toilet_after, toilet_box], true, false, null, false, true);
+          toilet.position.x = -5.4;
+          toilet.position.y = .1;
+          toilet.position.z = 4.75;
+          toilet.rotation.y = Math.PI;
         }
 
 
