@@ -564,6 +564,10 @@
 
             const toilet = buildtoilet();
 
+            const laundry = buildlaundry();
+
+            // const cabinet = buildcabinet();
+
             return scene;
         };
         
@@ -630,7 +634,84 @@
           toilet.rotation.y = Math.PI;
         }
 
+        const buildlaundry = () => {
+          const box_bottom = BABYLON.MeshBuilder.CreateBox("box1", {width:1.8, height:0.15, depth:1.7});
 
+          const box_side   = BABYLON.MeshBuilder.CreateBox("box2", {width:1.8, height:.4, depth:.15});
+          box_side.position.y = .13;
+          box_side.position.z = .9;
+
+          const box_side2 = box_side.clone();
+          box_side2.position.z = -.9;
+
+          const box_side3   = BABYLON.MeshBuilder.CreateBox("box3", {width:0.15, height:.4, depth:1.8});
+          box_side3.position.x = .82;
+          box_side3.position.y = .13;
+
+          const box_side4 = box_side3.clone();
+          box_side4.position.x = -.82;   
+
+          const laundry = BABYLON.Mesh.MergeMeshes([box_bottom, box_side,box_side2,box_side3,box_side4], true, false, null, false, true)    
+
+          laundry.position.x = 4.1;
+          laundry.position.y = .1;          
+          laundry.position.z = 1.2;     
+        }
+
+        // const buildcabinet = () => {
+
+        //   const box_ground = BABYLON.MeshBuilder.CreateBox("box_ground", {width:2, height:.5, depth:3.2});
+        //   box_ground.position.x = -.1;
+
+        //   const box_bottom = BABYLON.MeshBuilder.CreateBox("box_botton", {width:2.2, height:1, depth:3.2});
+        //   box_bottom.position.y = .5;
+
+        //   const box_side   = BABYLON.MeshBuilder.CreateBox("box_side", {width:2.2, height:1.5, depth:.7});
+        //   box_side.position.y = .75;
+        //   box_side.position.z = 1.25;
+
+        //   const box_side2 = box_side.clone();
+        //   box_side2.position.z = -1.25;
+
+        //   const box_side3   = BABYLON.MeshBuilder.CreateBox("box_side3", {width:0.5, height:1.5, depth:3.2});
+        //   box_side3.position.x = 0.85;
+        //   box_side3.position.y = .75;
+
+        //   const box_side4 = box_side3.clone();
+        //   box_side4.position.x = -0.85;  
+
+        //   const box_top = BABYLON.MeshBuilder.CreateBox("box_top", {width:.1, height:3.5, depth:3.2});
+        //   box_top.position.x = -1.05;
+        //   box_top.position.y = 3.2;
+
+        //   const box_top_before = BABYLON.MeshBuilder.CreateBox("box_top_before", {width:.1, height:3, depth:3.2});
+        //   box_top_before.position.x = -.6;
+        //   box_top_before.position.y = 3.45;
+
+        //   const box_top_right = BABYLON.MeshBuilder.CreateBox("box_top_before", {width:.1, height:3, depth:.5});
+        //   box_top_right.rotation.y = -Math.PI / 2;
+        //   box_top_right.position.x = -.8;
+        //   box_top_right.position.y = 3.45;
+        //   box_top_right.position.z = 1.55;
+
+        //   const box_top_left = box_top_right.clone();
+        //   box_top_left.position.z = -1.55;
+
+        //   const box_top_top = BABYLON.MeshBuilder.CreateBox("box_top_before", {width:.1, height:.5, depth:3});
+        //   box_top_top.rotation.z = -Math.PI / 2;
+        //   box_top_top.position.x = -.8;
+        //   box_top_top.position.y = 4.9;
+
+        //   const box_top_bottom = box_top_top.clone();
+        //   box_top_top.position.y = 2;
+
+        //   const cabinet = BABYLON.Mesh.MergeMeshes([box_ground,box_bottom,box_side,box_side2,box_side3,box_side4,box_top,box_top_before, box_top_right,box_top_left, box_top_top,box_top_bottom], true, false, null, false, true)   
+
+        //   cabinet.rotation.y = -Math.PI;
+        //   cabinet.position.x = 7.8;
+        //   cabinet.position.z = 4.15;
+
+        // }
         const scene = createScene();
         
         engine.runRenderLoop(() => {
