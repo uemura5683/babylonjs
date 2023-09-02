@@ -568,9 +568,78 @@
 
             const cabinet = buildcabinet();
 
+            const kitchen = buildkitchen();
+
             return scene;
         };
         
+        const buildkitchen = () => {
+          const grayMaterial = new BABYLON.StandardMaterial("grayMaterial");
+          grayMaterial.diffuseColor = new BABYLON.Color3(.8, .8, .8);
+          grayMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+          grayMaterial.emissiveColor = new BABYLON.Color3(0, 0, 0);
+          grayMaterial.ambientColor = new BABYLON.Color3(0, 0, 0);
+          grayMaterial.alpha = 1;
+
+          const whiteMaterial = new BABYLON.StandardMaterial("whiteMaterial");
+          whiteMaterial.diffuseColor = new BABYLON.Color3(1, 1, 1);
+          whiteMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+          whiteMaterial.emissiveColor = new BABYLON.Color3(0, 0, 0);
+          whiteMaterial.ambientColor = new BABYLON.Color3(0, 0, 0);
+          whiteMaterial.alpha = 1;
+
+          const box_bottom = BABYLON.MeshBuilder.CreateBox("box_bottom", {width:7.5, height:1.8, depth:2.4});
+          box_bottom.material = whiteMaterial;
+
+          const box_top = BABYLON.MeshBuilder.CreateBox("box_top", {width:4.5, height:0.7, depth:2.4});
+          box_top.position.x = 1.3;
+          box_top.position.y = 1.25;
+          box_top.material = whiteMaterial;
+
+          const box_side   = BABYLON.MeshBuilder.CreateBox("box_side", {width:7.5, height:2.5, depth:0.3});
+          box_side.position.y = .35;
+          box_side.position.z = 1.1;
+          box_side.material = whiteMaterial;
+
+          const box_side2 = box_side.clone();
+          box_side2.position.z = -1.1;
+          box_side2.material = whiteMaterial;
+
+          const box_side3   = BABYLON.MeshBuilder.CreateBox("box_side3", {width:0.3, height:2.5, depth:2.4});
+          box_side3.position.x = 3.6;
+          box_side3.position.y = .35;
+          box_side3.material = whiteMaterial;
+
+          const box_side4 = box_side3.clone();
+          box_side4.position.x = -3.6; 
+          box_side4.material = whiteMaterial;
+
+          const kitchen_texture = new BABYLON.StandardMaterial("");
+          kitchen_texture.diffuseTexture = new BABYLON.Texture("texture/cabinet.jpg");
+
+          const kitchen_door =  BABYLON.MeshBuilder.CreateBox("kitchen_door", {width:7.5, height:2.5, depth:0.1});
+          kitchen_door.position.x = 0;
+          kitchen_door.position.y = .35;
+          kitchen_door.position.z = -1.3;
+          kitchen_door.material = kitchen_texture;  
+
+          const stove_texture = new BABYLON.StandardMaterial("");
+          stove_texture.diffuseTexture = new BABYLON.Texture("texture/stove.png");
+
+          const stove =  BABYLON.MeshBuilder.CreateBox("stove", {width:2.5, height:2, depth:0.01});
+          stove.rotation.x = -Math.PI / 2;
+          stove.position.x = 2.2;
+          stove.position.y = 1.6;
+          stove.position.z = 0;
+          stove.material = stove_texture;  
+
+          const bath = BABYLON.Mesh.MergeMeshes([box_top,box_bottom,box_side,box_side2,box_side3,box_side4,kitchen_door,stove], true, false, null, false, true)
+
+          bath.position.x = 5.2;
+          bath.position.y = 1;
+          bath.position.z = 17.6;
+        }
+
         const buildbath = () => {
           const box_bottom = BABYLON.MeshBuilder.CreateBox("box1", {width:3.4, height:0.2, depth:4.6});
 
@@ -659,7 +728,6 @@
         }
 
         const buildcabinet = () => {
-
 
           const blueMaterial = new BABYLON.StandardMaterial("blueMaterial");
           blueMaterial.diffuseColor = new BABYLON.Color3(.8, .8, .8);
