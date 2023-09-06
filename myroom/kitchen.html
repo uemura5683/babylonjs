@@ -82,7 +82,7 @@
           box_side4.material = whiteMaterial;
 
           const kitchen_texture = new BABYLON.StandardMaterial("");
-          kitchen_texture.diffuseTexture = new BABYLON.Texture("texture/cabinet.jpg");
+          kitchen_texture.diffuseTexture = new BABYLON.Texture("texture/kitchen/kitchen.png");
 
           const kitchen_door =  BABYLON.MeshBuilder.CreateBox("kitchen_door", {width:7.5, height:2.5, depth:0.1});
           kitchen_door.position.x = 0;
@@ -90,8 +90,32 @@
           kitchen_door.position.z = -1.3;
           kitchen_door.material = kitchen_texture;  
 
+          const cross_texture = new BABYLON.StandardMaterial("");
+          cross_texture.diffuseTexture = new BABYLON.Texture("texture/common/cross.png");
+          cross_texture.diffuseTexture.uScale = 3;
+          cross_texture.diffuseTexture.vScale = 1; 
+
+          const kitchen_cross =  BABYLON.MeshBuilder.CreateBox("kitchen_cross", {width:7.5, height:2.5, depth:0.01});
+          kitchen_cross.position.x = 0;
+          kitchen_cross.position.y = .35;
+          kitchen_cross.position.z = 1.25;
+          kitchen_cross.material = cross_texture;  
+
+          const cross_texture_side = new BABYLON.StandardMaterial("");
+          cross_texture_side.diffuseTexture = new BABYLON.Texture("texture/common/cross.png");
+
+          const kitchen_cross_side_left =  BABYLON.MeshBuilder.CreateBox("kitchen_cross", {width:2.5, height:2.5, depth:0.01});
+          kitchen_cross_side_left.rotation.y = -Math.PI / 2;
+          kitchen_cross_side_left.position.x = 3.75;
+          kitchen_cross_side_left.position.y = .35;
+          kitchen_cross_side_left.position.z = 0;
+          kitchen_cross_side_left.material = cross_texture_side;  
+
+          kitchen_cross_side_right = kitchen_cross_side_left.clone();
+          kitchen_cross_side_right.position.x = -3.75;
+
           const stove_texture = new BABYLON.StandardMaterial("");
-          stove_texture.diffuseTexture = new BABYLON.Texture("texture/stove.png");
+          stove_texture.diffuseTexture = new BABYLON.Texture("texture/kitchen/stove.png");
 
           const stove =  BABYLON.MeshBuilder.CreateBox("stove", {width:2.5, height:2, depth:0.01});
           stove.rotation.x = -Math.PI / 2;
@@ -100,8 +124,7 @@
           stove.position.z = 0;
           stove.material = stove_texture;  
 
-          const bath = BABYLON.Mesh.MergeMeshes([box_top,box_bottom,box_side,box_side2,box_side3,box_side4,kitchen_door,stove], true, false, null, false, true)
-
+          const kitchen = BABYLON.Mesh.MergeMeshes([box_top,box_bottom,box_side,box_side2,box_side3,box_side4,kitchen_door,kitchen_cross,kitchen_cross_side_left,kitchen_cross_side_right,stove], true, false, null, false, true)
 
         }
         
