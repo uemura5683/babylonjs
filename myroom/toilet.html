@@ -27,20 +27,16 @@
       function main() {
         const canvas = document.getElementById('renderCanvas');
         const engine = new BABYLON.Engine(canvas);
-
         const createScene =  () => {
           const scene = new BABYLON.Scene(engine);
-
           const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 15, new BABYLON.Vector3(0, 0, 0));
-          camera.attachControl(canvas, true);
+                camera.attachControl(canvas, true);
           const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0));
-
           const toilet = buildtoilet();
           return scene;
         }
 
         const buildtoilet = () => {
-
           const toilet_before_parts = [
             new BABYLON.Vector3(0, 0, 0),
             new BABYLON.Vector3(.8, 0, 0),
@@ -73,7 +69,6 @@
           toilet_box.position.z = 1.2;
 
           const toilet = BABYLON.Mesh.MergeMeshes([toilet_before, toilet_after, toilet_box], true, false, null, false, true)   
-
         }
         
         const scene = createScene();
