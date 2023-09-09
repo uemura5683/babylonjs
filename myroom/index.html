@@ -2,6 +2,7 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
+    <title>Babylon.js Myroom</title>
     <style type="text/css">
         html, body {
           width: 100%;
@@ -14,10 +15,41 @@
           height  : 100%;
           touch-action: none;
         }
+        #holder {
+          width: 80%;
+          height: 100%;
+          float: left;
+        }
+        #instructions {
+          width: calc(20% - 2rem);
+          height: 100%;
+          float: left;
+          background-color: black;
+          padding: 1rem;
+        }
+        #instructions h3 {
+          color: white;
+        }
     </style>
   </head>
   <body>
-    <canvas id="renderCanvas"></canvas>
+    <div id="holder">
+      <canvas id="renderCanvas"></canvas>
+    </div>
+    <div id="instructions">
+        <br/>
+        <h3>トイレ</h3>
+        <br/>
+        <h3>洋室1</h3>
+        <br/>
+        <h3>お風呂</h3>
+        <br/>
+        <h3>洋室2</h3>
+        <br/>
+        <h3>キッチン</h3>
+        <br/>
+        <h3>リビング</h3>
+    </div>
     <script src="https://preview.babylonjs.com/babylon.js"></script>
     <script src="https://cdn.babylonjs.com/materialsLibrary/babylon.gridMaterial.js"></script>
     <script src="https://code.jquery.com/pep/0.4.1/pep.js"></script>
@@ -30,7 +62,7 @@
 
         var createScene = function() {
           var scene = new BABYLON.Scene(engine);
-	
+  
           var light1 = new BABYLON.HemisphericLight("DirectionalLight", new BABYLON.Vector3(0, -1, 0), scene);
           var light2 = new BABYLON.HemisphericLight("HemiLight", new BABYLON.Vector3(0, 1, -1), scene);   
           light1.intensity =1;
@@ -51,7 +83,7 @@
 
           //玄関
           const entrance_door_texture = new BABYLON.StandardMaterial("");
-          entrance_door_texture.diffuseTexture = new BABYLON.Texture("texture/common/door4.png");
+                entrance_door_texture.diffuseTexture = new BABYLON.Texture("texture/common/door4.png");
           const entrance_door =  BABYLON.MeshBuilder.CreateBox("door", {width:2, height:4, depth:0.2}, scene);
           const hinge = BABYLON.MeshBuilder.CreateBox("hinge", {}, scene)
           hinge.isVisible = false;
@@ -353,14 +385,6 @@
             const cross_material = new BABYLON.StandardMaterial("");
             cross_texture = new BABYLON.Texture("texture/common/cross.png");
             cross_material.diffuseTexture = cross_texture;
-            cross_material.diffuseTexture.uScale = 2;
-            cross_material.diffuseTexture.vScale = 2;
-
-            const cross_material_big = new BABYLON.StandardMaterial("");
-            cross_texture_big = new BABYLON.Texture("texture/common/cross.png");
-            cross_material_big.diffuseTexture = cross_texture_big;
-            cross_material_big.diffuseTexture.uScale = 8;
-            cross_material_big.diffuseTexture.vScale = 8;
 
             const bath_material = new BABYLON.StandardMaterial("");
             bath_texture = new BABYLON.Texture("texture/bath/bath_wall.png");
@@ -396,8 +420,9 @@
             wall6.position.y = 3;
             wall6.position.z = 18;
 
-            // 内壁
 
+
+            // 内壁
             // 洋室1・洋室2
             const wall7 = BABYLON.MeshBuilder.CreateBox("cross", {width:7.2, height:6, depth:0.2}, scene);
             wall7.position.x = -7.5;
@@ -565,7 +590,7 @@
 
             // 洋室2 押し入れ2
             const wall30 = BABYLON.MeshBuilder.CreateBox("cross", {width:.4, height:6, depth:0.2}, scene);
-            wall30.rotation.y = Math.PI/2;            
+            wall30.rotation.y = Math.PI/2;
             wall30.position.x = -9.1;
             wall30.position.y = 3;
             wall30.position.z = 22.3;   
@@ -626,20 +651,18 @@
             wall38.position.y = 3;
             wall38.position.z = 1;
 
-            // ceiling
-            const roof = BABYLON.MeshBuilder.CreateBox("cross", {width:20, height:36, depth:0.2}, scene);
-            roof.rotation.x = Math.PI/2;
-            roof.position.x = -1;
-            roof.position.y = 6;
-            roof.position.z = 18;
+            // // ceiling
+            // const roof = BABYLON.MeshBuilder.CreateBox("cross", {width:20, height:36, depth:0.2}, scene);
+            // roof.rotation.x = Math.PI/2;
+            // roof.position.x = -1;
+            // roof.position.y = 6;
+            // roof.position.z = 18;
             
-            roof.material = cross_material_big;
-
-            wall3.material = cross_material;  
+            // roof.material = cross_material;
 
             wall27_2.material = bath_material;
 
-            wall1.material = wall2.material = wall4.material = wall5.material = wall6.material = wall7.material = wall8.material = wall8_9.material = wall9.material = wall10.material = wall11.material = wall12.material = wall13.material = wall14.material = wall15.material = wall9_15.material = wall16.material = wall17.material = wall17_21.material = wall18.material = wall19.material = wall20.material = wall21.material = wall22.material = wall23.material = wall24.material = wall24_2.material = wall25.material = wall26.material = wall27.material = wall28.material = wall29.material = wall30.material = wall31.material = wall32.material = wall31_2.material = wall33.material = wall34.material = wall35.material = wall36.material = wall37.material = wall38.material = cross_material_big;
+            wall1.material = wall2.material = wall3.material = wall4.material = wall5.material = wall6.material = wall7.material = wall8.material = wall8_9.material = wall9.material = wall10.material = wall11.material = wall12.material = wall13.material = wall14.material = wall15.material = wall9_15.material = wall16.material = wall17.material = wall17_21.material = wall18.material = wall19.material = wall20.material = wall21.material = wall22.material = wall23.material = wall24.material = wall24_2.material = wall25.material = wall26.material = wall27.material = wall28.material = wall29.material = wall30.material = wall31.material = wall32.material = wall31_2.material = wall33.material = wall34.material = wall35.material = wall36.material = wall37.material = wall38.material = cross_material;
 
             }
 
