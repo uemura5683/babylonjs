@@ -51,9 +51,9 @@
         <br/>
         <button type="button" class="button" id="button_western1">洋室1</button>
         <br/>
-        <button type="button" class="button disabled" id="button_bath">お風呂</button>
+        <button type="button" class="button" id="button_bath">お風呂</button>
         <br/>
-        <button type="button" class="button disabled" id="button_western2">洋室2</button>
+        <button type="button" class="button" id="button_western2">洋室2</button>
         <br/>
         <button type="button" class="button" id="button_kitchen">キッチン</button>
         <br/>
@@ -92,12 +92,15 @@
           const entrance_door_texture = new BABYLON.StandardMaterial("");
                 entrance_door_texture.diffuseTexture = new BABYLON.Texture("texture/common/door4.png");
           const entrance_door =  BABYLON.MeshBuilder.CreateBox("door", {width:2, height:4, depth:0.2}, scene);
+
+          entrance_door.position.x = -1;
+          entrance_door.material = entrance_door_texture;          
+
+
           const hinge = BABYLON.MeshBuilder.CreateBox("hinge", {}, scene)
           hinge.isVisible = false;
           entrance_door.parent = hinge;
           hinge.position.y = 2;
-          entrance_door.position.x = -1;
-          entrance_door.material = entrance_door_texture;          
 
           //1つのドア         
           const door_texture = new BABYLON.StandardMaterial("");
@@ -124,6 +127,10 @@
           const door1_4 = door1_1.clone();
           door1_4.position.x = 1.35;
           door1_4.position.z = 4.8;
+
+          const hinge_bath = BABYLON.MeshBuilder.CreateBox("hinge", {}, scene)
+          hinge_bath.isVisible = false;
+          door1_4.parent = hinge_bath;
 
           // 洋室2の押し入れ
           const door1_5 = door1_1.clone();
@@ -202,7 +209,7 @@
 
           for(let i = 0; i < button_targets.length; i++){
             button_targets[i].addEventListener("click",(e) => {
-                animation(scene,camera,hinge,frameRate,e.target.getAttribute('id'));
+                animation(scene,camera,hinge,hinge_bath,frameRate,e.target.getAttribute('id'));
             }, false);
           }
 
@@ -221,7 +228,7 @@
           return scene;
         };
 
-        const animation = (scene,camera,hinge,frameRate,target) => {
+        const animation = (scene,camera,hinge,hinge_bath,frameRate,target) => {
 
           var rotate = new BABYLON.Animation("rotate", "rotation.y", frameRate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
           var rotate_keys = []; 
@@ -232,66 +239,127 @@
           var sweep = new BABYLON.Animation("sweep", "rotation.y", frameRate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
           var sweep_keys = []; 
 
+          var sweep_bath = new BABYLON.Animation("sweep_bath", "rotation.y", frameRate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+          var sweep_bath_keys = []; 
+
+
 
           if(target == 'button_toilet') {
 
             rotate_keys.push({ frame: 0, value: 0});
-            rotate_keys.push({ frame: 8 * frameRate, value: 0 });
-            rotate_keys.push({ frame: 11 * frameRate, value: -Math. PI/2 });
+            rotate_keys.push({ frame: 3 * frameRate, value: 0 });
+            rotate_keys.push({ frame: 4 * frameRate, value: -Math. PI/2 });
             rotate.setKeys(rotate_keys);
           
             movein_keys.push({ frame: 0, value: new BABYLON.Vector3(0, 3.5, -20) });
-            movein_keys.push({ frame: 3 * frameRate, value: new BABYLON.Vector3(0, 3.5, -10) });          
-            movein_keys.push({ frame: 5 * frameRate, value: new BABYLON.Vector3(0, 3.5, -10) });
-            movein_keys.push({ frame: 8 * frameRate, value: new BABYLON.Vector3(-2, 3.5, 6.25) });
-            movein_keys.push({ frame: 11 * frameRate, value: new BABYLON.Vector3(-2, 3.5, 6.25) });
-            movein_keys.push({ frame: 14 * frameRate, value: new BABYLON.Vector3(-5, 3.5, 6.25) });
+            movein_keys.push({ frame: 1 * frameRate, value: new BABYLON.Vector3(0, 3.5, -10) });          
+            movein_keys.push({ frame: 2 * frameRate, value: new BABYLON.Vector3(0, 3.5, -10) });
+            movein_keys.push({ frame: 3 * frameRate, value: new BABYLON.Vector3(-2, 3.5, 6.25) });
+            movein_keys.push({ frame: 4 * frameRate, value: new BABYLON.Vector3(-2, 3.5, 6.25) });
+            movein_keys.push({ frame: 5 * frameRate, value: new BABYLON.Vector3(-5, 3.5, 6.25) });
             movein.setKeys(movein_keys);
 
+          }
+
+
+          if(target == 'button_bath') {
+            rotate_keys.push({ frame: 0, value: 0});
+            rotate_keys.push({ frame: 3 * frameRate, value: 0 });
+            rotate_keys.push({ frame: 4 * frameRate, value: Math. PI/2 });
+            rotate.setKeys(rotate_keys);
+          
+            movein_keys.push({ frame: 0, value: new BABYLON.Vector3(0, 3.5, -20) });
+            movein_keys.push({ frame: 1 * frameRate, value: new BABYLON.Vector3(0, 3.5, -10) });          
+            movein_keys.push({ frame: 2 * frameRate, value: new BABYLON.Vector3(0, 3.5, -10) });
+            movein_keys.push({ frame: 3 * frameRate, value: new BABYLON.Vector3(-2, 3.5, 4.75) });
+            movein_keys.push({ frame: 4 * frameRate, value: new BABYLON.Vector3(-2, 3.5, 4.75) });
+            movein_keys.push({ frame: 5 * frameRate, value: new BABYLON.Vector3(4.5, 3.5, 4.5) });
+            movein.setKeys(movein_keys);
           }
  
           if(target == 'button_kitchen') {
             rotate_keys.push({ frame: 0, value: 0});
-            rotate_keys.push({ frame: 11 * frameRate, value: 0 });
-            rotate_keys.push({ frame: 13 * frameRate,value: Math. PI/2 });
+            rotate_keys.push({ frame: 4 * frameRate, value: 0 });
+            rotate_keys.push({ frame: 5 * frameRate,value: Math. PI/2 });
             rotate.setKeys(rotate_keys);      
 
             movein_keys.push({ frame: 0, value: new BABYLON.Vector3(0, 3.5, -20) });
-            movein_keys.push({ frame: 3 * frameRate, value: new BABYLON.Vector3(0, 3.5, -10) });
-            movein_keys.push({ frame: 5 * frameRate, value: new BABYLON.Vector3(0, 3.5, -10) });
-            movein_keys.push({ frame: 8 * frameRate, value: new BABYLON.Vector3(-2, 3.5, 3) });
-            movein_keys.push({ frame: 11 * frameRate, value: new BABYLON.Vector3(0, 3.5, 15) });
-            movein_keys.push({ frame: 13 * frameRate, value: new BABYLON.Vector3(0, 3.5, 15) });
-            movein_keys.push({ frame: 15 * frameRate, value: new BABYLON.Vector3(4, 3.5, 15) });
+            movein_keys.push({ frame: 1 * frameRate, value: new BABYLON.Vector3(0, 3.5, -10) });
+            movein_keys.push({ frame: 2 * frameRate, value: new BABYLON.Vector3(0, 3.5, -10) });
+            movein_keys.push({ frame: 3 * frameRate, value: new BABYLON.Vector3(-2, 3.5, 3) });
+            movein_keys.push({ frame: 4 * frameRate, value: new BABYLON.Vector3(0, 3.5, 15) });
+            movein_keys.push({ frame: 5 * frameRate, value: new BABYLON.Vector3(0, 3.5, 15) });
+            movein_keys.push({ frame: 6 * frameRate, value: new BABYLON.Vector3(4, 3.5, 15) });
             movein.setKeys(movein_keys);
-
           }
 
-          if(target == 'button_living') {
-
+          if(target == 'button_western1') {
             rotate_keys.push({ frame: 0, value: 0});
-            rotate_keys.push({ frame: 11 * frameRate, value: 0 });
-            rotate_keys.push({ frame: 16 * frameRate,value: Math. PI });
+            rotate_keys.push({ frame: 4 * frameRate, value: 0 });
+            rotate_keys.push({ frame: 5 * frameRate,value: -Math. PI/2 });
             rotate.setKeys(rotate_keys);      
 
             movein_keys.push({ frame: 0, value: new BABYLON.Vector3(0, 3.5, -20) });
-            movein_keys.push({ frame: 3 * frameRate, value: new BABYLON.Vector3(0, 3.5, -10) });
-            movein_keys.push({ frame: 5 * frameRate, value: new BABYLON.Vector3(0, 3.5, -10) });
-            movein_keys.push({ frame: 8 * frameRate, value: new BABYLON.Vector3(-2, 3.5, 3) });
-            movein_keys.push({ frame: 11 * frameRate, value: new BABYLON.Vector3(0, 3.5, 25) });
+            movein_keys.push({ frame: 1 * frameRate, value: new BABYLON.Vector3(0, 3.5, -10) });
+            movein_keys.push({ frame: 2 * frameRate, value: new BABYLON.Vector3(0, 3.5, -10) });
+            movein_keys.push({ frame: 3 * frameRate, value: new BABYLON.Vector3(-2, 3.5, 3) });
+            movein_keys.push({ frame: 4 * frameRate, value: new BABYLON.Vector3(0, 3.5, 18) });
+            movein_keys.push({ frame: 5 * frameRate, value: new BABYLON.Vector3(0, 3.5, 18) });
+            movein_keys.push({ frame: 6 * frameRate, value: new BABYLON.Vector3(-6, 3.5, 18) });
             movein.setKeys(movein_keys);
+          }
 
+          if(target == 'button_western2') {
+            rotate_keys.push({ frame: 0, value: 0});
+            rotate_keys.push({ frame: 4 * frameRate, value: 0 });
+            rotate_keys.push({ frame: 5 * frameRate,value: -Math. PI/2 });
+            rotate.setKeys(rotate_keys);      
+
+            movein_keys.push({ frame: 0, value: new BABYLON.Vector3(0, 3.5, -20) });
+            movein_keys.push({ frame: 1 * frameRate, value: new BABYLON.Vector3(0, 3.5, -10) });
+            movein_keys.push({ frame: 2 * frameRate, value: new BABYLON.Vector3(0, 3.5, -10) });
+            movein_keys.push({ frame: 3 * frameRate, value: new BABYLON.Vector3(-2, 3.5, 3) });
+            movein_keys.push({ frame: 4 * frameRate, value: new BABYLON.Vector3(0, 3.5, 28) });
+            movein_keys.push({ frame: 5 * frameRate, value: new BABYLON.Vector3(0, 3.5, 28) });
+            movein_keys.push({ frame: 6 * frameRate, value: new BABYLON.Vector3(-6, 3.5, 28) });
+            movein.setKeys(movein_keys);
+          }
+
+
+          if(target == 'button_living') {
+            rotate_keys.push({ frame: 0, value: 0});
+            rotate_keys.push({ frame: 4 * frameRate, value: 0 });
+            rotate_keys.push({ frame: 5 * frameRate,value: Math. PI });
+            rotate.setKeys(rotate_keys);      
+
+            movein_keys.push({ frame: 0, value: new BABYLON.Vector3(0, 3.5, -20) });
+            movein_keys.push({ frame: 1 * frameRate, value: new BABYLON.Vector3(0, 3.5, -10) });
+            movein_keys.push({ frame: 2 * frameRate, value: new BABYLON.Vector3(0, 3.5, -10) });
+            movein_keys.push({ frame: 3 * frameRate, value: new BABYLON.Vector3(-2, 3.5, 3) });
+            movein_keys.push({ frame: 4 * frameRate, value: new BABYLON.Vector3(0, 3.5, 25) });
+            movein.setKeys(movein_keys);
           }
 
           sweep_keys.push({ frame: 0, value: 0 });
-          sweep_keys.push({ frame: 3 * frameRate, value: 0 });
-          sweep_keys.push({ frame: 5 * frameRate, value: Math.PI/3 });
-          sweep_keys.push({ frame: 17 * frameRate, value: Math.PI/3 });
-          sweep_keys.push({ frame: 19 * frameRate, value: 0 });
+          sweep_keys.push({ frame: 1 * frameRate, value: 0 });
+          sweep_keys.push({ frame: 2 * frameRate, value: Math.PI/2 });
+          sweep_keys.push({ frame: 5 * frameRate, value: Math.PI/2 });
+          sweep_keys.push({ frame: 6 * frameRate, value: 0 });
           sweep.setKeys(sweep_keys);          
 
           scene.beginDirectAnimation(camera, [movein, rotate], 0, 25 * frameRate, false);
           scene.beginDirectAnimation(hinge, [sweep], 0, 25 * frameRate, false);
+
+
+          // sweep_bath_keys.push({ frame: 0, value: 0 });
+          // sweep_bath_keys.push({ frame: 1 * frameRate, value: 0 });
+          // sweep_bath_keys.push({ frame: 2 * frameRate, value: Math.PI/2 });
+          // sweep_bath_keys.push({ frame: 5 * frameRate, value: Math.PI/2 });
+          // sweep_bath_keys.push({ frame: 6 * frameRate, value: 0 });
+          // sweep_bath.setKeys(sweep_bath_keys);   
+
+          // scene.beginDirectAnimation(hinge_bath, [sweep_bath], 0, 25 * frameRate, false);
+
 
         }
 
@@ -884,7 +952,6 @@
           cabinet.rotation.y = -Math.PI;
           cabinet.position.x = 7.8;
           cabinet.position.z = 4.15;
-
         }
 
         const scene = createScene();
