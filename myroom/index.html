@@ -77,14 +77,14 @@
           light1.intensity =1;
           light2.intensity =1; 
 
-          var frameRate = 20;
+          var frameRate = 2;
 
           // カメラ
           var camera = new BABYLON.UniversalCamera("UniversalCamera", new BABYLON.Vector3(0, 3, -20), scene);
           
           // const camera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 0, BABYLON.Vector3.Zero(), scene);
           // camera.position = new BABYLON.Vector3(50, 25, 57.5);
-          // camera.setTarget(new BABYLON.Vector3(-20/2, 0, -7.5/2));          
+          // camera.setTarget(new BABYLON.Vector3(-20/2, 0, -7.5/2));
           
           camera.attachControl(canvas, true);
           
@@ -95,7 +95,6 @@
 
           entrance_door.position.x = -1;
           entrance_door.material = entrance_door_texture;          
-
 
           const hinge = BABYLON.MeshBuilder.CreateBox("hinge", {}, scene)
           hinge.isVisible = false;
@@ -242,7 +241,8 @@
           var sweep_bath = new BABYLON.Animation("sweep_bath", "rotation.y", frameRate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
           var sweep_bath_keys = []; 
 
-
+          var sweep_bath_movein = new BABYLON.Animation("sweep_bath_movein", "position", frameRate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+          var sweep_bath_movein_keys = []; 
 
           if(target == 'button_toilet') {
 
@@ -258,7 +258,6 @@
             movein_keys.push({ frame: 4 * frameRate, value: new BABYLON.Vector3(-2, 3.5, 6.25) });
             movein_keys.push({ frame: 5 * frameRate, value: new BABYLON.Vector3(-5, 3.5, 6.25) });
             movein.setKeys(movein_keys);
-
           }
 
 
@@ -272,9 +271,27 @@
             movein_keys.push({ frame: 1 * frameRate, value: new BABYLON.Vector3(0, 3.5, -10) });          
             movein_keys.push({ frame: 2 * frameRate, value: new BABYLON.Vector3(0, 3.5, -10) });
             movein_keys.push({ frame: 3 * frameRate, value: new BABYLON.Vector3(-2, 3.5, 4.75) });
-            movein_keys.push({ frame: 4 * frameRate, value: new BABYLON.Vector3(-2, 3.5, 4.75) });
-            movein_keys.push({ frame: 5 * frameRate, value: new BABYLON.Vector3(4.5, 3.5, 4.5) });
+            movein_keys.push({ frame: 5 * frameRate, value: new BABYLON.Vector3(-2, 3.5, 4.75) });
+            movein_keys.push({ frame: 6 * frameRate, value: new BABYLON.Vector3(4.5, 3.5, 4.5) });
             movein.setKeys(movein_keys);
+
+            sweep_bath_keys.push({ frame: 0, value: 0 });
+            sweep_bath_keys.push({ frame: 4 * frameRate, value: 0 });
+            sweep_bath_keys.push({ frame: 5 * frameRate, value: Math.PI/2 });
+            sweep_bath_keys.push({ frame: 6 * frameRate, value: Math.PI/2 });
+            sweep_bath_keys.push({ frame: 7 * frameRate, value: 0 });
+            sweep_bath.setKeys(sweep_bath_keys);   
+
+            sweep_bath_movein_keys.push({ frame: 0, value: new BABYLON.Vector3(0, 0, 0) });
+            sweep_bath_movein_keys.push({ frame: 4 * frameRate, value: new BABYLON.Vector3(0, 0, 0) });
+            sweep_bath_movein_keys.push({ frame: 4.5 * frameRate, value: new BABYLON.Vector3(-2.4, 0, 2.1) });
+            sweep_bath_movein_keys.push({ frame: 5 * frameRate, value: new BABYLON.Vector3(-2.4, 0, 5.2) });
+            sweep_bath_movein_keys.push({ frame: 6 * frameRate, value: new BABYLON.Vector3(-2.4, 0, 5.2) });
+            sweep_bath_movein_keys.push({ frame: 6.5 * frameRate, value: new BABYLON.Vector3(-2.4, 0, 2.1) });
+            sweep_bath_movein_keys.push({ frame: 7 * frameRate, value: new BABYLON.Vector3(0, 0, 0) });
+            sweep_bath_movein.setKeys(sweep_bath_movein_keys); 
+
+            scene.beginDirectAnimation(hinge_bath, [sweep_bath, sweep_bath_movein], 0, 25 * frameRate, false);
           }
  
           if(target == 'button_kitchen') {
@@ -350,15 +367,6 @@
           scene.beginDirectAnimation(camera, [movein, rotate], 0, 25 * frameRate, false);
           scene.beginDirectAnimation(hinge, [sweep], 0, 25 * frameRate, false);
 
-
-          // sweep_bath_keys.push({ frame: 0, value: 0 });
-          // sweep_bath_keys.push({ frame: 1 * frameRate, value: 0 });
-          // sweep_bath_keys.push({ frame: 2 * frameRate, value: Math.PI/2 });
-          // sweep_bath_keys.push({ frame: 5 * frameRate, value: Math.PI/2 });
-          // sweep_bath_keys.push({ frame: 6 * frameRate, value: 0 });
-          // sweep_bath.setKeys(sweep_bath_keys);   
-
-          // scene.beginDirectAnimation(hinge_bath, [sweep_bath], 0, 25 * frameRate, false);
 
 
         }
