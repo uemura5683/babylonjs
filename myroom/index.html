@@ -90,7 +90,7 @@
           
           //玄関
           const entrance_door_texture = new BABYLON.StandardMaterial("");
-                entrance_door_texture.diffuseTexture = new BABYLON.Texture("texture/common/door4.png");
+                entrance_door_texture.diffuseTexture = new BABYLON.Texture("texture/common/entrance_door.png");
           const entrance_door =  BABYLON.MeshBuilder.CreateBox("door", {width:2, height:4, depth:0.2}, scene);
 
           entrance_door.position.x = -1;
@@ -103,7 +103,7 @@
 
           //1つのドア         
           const door_texture = new BABYLON.StandardMaterial("");
-          door_texture.diffuseTexture = new BABYLON.Texture("texture/common/door.png");
+          door_texture.diffuseTexture = new BABYLON.Texture("texture/common/western_door.png");
 
           // 洋室1のドア
           const door1_1 =  BABYLON.MeshBuilder.CreateBox("door", {width:2, height:4, depth:0.2}, scene);
@@ -116,8 +116,12 @@
           const door1_2 = door1_1.clone();
           door1_2.position.z = 6;
 
+          const hinge_toilet = BABYLON.MeshBuilder.CreateBox("hinge_toilet", {}, scene)
+          hinge_toilet.isVisible = false;
+          door1_2.parent = hinge_toilet;
+
           // 洋室1の押し入れ
-          const door1_3 = door1_2.clone();
+          const door1_3 = door1_1.clone();
           door1_3.rotation.y = -Math.PI;
           door1_3.position.x = -9.5;
           door1_3.position.z = 8;
@@ -127,7 +131,7 @@
           door1_4.position.x = 1.35;
           door1_4.position.z = 4.8;
 
-          const hinge_bath = BABYLON.MeshBuilder.CreateBox("hinge", {}, scene)
+          const hinge_bath = BABYLON.MeshBuilder.CreateBox("hinge_bath", {}, scene)
           hinge_bath.isVisible = false;
           door1_4.parent = hinge_bath;
 
@@ -140,7 +144,7 @@
 
           // 2つのドア
           const door_texture_two = new BABYLON.StandardMaterial("");
-          door_texture_two.diffuseTexture = new BABYLON.Texture("texture/common/door.png");
+          door_texture_two.diffuseTexture = new BABYLON.Texture("texture/common/western_door2.png");
 
           // 洋室のドア
           const door2_1 =  BABYLON.MeshBuilder.CreateBox("door", {width:2, height:4, depth:0.2}, scene);
@@ -157,7 +161,7 @@
 
           // 靴入れのドア
           const door_shoes_texture = new BABYLON.StandardMaterial("");
-          door_shoes_texture.diffuseTexture = new BABYLON.Texture("texture/common/door3.png");
+          door_shoes_texture.diffuseTexture = new BABYLON.Texture("texture/common/shoecase_door.png");
 
           const door_shoes =  BABYLON.MeshBuilder.CreateBox("door", {width:3, height:4, depth:0.2}, scene);
           door_shoes.rotation.y = Math.PI/2;
@@ -169,7 +173,7 @@
 
           // 本棚のドア
           const door_book_texture = new BABYLON.StandardMaterial("");
-          door_book_texture.diffuseTexture = new BABYLON.Texture("texture/common/door2.png");
+          door_book_texture.diffuseTexture = new BABYLON.Texture("texture/common/bookshelf_door.png");
 
           const door_book =  BABYLON.MeshBuilder.CreateBox("door", {width:4, height:4, depth:0.2}, scene);
           door_book.rotation.y = Math.PI/2;
@@ -208,7 +212,7 @@
 
           for(let i = 0; i < button_targets.length; i++){
             button_targets[i].addEventListener("click",(e) => {
-                animation(scene,camera,hinge,hinge_bath,frameRate,e.target.getAttribute('id'));
+                animation(scene,camera,hinge,hinge_bath,hinge_toilet,frameRate,e.target.getAttribute('id'));
             }, false);
           }
 
@@ -227,7 +231,7 @@
           return scene;
         };
 
-        const animation = (scene,camera,hinge,hinge_bath,frameRate,target) => {
+        const animation = (scene,camera,hinge,hinge_bath,hinge_toilet,frameRate,target) => {
 
           var rotate = new BABYLON.Animation("rotate", "rotation.y", frameRate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
           var rotate_keys = []; 
@@ -244,6 +248,13 @@
           var sweep_bath_movein = new BABYLON.Animation("sweep_bath_movein", "position", frameRate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
           var sweep_bath_movein_keys = []; 
 
+          var sweep_toilet = new BABYLON.Animation("sweep_bath", "rotation.y", frameRate, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+          var sweep_toilet_keys = []; 
+
+          var sweep_toilet_movein = new BABYLON.Animation("sweep_bath_movein", "position", frameRate, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+          var sweep_toilet_movein_keys = []; 
+
+
           if(target == 'button_toilet') {
 
             rotate_keys.push({ frame: 0, value: 0});
@@ -255,9 +266,32 @@
             movein_keys.push({ frame: 1 * frameRate, value: new BABYLON.Vector3(0, 3.5, -10) });          
             movein_keys.push({ frame: 2 * frameRate, value: new BABYLON.Vector3(0, 3.5, -10) });
             movein_keys.push({ frame: 3 * frameRate, value: new BABYLON.Vector3(-2, 3.5, 6.25) });
-            movein_keys.push({ frame: 4 * frameRate, value: new BABYLON.Vector3(-2, 3.5, 6.25) });
-            movein_keys.push({ frame: 5 * frameRate, value: new BABYLON.Vector3(-5, 3.5, 6.25) });
+            movein_keys.push({ frame: 5 * frameRate, value: new BABYLON.Vector3(-2, 3.5, 6.25) });
+            movein_keys.push({ frame: 6 * frameRate, value: new BABYLON.Vector3(-5, 3.5, 6.25) });
             movein.setKeys(movein_keys);
+
+
+            sweep_toilet_keys.push({ frame: 0, value: 0 });
+            sweep_toilet_keys.push({ frame: 4 * frameRate, value: 0 });
+            sweep_toilet_keys.push({ frame: 5 * frameRate, value: Math.PI/2 });
+            sweep_toilet_keys.push({ frame: 6 * frameRate, value: Math.PI/2 });
+            sweep_toilet_keys.push({ frame: 7 * frameRate, value: 0 });
+            sweep_toilet.setKeys(sweep_toilet_keys);   
+
+            sweep_toilet_movein_keys.push({ frame: 0, value: new BABYLON.Vector3(0, 0, 0) });
+
+            sweep_toilet_movein_keys.push({ frame: 4 * frameRate, value: new BABYLON.Vector3(0, 0, 0) });
+            sweep_toilet_movein_keys.push({ frame: 4.5 * frameRate, value: new BABYLON.Vector3(-4.2, 0, -1.8) });
+            sweep_toilet_movein_keys.push({ frame: 5 * frameRate, value: new BABYLON.Vector3(-8.4, 0,1.2) });
+
+            sweep_toilet_movein_keys.push({ frame: 6 * frameRate, value: new BABYLON.Vector3(-8.4, 0, 1.2) });
+            sweep_toilet_movein_keys.push({ frame: 6.5 * frameRate, value: new BABYLON.Vector3(-4.2, 0, -1.8) });
+            sweep_toilet_movein_keys.push({ frame: 7 * frameRate, value: new BABYLON.Vector3(0, 0, 0) });
+            sweep_toilet_movein.setKeys(sweep_toilet_movein_keys); 
+
+            scene.beginDirectAnimation(hinge_toilet, [sweep_toilet, sweep_toilet_movein], 0, 25 * frameRate, false);
+
+
           }
 
 
@@ -342,7 +376,6 @@
             movein.setKeys(movein_keys);
           }
 
-
           if(target == 'button_living') {
             rotate_keys.push({ frame: 0, value: 0});
             rotate_keys.push({ frame: 4 * frameRate, value: 0 });
@@ -414,7 +447,7 @@
           toiletfloor_texture.diffuseTexture.vScale = 3;
 
           const toiletground = BABYLON.MeshBuilder.CreateGround("ground", {width:3.2, height:6});
-          toiletground.position.x = -5.4;
+          toiletground.position.x = -5.3;
           toiletground.position.y = .01;
           toiletground.position.z = 5;
           toiletground.material = toiletfloor_texture;
@@ -426,7 +459,7 @@
           entrance_texture.diffuseTexture.vScale = 4;
 
           const entranceground = BABYLON.MeshBuilder.CreateGround("ground", {width:5, height:4});
-          entranceground.position.x = -1.3;
+          entranceground.position.x = -1.2;
           entranceground.position.y = .01;
           entranceground.position.z = 2;
           entranceground.material = entrance_texture;
@@ -805,8 +838,8 @@
           const toilet_before_parts = [
             new BABYLON.Vector3(0, 0, 0),
             new BABYLON.Vector3(.8, 0, 0),
-            new BABYLON.Vector3(1, 1.75, 0),
-            new BABYLON.Vector3(.8, 1.75, 0),
+            new BABYLON.Vector3(1, 1.25, 0),
+            new BABYLON.Vector3(.8, 1.25, 0),
             new BABYLON.Vector3(.65, .5, 0),
             new BABYLON.Vector3(0, .5, 0),
             new BABYLON.Vector3(0, .5, 0),
@@ -816,24 +849,24 @@
           const toilet_before = BABYLON.MeshBuilder.CreateLathe("toilet_before", {shape: toilet_before_parts, sideOrientation: BABYLON.Mesh.DOUBLESIDE});
 
           const toilet_after_parts = [
-            new BABYLON.Vector3(-.5, 0, 0.15),
+            new BABYLON.Vector3(-.5, 0, 0.25),
             new BABYLON.Vector3(-.25, 0, 0.3),
             new BABYLON.Vector3(0, 0, 0.35),
             new BABYLON.Vector3(.25, 0, 0.3),
-            new BABYLON.Vector3(.5, 0, 0.15),
+            new BABYLON.Vector3(.5, 0, 0.25),
             new BABYLON.Vector3(.5, 0, 1),
-            new BABYLON.Vector3(-.5, 0, 1),  
+            new BABYLON.Vector3(-.5, 0, 1),   
           ]
 
-          const toilet_after = BABYLON.MeshBuilder.ExtrudePolygon("toilet_after", {shape: toilet_after_parts, depth: 1.75});     
-          toilet_after.position.y = 1.75;
+          const toilet_after = BABYLON.MeshBuilder.ExtrudePolygon("toilet_after", {shape: toilet_after_parts, depth: 1.25});     
+          toilet_after.position.y = 1.25;
           toilet_after.position.z = .5;
       
-          const toilet_box = BABYLON.MeshBuilder.CreateBox("toilet_box", {width:1.6, height:1.5, depth:.75});
-          toilet_box.position.y = 2.5;
-          toilet_box.position.z = 1.2;
+          const toilet_box = BABYLON.MeshBuilder.CreateBox("toilet_box", {width:1.7, height:1.5, depth:.75});
+          toilet_box.position.y = 2.0;
+          toilet_box.position.z = 1.15;
 
-          const toilet = BABYLON.Mesh.MergeMeshes([toilet_before, toilet_after, toilet_box], true, false, null, false, true);
+          const toilet = BABYLON.Mesh.MergeMeshes([toilet_before, toilet_after, toilet_box], true, false, null, false, true)   
           toilet.position.x = -5.4;
           toilet.position.y = .1;
           toilet.position.z = 4.75;
