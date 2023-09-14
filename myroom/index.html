@@ -304,24 +304,24 @@
             movein_keys.push({ frame: 0, value: new BABYLON.Vector3(0, 3.5, -20) });
             movein_keys.push({ frame: 1 * frameRate, value: new BABYLON.Vector3(0, 3.5, -10) });          
             movein_keys.push({ frame: 2 * frameRate, value: new BABYLON.Vector3(0, 3.5, -10) });
-            movein_keys.push({ frame: 3 * frameRate, value: new BABYLON.Vector3(-2, 3.5, 4.75) });
-            movein_keys.push({ frame: 5 * frameRate, value: new BABYLON.Vector3(-2, 3.5, 4.75) });
+            movein_keys.push({ frame: 3 * frameRate, value: new BABYLON.Vector3(-1, 3.5, 5) });
+            movein_keys.push({ frame: 5 * frameRate, value: new BABYLON.Vector3(-1, 3.5, 5) });
             movein_keys.push({ frame: 6 * frameRate, value: new BABYLON.Vector3(4.5, 3.5, 4.5) });
             movein.setKeys(movein_keys);
 
             sweep_bath_keys.push({ frame: 0, value: 0 });
             sweep_bath_keys.push({ frame: 4 * frameRate, value: 0 });
-            sweep_bath_keys.push({ frame: 5 * frameRate, value: Math.PI/2 });
-            sweep_bath_keys.push({ frame: 6 * frameRate, value: Math.PI/2 });
+            sweep_bath_keys.push({ frame: 5 * frameRate, value: -Math.PI/2 });
+            sweep_bath_keys.push({ frame: 6 * frameRate, value: -Math.PI/2 });
             sweep_bath_keys.push({ frame: 7 * frameRate, value: 0 });
             sweep_bath.setKeys(sweep_bath_keys);   
 
             sweep_bath_movein_keys.push({ frame: 0, value: new BABYLON.Vector3(0, 0, 0) });
             sweep_bath_movein_keys.push({ frame: 4 * frameRate, value: new BABYLON.Vector3(0, 0, 0) });
-            sweep_bath_movein_keys.push({ frame: 4.5 * frameRate, value: new BABYLON.Vector3(-2.4, 0, 2.1) });
-            sweep_bath_movein_keys.push({ frame: 5 * frameRate, value: new BABYLON.Vector3(-2.4, 0, 5.2) });
-            sweep_bath_movein_keys.push({ frame: 6 * frameRate, value: new BABYLON.Vector3(-2.4, 0, 5.2) });
-            sweep_bath_movein_keys.push({ frame: 6.5 * frameRate, value: new BABYLON.Vector3(-2.4, 0, 2.1) });
+            sweep_bath_movein_keys.push({ frame: 4.5 * frameRate, value: new BABYLON.Vector3(3.2, 0, -.1) });
+            sweep_bath_movein_keys.push({ frame: 5 * frameRate, value: new BABYLON.Vector3(5.0, 0, 2.3) });
+            sweep_bath_movein_keys.push({ frame: 6 * frameRate, value: new BABYLON.Vector3(5.0, 0, 2.3) });
+            sweep_bath_movein_keys.push({ frame: 6.5 * frameRate, value: new BABYLON.Vector3(3.2, 0, -.1) });
             sweep_bath_movein_keys.push({ frame: 7 * frameRate, value: new BABYLON.Vector3(0, 0, 0) });
             sweep_bath_movein.setKeys(sweep_bath_movein_keys); 
 
@@ -708,11 +708,11 @@
           const wall38 = BABYLON.MeshBuilder.CreateBox("cross", {width:1.5, height:.25, depth:2});
           wall38.position.x = 6; wall38.position.y = 3; wall38.position.z = 1;
 
-          // // ceiling
-          // const roof = BABYLON.MeshBuilder.CreateBox("cross", {width:20, height:36, depth:0.2});
-          // roof.rotation.x = Math.PI/2; roof.position.x = -1; roof.position.y = 6; roof.position.z = 18;
+          // ceiling
+          const roof = BABYLON.MeshBuilder.CreateBox("cross", {width:20, height:36, depth:0.2});
+          roof.rotation.x = Math.PI/2; roof.position.x = -1; roof.position.y = 6; roof.position.z = 18;
           
-          // roof.material = cross_material;
+          roof.material = cross_material;
 
           wall27_2.material = bath_material;
 

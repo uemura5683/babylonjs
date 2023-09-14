@@ -39,8 +39,8 @@
           const toilet_before_parts = [
             new BABYLON.Vector3(0, 0, 0),
             new BABYLON.Vector3(.8, 0, 0),
-            new BABYLON.Vector3(1, 1.75, 0),
-            new BABYLON.Vector3(.8, 1.75, 0),
+            new BABYLON.Vector3(1, 1.25, 0),
+            new BABYLON.Vector3(.8, 1.25, 0),
             new BABYLON.Vector3(.65, .5, 0),
             new BABYLON.Vector3(0, .5, 0),
             new BABYLON.Vector3(0, .5, 0),
@@ -50,22 +50,22 @@
           const toilet_before = BABYLON.MeshBuilder.CreateLathe("toilet_before", {shape: toilet_before_parts, sideOrientation: BABYLON.Mesh.DOUBLESIDE});
 
           const toilet_after_parts = [
-            new BABYLON.Vector3(-.5, 0, 0.15),
+            new BABYLON.Vector3(-.5, 0, 0.25),
             new BABYLON.Vector3(-.25, 0, 0.3),
             new BABYLON.Vector3(0, 0, 0.35),
             new BABYLON.Vector3(.25, 0, 0.3),
-            new BABYLON.Vector3(.5, 0, 0.15),
+            new BABYLON.Vector3(.5, 0, 0.25),
             new BABYLON.Vector3(.5, 0, 1),
             new BABYLON.Vector3(-.5, 0, 1),  
           ]
 
-          const toilet_after = BABYLON.MeshBuilder.ExtrudePolygon("toilet_after", {shape: toilet_after_parts, depth: 1.75});     
-          toilet_after.position.y = 1.75;
+          const toilet_after = BABYLON.MeshBuilder.ExtrudePolygon("toilet_after", {shape: toilet_after_parts, depth: 1.25});     
+          toilet_after.position.y = 1.25;
           toilet_after.position.z = .5;
       
-          const toilet_box = BABYLON.MeshBuilder.CreateBox("toilet_box", {width:1.6, height:1.5, depth:.75});
-          toilet_box.position.y = 2.5;
-          toilet_box.position.z = 1.2;
+          const toilet_box = BABYLON.MeshBuilder.CreateBox("toilet_box", {width:1.7, height:1.5, depth:.75});
+          toilet_box.position.y = 2.0;
+          toilet_box.position.z = 1.15;
 
           const toilet = BABYLON.Mesh.MergeMeshes([toilet_before, toilet_after, toilet_box], true, false, null, false, true)   
         }
