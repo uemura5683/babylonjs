@@ -3,10 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Babylon.js Viewer 10 Example</title>
+    <title>Babylon.js Kitchen</title>
     <script src="https://preview.babylonjs.com/babylon.js"></script>
     <script src="https://code.jquery.com/pep/0.4.1/pep.js"></script>
-    <script src="https://unpkg.com/earcut@latest/dist/earcut.min.js"></script>
     <style>
       html, body {
         width: 100%;
@@ -27,14 +26,11 @@
       function main() {
         const canvas = document.getElementById('renderCanvas');
         const engine = new BABYLON.Engine(canvas);
-
         const createScene =  () => {
           const scene = new BABYLON.Scene(engine);
-
           const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 15, new BABYLON.Vector3(0, 0, 0));
           camera.attachControl(canvas, true);
           const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0));
-
           const kitchen = buildkitchen();
           return scene;
         }
@@ -55,15 +51,15 @@
           whiteMaterial.ambientColor = new BABYLON.Color3(0, 0, 0);
           whiteMaterial.alpha = 1;
 
-          const box_bottom = BABYLON.MeshBuilder.CreateBox("box_bottom", {width:7.5, height:1.8, depth:2.4});
+          const box_bottom = BABYLON.MeshBuilder.CreateBox("kitchen_bottom", {width:7.5, height:1.8, depth:2.4});
           box_bottom.material = whiteMaterial;
 
-          const box_top = BABYLON.MeshBuilder.CreateBox("box_top", {width:4.5, height:0.7, depth:2.4});
+          const box_top = BABYLON.MeshBuilder.CreateBox("kitchen_top", {width:4.5, height:0.7, depth:2.4});
           box_top.position.x = 1.3;
           box_top.position.y = 1.25;
           box_top.material = whiteMaterial;
 
-          const box_side   = BABYLON.MeshBuilder.CreateBox("box_side", {width:7.5, height:2.5, depth:0.3});
+          const box_side   = BABYLON.MeshBuilder.CreateBox("kitchen_side", {width:7.5, height:2.5, depth:0.3});
           box_side.position.y = .35;
           box_side.position.z = 1.1;
           box_side.material = whiteMaterial;
@@ -72,7 +68,7 @@
           box_side2.position.z = -1.1;
           box_side2.material = whiteMaterial;
 
-          const box_side3   = BABYLON.MeshBuilder.CreateBox("box_side3", {width:0.3, height:2.5, depth:2.4});
+          const box_side3   = BABYLON.MeshBuilder.CreateBox("kitchen_side3", {width:0.3, height:2.5, depth:2.4});
           box_side3.position.x = 3.6;
           box_side3.position.y = .35;
           box_side3.material = whiteMaterial;

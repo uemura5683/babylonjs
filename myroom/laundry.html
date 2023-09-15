@@ -3,10 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Babylon.js Viewer 10 Example</title>
+    <title>Babylon.js Laudry</title>
     <script src="https://preview.babylonjs.com/babylon.js"></script>
     <script src="https://code.jquery.com/pep/0.4.1/pep.js"></script>
-    <script src="https://unpkg.com/earcut@latest/dist/earcut.min.js"></script>
     <style>
       html, body {
         width: 100%;
@@ -27,29 +26,26 @@
       function main() {
         const canvas = document.getElementById('renderCanvas');
         const engine = new BABYLON.Engine(canvas);
-
         const createScene =  () => {
           const scene = new BABYLON.Scene(engine);
-
           const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 15, new BABYLON.Vector3(0, 0, 0));
           camera.attachControl(canvas, true);
           const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0));
-
           const laundry = buildlaundry();
           return scene;
         }
 
         const buildlaundry = () => {
-          const box_bottom = BABYLON.MeshBuilder.CreateBox("box1", {width:1.8, height:0.15, depth:1.7});
+          const box_bottom = BABYLON.MeshBuilder.CreateBox("laundry_bottom", {width:1.8, height:0.15, depth:1.7});
 
-          const box_side   = BABYLON.MeshBuilder.CreateBox("box2", {width:1.8, height:.4, depth:.15});
+          const box_side   = BABYLON.MeshBuilder.CreateBox("laundry_side", {width:1.8, height:.4, depth:.15});
           box_side.position.y = .13;
           box_side.position.z = .9;
 
           const box_side2 = box_side.clone();
           box_side2.position.z = -.9;
 
-          const box_side3   = BABYLON.MeshBuilder.CreateBox("box3", {width:0.15, height:.4, depth:1.8});
+          const box_side3   = BABYLON.MeshBuilder.CreateBox("laundry_side2", {width:0.15, height:.4, depth:1.8});
           box_side3.position.x = .82;
           box_side3.position.y = .13;
 

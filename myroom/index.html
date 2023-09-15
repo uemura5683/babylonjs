@@ -123,7 +123,7 @@
           // 洋室1の押し入れ
           const door1_3 = door1_1.clone();
           door1_3.rotation.y = -Math.PI;
-          door1_3.position.x = -9.5;
+          door1_3.position.x = -9.55;
           door1_3.position.z = 8;
 
           // 浴室のドア
@@ -200,13 +200,12 @@
           door_bathcloset_texture.diffuseTexture.uScale = 1;
           door_bathcloset_texture.diffuseTexture.vScale = 2;            
 
-          const door_bathcloset =  BABYLON.MeshBuilder.CreateBox("door", {width:1.5, height:6, depth:0.2}, scene);
+          const door_bathcloset =  BABYLON.MeshBuilder.CreateBox("door", {width:2, height:6, depth:0.2}, scene);
           door_bathcloset.position.x = 5.9;
           door_bathcloset.position.y = 3;
-          door_bathcloset.position.z = 2;
+          door_bathcloset.position.z = 2.1;
           
           door_bathcloset.material = door_bathcloset_texture;
-
 
         　const button_targets = document.getElementsByClassName('button');
 
@@ -304,8 +303,8 @@
             movein_keys.push({ frame: 0, value: new BABYLON.Vector3(0, 3.5, -20) });
             movein_keys.push({ frame: 1 * frameRate, value: new BABYLON.Vector3(0, 3.5, -10) });          
             movein_keys.push({ frame: 2 * frameRate, value: new BABYLON.Vector3(0, 3.5, -10) });
-            movein_keys.push({ frame: 3 * frameRate, value: new BABYLON.Vector3(-1, 3.5, 5) });
-            movein_keys.push({ frame: 5 * frameRate, value: new BABYLON.Vector3(-1, 3.5, 5) });
+            movein_keys.push({ frame: 3 * frameRate, value: new BABYLON.Vector3(-1, 3.5, 5.5) });
+            movein_keys.push({ frame: 5 * frameRate, value: new BABYLON.Vector3(-1, 3.5, 5.5) });
             movein_keys.push({ frame: 6 * frameRate, value: new BABYLON.Vector3(4.5, 3.5, 4.5) });
             movein.setKeys(movein_keys);
 
@@ -422,10 +421,10 @@
           bathinnerfloor_texture.diffuseTexture.uScale = 18;
           bathinnerfloor_texture.diffuseTexture.vScale = 18;     
 
-          const bathinnerground = BABYLON.MeshBuilder.CreateGround("ground", {width:6.8, height:5.5});
+          const bathinnerground = BABYLON.MeshBuilder.CreateGround("ground", {width:6.8, height:5.3});
           bathinnerground.position.x = 5.6;
           bathinnerground.position.y = .01;            
-          bathinnerground.position.z = 8.7;
+          bathinnerground.position.z = 8.6;
           bathinnerground.material = bathinnerfloor_texture;
 
           // 浴室 床
@@ -511,13 +510,13 @@
           // 内壁
           // 洋室1・洋室2
           const wall7 = BABYLON.MeshBuilder.CreateBox("cross", {width:7.2, height:6, depth:0.2});
-          wall7.position.x = -7.5;
+          wall7.position.x = -7.3;
           wall7.position.y = 3;
           wall7.position.z = 22;
 
           // 洋室1・トイレ1
           const wall8 = BABYLON.MeshBuilder.CreateBox("cross", {width:4.9, height:6, depth:0.2});
-          wall8.position.x = -6;
+          wall8.position.x = -6.1;
           wall8.position.y = 3;
           wall8.position.z = 8;
 
@@ -682,7 +681,7 @@
 
           // 柱
           const wall32 = BABYLON.MeshBuilder.CreateBox("cross", {width:2.5, height:6, depth:2.5});
-          wall32.position.x = 7.75; wall32.position.y = 3; wall32.position.z = 1.25;
+          wall32.position.x = 7.75; wall32.position.y = 3; wall32.position.z = 1.4;
 
           // 柱
           const wall33 = wall32.clone();
@@ -702,10 +701,10 @@
 
           // 浴室 バスタオル入れ
           const wall37 = BABYLON.MeshBuilder.CreateBox("cross", {width:2, height:6, depth:0.2});
-          wall37.rotation.y = Math.PI/2; wall37.position.x = 5.25; wall37.position.y = 3; wall37.position.z = 1;
+          wall37.rotation.y = Math.PI/2; wall37.position.x = 5; wall37.position.y = 3; wall37.position.z = 1;
 
           // 浴室 バスタオル入れ2
-          const wall38 = BABYLON.MeshBuilder.CreateBox("cross", {width:1.5, height:.25, depth:2});
+          const wall38 = BABYLON.MeshBuilder.CreateBox("cross", {width:2, height:.25, depth:2});
           wall38.position.x = 6; wall38.position.y = 3; wall38.position.z = 1;
 
           // ceiling
@@ -892,7 +891,7 @@
 
           const laundry = BABYLON.Mesh.MergeMeshes([laundry_bottom, laundry_side,laundry_side2,laundry_side3,laundry_side4], true, false, null, false, true)   
 
-          laundry.position.x = 4.1;
+          laundry.position.x = 4;
           laundry.position.y = .1;          
           laundry.position.z = 1.2;     
         }
@@ -992,7 +991,7 @@
 
           cabinet.rotation.y = -Math.PI;
           cabinet.position.x = 7.8;
-          cabinet.position.z = 4.15;
+          cabinet.position.z = 4.3;
         }
 
         const scene = createScene();
