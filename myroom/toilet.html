@@ -13,7 +13,7 @@
         overflow: hidden;
         margin: 0;
       }
-      #renderCanvas {
+      #canvas {
         width   : 100%;
         height  : 100%;
         touch-action: none;
@@ -21,10 +21,10 @@
     </style>
   </head>
   <body>
-    <canvas id="renderCanvas"></canvas>
+    <canvas id="canvas"></canvas>
     <script>
       function main() {
-        const canvas = document.getElementById('renderCanvas');
+        const canvas = document.getElementById('canvas');
         const engine = new BABYLON.Engine(canvas);
         const createScene =  () => {
           const scene = new BABYLON.Scene(engine);
@@ -60,12 +60,12 @@
           ]
 
           const toilet_after = BABYLON.MeshBuilder.ExtrudePolygon("toilet_after", {shape: toilet_after_parts, depth: 1.25});     
-          toilet_after.position.y = 1.25;
-          toilet_after.position.z = .5;
+                toilet_after.position.y = 1.25;
+                toilet_after.position.z = .5;
       
           const toilet_box = BABYLON.MeshBuilder.CreateBox("toilet_box", {width:1.7, height:1.5, depth:.75});
-          toilet_box.position.y = 2.0;
-          toilet_box.position.z = 1.15;
+                toilet_box.position.y = 2.0;
+                toilet_box.position.z = 1.15;
 
           const toilet = BABYLON.Mesh.MergeMeshes([toilet_before, toilet_after, toilet_box], true, false, null, false, true)   
         }
