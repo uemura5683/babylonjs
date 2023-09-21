@@ -4,42 +4,42 @@
     <meta charset="UTF-8" />
     <title>Babylon.js Myroom</title>
     <style type="text/css">
-        html, body {
-          width: 100%;
-          height: 100%;
-          overflow: hidden;
-          margin: 0;
-        }
-        #renderCanvas {
-          width   : 100%;
-          height  : 100%;
-          touch-action: none;
-        }
-        #holder {
-          width: 80%;
-          height: 100%;
-          float: left;
-        }
-        #instructions {
-          width: calc(20% - 2rem);
-          height: 100%;
-          float: left;
-          background-color: black;
-          padding: 1rem;
-        }
-        #instructions button {
-          color: white;
-          width: 100%;
-          margin: 0 0 20px;
-          background-color: transparent;
-          text-align: left;
-          border: none;
-          cursor: pointer;
-        }
-        #instructions button.disabled {
-          pointer-events: none;
-          opacity: .4;
-        }
+      html, body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        margin: 0;
+      }
+      #renderCanvas {
+        width   : 100%;
+        height  : 100%;
+        touch-action: none;
+      }
+      #holder {
+        width: 80%;
+        height: 100%;
+        float: left;
+      }
+      #instructions {
+        width: calc(20% - 2rem);
+        height: 100%;
+        float: left;
+        background-color: black;
+        padding: 1rem;
+      }
+      #instructions button {
+        color: white;
+        width: 100%;
+        margin: 0 0 20px;
+        background-color: transparent;
+        text-align: left;
+        border: none;
+        cursor: pointer;
+      }
+      #instructions button.disabled {
+        pointer-events: none;
+        opacity: .4;
+      }
     </style>
   </head>
   <body>
@@ -47,18 +47,18 @@
       <canvas id="renderCanvas"></canvas>
     </div>
     <div id="instructions">
-        <br/>
-        <button type="button" class="button" id="button_toilet">トイレ</button>
-        <br/>
-        <button type="button" class="button" id="button_western1">洋室1</button>
-        <br/>
-        <button type="button" class="button" id="button_bath">お風呂</button>
-        <br/>
-        <button type="button" class="button" id="button_western2">洋室2</button>
-        <br/>
-        <button type="button" class="button" id="button_kitchen">キッチン</button>
-        <br/>
-        <button type="button" class="button" id="button_living">リビング</button>
+      <br/>
+      <button type="button" class="button" id="button_toilet">トイレ</button>
+      <br/>
+      <button type="button" class="button" id="button_western1">洋室1</button>
+      <br/>
+      <button type="button" class="button" id="button_bath">お風呂</button>
+      <br/>
+      <button type="button" class="button" id="button_western2">洋室2</button>
+      <br/>
+      <button type="button" class="button" id="button_kitchen">キッチン</button>
+      <br/>
+      <button type="button" class="button" id="button_living">リビング</button>
     </div>
     <script src="https://preview.babylonjs.com/babylon.js"></script>
     <script src="https://cdn.babylonjs.com/materialsLibrary/babylon.gridMaterial.js"></script>
@@ -82,11 +82,6 @@
 
           // カメラ
           var camera = new BABYLON.UniversalCamera("UniversalCamera", new BABYLON.Vector3(0, 3, -20), scene);
-          
-          // const camera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 0, BABYLON.Vector3.Zero(), scene);
-          // camera.position = new BABYLON.Vector3(50, 25, 57.5);
-          // camera.setTarget(new BABYLON.Vector3(-20/2, 0, -7.5/2));
-          
           camera.attachControl(canvas, true);
           
           //玄関
