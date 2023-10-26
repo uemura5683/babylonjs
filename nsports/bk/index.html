@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Babylon.js Viewer 11 Example</title>
+    <script src="https://preview.babylonjs.com/babylon.js"></script>
+    <script src="https://code.jquery.com/pep/0.4.1/pep.js"></script>
+    <script src="https://unpkg.com/earcut@latest/dist/earcut.min.js"></script>
+    <script>
+
+        function main() {
+          const canvas = document.getElementById('renderCanvas');
+          const engine = new BABYLON.Engine(canvas);
+
+          const createScene = () => {
+            
+            const scene = new BABYLON.Scene(engine);
+
+            const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 2, new BABYLON.Vector3(0, 0, 0));
+            camera.attachControl(canvas, true);
+            const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0));
+
+            function degree(degrees) {
+              return degrees * (Math.PI / 180);
+            }
+
+            const buildHouse_large = () => {
+              const house = new BABYLON.StandardMaterial("house");
+              house.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/kirby_village/textures/house/chimney.jpg");   
+              const hoysesphere = BABYLON.MeshBuilder.CreateCylinder("icosphere", {});
+              hoysesphere.material = house;
+              hoysesphere.position.y = -0.30;
+
+              const chimney = new BABYLON.StandardMaterial("chimney");
+              chimney.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/kirby_village/textures/house/bricktile.jpg");   
+              const chimneybox = BABYLON.MeshBuilder.CreateBox("box", {width: .2, height: .7, depth: .2}); 
+              chimneybox.material = chimney;            
+              chimneybox.position.x = 0.30;
+              chimneybox.position.y = 0.5;
+
+              const door = new BABYLON.StandardMaterial("door");
+              door.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/kirby_village/textures/house/door.jpg");   
+              const doorbox = BABYLON.MeshBuilder.CreateBox("boor", {width: .3, height: .3, depth: .3}); 
+              doorbox.material = door;
+              doorbox.position.y = -0.2;
+              doorbox.position.z = -0.35;
+
+              return BABYLON.Mesh.MergeMeshes([hoysesphere, chimneybox, doorbox], true, false, null, false, true);
+            }
+
+            const buildHouse = () => {
+              const house = new BABYLON.StandardMaterial("house");
+              house.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/kirby_village/textures/house/home.jpg");   
+              const hoysesphere = BABYLON.MeshBuilder.CreateSphere("icosphere", {slice: 0.5});
+              hoysesphere.material = house;
+              hoysesphere.position.y = -0.30;
+
+              const chimney = new BABYLON.StandardMaterial("chimney");
+              chimney.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/kirby_village/textures/house/bricktile.jpg");   
+              const chimneybox = BABYLON.MeshBuilder.CreateBox("box", {width: .2, height: .7, depth: .2}); 
+              chimneybox.material = chimney;            
+              chimneybox.position.x = -0.20;
+
+              const door = new BABYLON.StandardMaterial("door");
+              door.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/kirby_village/textures/house/door.jpg");   
+              const doorbox = BABYLON.MeshBuilder.CreateBox("boor", {width: .3, height: .3, depth: .3}); 
+              doorbox.material = door;
+              doorbox.position.y = -0.2;
+              doorbox.position.z = -0.35;
+
+              return BABYLON.Mesh.MergeMeshes([hoysesphere, chimneybox, doorbox], true, false, null, false, true);
+            }
+
+            const detached_house = buildHouse();
+            detached_house.rotation.y = degree(270);
+            detached_house.position.x = 0.7;
+            detached_house.position.z = -0.8;
+
+            const detached_house_large = buildHouse_large();
+            detached_house_large.rotation.y = degree(230);
+            detached_house_large.position.x = 3.5;
+            detached_house_large.position.z = -5.3;
+
+            const places = [];
+            places.push([1, degree(180), 2.3, -4.8 ]);
+            places.push([2, degree(180), 0.8, -4.8 ]);
+            places.push([1, degree(180), -0.7, -4.8 ]);
+            places.push([1, degree(180), -2.2, -4.8 ]);
+            places.push([1, degree(180), -3.7, -4.8 ]);
+            places.push([2, degree(180), -5.2, -4.8 ]);
+            places.push([1, degree(180), -6.7, -4.8 ]);
+            places.push([1, degree(180), -8.2, -4.8 ]);
+            places.push([1, degree(180), -9.7, -4.8 ]);
+            places.push([1, degree(180), -11.2, -4.8 ]);
+
+            places.push([1, degree(0), -0.7, -1.0 ]);
+            places.push([2, degree(0), -2.2, -1.0 ]);
+            places.push([1, degree(0), -3.7, -1.0 ]);
+            places.push([1, degree(0), -5.2, -1.0 ]);
+            places.push([2, degree(0), -6.7, -1.0 ]);
+            places.push([2, degree(0), -8.2, -1.0 ]);
+            places.push([1, degree(0), -9.7, -1.0 ]);
+            places.push([1, degree(0), -11.2, -1.0 ]);
+
+            places.push([1, degree(270), 0.3, 0.7 ]);
+            places.push([2, degree(270), -0.1, 2.0 ]);
+            places.push([1, degree(270), -0.5, 3.7 ]);
+            places.push([1, degree(270), -0.9, 5.2 ]);
+
+            places.push([1, degree(70), 4.3, 0.1 ]);
+
+            places.push([1, degree(0), 4.9, -1.3 ]);
+            places.push([2, degree(0), 6.3, -1.3 ]);
+            places.push([1, degree(0), 7.7, -1.3 ]);
+            places.push([1, degree(0), 9.1, -1.3 ]);
+
+            places.push([2, degree(180), 9.4, -5.4 ]);
+            places.push([1, degree(180), 10.8, -5.4 ]);
+
+            const houses = [];
+            for (let i = 0; i < places.length; i++) {
+                if(places[i][0] == 2) {
+                  houses[i] = detached_house_large.createInstance("house" + i);
+                } else {
+                  houses[i] = detached_house.createInstance("house" + i);
+                }
+
+                houses[i].rotation.y = places[i][1];
+                houses[i].position.x = places[i][2];
+                houses[i].position.z = places[i][3];
+            }            
+
+            return scene;
+          };
+
+          const buildCar = () => {
+              
+              // ベース
+              const outline = [
+                  new BABYLON.Vector3(-0.32, 0, -0.1),
+                  new BABYLON.Vector3(0.2, 0, -0.1),
+              ]
+
+              // カーブした前面
+              for (let i = 0; i < 40; i++) {
+                  outline.push( new BABYLON.Vector3(
+                                      .2 * Math.cos(i * Math.PI / 80),
+                                      0,
+                                      .2 * Math.sin(i * Math.PI / 80) - .1
+                                    )
+                              );
+              }
+
+              // 上部
+              outline.push(new BABYLON.Vector3(0, 0, 0.1));
+              outline.push(new BABYLON.Vector3(-0.25, 0, 0.1));
+
+              for (let i = 0; i < 40; i++) {
+                  outline.push( new BABYLON.Vector3(
+                          .05 * Math.cos(i * Math.PI / 40) - .25,
+                          0,
+                          .05 * Math.sin(i * Math.PI / 40) + .05
+                        )
+                  );
+              }
+
+              // 面の UV
+              const faceUV = [];
+              faceUV[0] = new BABYLON.Vector4(0, 0.5, 0.38, 1);
+              faceUV[1] = new BABYLON.Vector4(0, 0, 1, 0.5);
+              faceUV[2] = new BABYLON.Vector4(0.38, 1, 0, 0.5);
+
+              // マテリアル
+              const carMat = new BABYLON.StandardMaterial("carMat");
+              carMat.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/sample11/car.png");
+
+              const car = BABYLON.MeshBuilder.ExtrudePolygon(
+                  "car_top", 
+                  {
+                      shape: outline, 
+                      depth: 0.4, 
+                      faceUV: faceUV, 
+                      wrap: true
+                  }
+              );
+              car.material = carMat;
+              return car;
+          }
+
+          const buildCar_bottom = () => {
+              
+              // ベース
+              const outline = [
+                  new BABYLON.Vector3(-0.33, 0, -0.2),
+                  new BABYLON.Vector3(0.23, 0, -0.2),
+              ]
+
+              // カーブした前面
+              for (let i = 0; i < 160; i++) {
+                  outline.push( new BABYLON.Vector3(
+                                      .05 * Math.cos(i * Math.PI / 160) + .2,
+                                      0,
+                                      .05 * Math.sin(i * Math.PI / 160) - .15
+                                    )
+                              );
+              }
+
+              // 上部
+              outline.push(new BABYLON.Vector3(0.2, 0, -0.1));
+              outline.push(new BABYLON.Vector3(-0.3, 0, -0.1));
+
+              // カーブした前面
+              for (let i = 0; i < 160; i++) {
+                  outline.push( new BABYLON.Vector3(
+                                      .05 * Math.cos(i * Math.PI / 160) - .3,
+                                      0,
+                                      .05 * Math.sin(i * Math.PI / 160) - .15
+                                    )
+                              );
+              }
+
+              // 面の UV
+              const faceUV = [];
+              faceUV[0] = new BABYLON.Vector4(0, 0.5, 0.38, 1);
+              faceUV[1] = new BABYLON.Vector4(0, 0, 1, 0.5);
+              faceUV[2] = new BABYLON.Vector4(0.38, 1, 0, 0.5);
+
+              // マテリアル
+              const carMat_bottom = new BABYLON.StandardMaterial("carMat_bottom");
+
+              const car = BABYLON.MeshBuilder.ExtrudePolygon(
+                  "car_bottom", 
+                  {
+                      shape: outline, 
+                      depth: 0.4, 
+                      faceUV: faceUV, 
+                      wrap: true
+                  }
+              );
+              carMat_bottom.diffuseColor = new BABYLON.Color3(.3, .5, .7);
+
+              car.material = carMat_bottom;
+              return car;
+          }
+
+          const scene = createScene();
+          
+          engine.runRenderLoop(() => {
+            scene.render();
+          });
+          
+          window.addEventListener('resize', () => {
+            engine.resize();
+          });
+        }
+        window.addEventListener('DOMContentLoaded', main);
+    </script>
+    <style>
+      html, body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        margin: 0;
+      }
+      #renderCanvas {
+        width   : 100%;
+        height  : 100%;
+        touch-action: none;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="renderCanvas"></canvas>
+  </body>
+</html>
