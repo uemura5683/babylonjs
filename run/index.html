@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Babylon.js run</title>
+    <script src="https://preview.babylonjs.com/babylon.js"></script>
+    <script src="https://cdn.babylonjs.com/materialsLibrary/babylon.gridMaterial.js"></script>
+    <script src="https://code.jquery.com/pep/0.4.1/pep.js"></script>
+    <script src="https://unpkg.com/earcut@latest/dist/earcut.min.js"></script>
+    <script src="https://cdn.babylonjs.com/materialsLibrary/babylon.waterMaterial.js"></script>
+    <style>
+      body {
+        margin: 0;
+      }
+      #renderCanvas {
+        width   : 100%;
+        height  : 100%;
+        touch-action: none;
+        top: 0;
+        left: 0;
+      }
+      #js-loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        background: black;
+        width: 100%;
+        height: 100vh;
+        z-index: 1000;
+      }
+      .js-hidden {
+        display: none;
+      }
+      .c-circle-border {
+        width: 80px;
+        height: 80px;
+        border-radius: 80px;
+        border: 5px solid #fff;
+        border-top-color: rgba(0,0,0,0.3);
+        box-sizing: border-box;
+        position: absolute;
+        top: calc(50% - 40px);
+        left: calc(50% - 40px);
+        animation: spin 1.2s linear infinite;
+        -webkit-animation: spin 1.2s linear infinite;     
+      }
+      .c-button-wrap {
+         position: absolute;
+         z-index: 10;
+         padding: 20px;
+         top: 0px;
+         right: 0px;
+         gap: 10px;
+         display: flex;
+      }
+      .c-button {
+        text-shadow: 0px 0px 3px white;
+        background: transparent;
+        border: none;
+        font-size: 18px;
+        cursor: pointer;
+      }
+      @-webkit-keyframes spin {
+        0% {
+          -webkit-transform: rotate(0);
+          transform: rotate(0)
+        }
+        to {
+          -webkit-transform: rotate(359deg);
+          transform: rotate(359deg)
+        }
+      }
+
+      @keyframes spin {
+        0% {
+          -webkit-transform: rotate(0);
+          transform: rotate(0)
+        }
+        to {
+          -webkit-transform: rotate(359deg);
+          transform: rotate(359deg)
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div id="js-loading">
+        <div class="c-circle-border"></div>		
+      </div>    
+      <canvas id="renderCanvas"></canvas>
+    </main>  
+    <script type="text/javascript">
+      function main() {
+    
+        function degree(degrees) {
+          return degrees * (Math.PI / 180);
+        }
+        
+        function renderfunction(light_dark) {
+    
+          const loading = document.getElementById("js-loading");
+                loading.classList.remove('js-hidden');
+    
+          const canvas = document.getElementById('renderCanvas');
+          const engine = new BABYLON.Engine(canvas);      
+    
+          const createScene = function () {
+            const scene = new BABYLON.Scene(engine);
+    
+            const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 15, new BABYLON.Vector3(0, 0, 0));
+            camera.position = new BABYLON.Vector3(30, 30, 30);
+            camera.attachControl(canvas, true);
+    
+            // 光源設定
+            const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+                  light.intensity = .6;
+    
+            // 空
+            const skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size: 1000}, scene);
+            const skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
+                  skyboxMaterial.backFaceCulling = false;
+            const skyboxTexture = "textures/sky/skybox";
+    
+                  skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture(skyboxTexture, scene);
+                  skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+                  skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
+                  skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+                  skybox.material = skyboxMaterial;
+    
+            // グランドを作成
+            const largeGroundMat = new BABYLON.StandardMaterial("largeGroundMat");
+                  largeGroundMat.diffuseTexture = new BABYLON.Texture("textures/ground/valleygrass.png");
+            
+            const largeGround = BABYLON.MeshBuilder.CreateGroundFromHeightMap("largeGround", "textures/ground/villageheightmap.png", {width:72, height:72, subdivisions: 200, minHeight:0, maxHeight: 8.5});  
+                  largeGround.material = largeGroundMat;
+                  largeGround.rotation.y = degree(90);
+                  largeGround.position.y = -0.5;            
+
+    
+            // 水を作成
+            const waterMesh = BABYLON.Mesh.CreateGround("waterMesh", 20, 37, 10, scene, false);
+            const water = new BABYLON.WaterMaterial("water", scene, new BABYLON.Vector2(512, 512));
+                  water.backFaceCulling = true;
+                  water.bumpTexture = new BABYLON.Texture("textures/water/waterbump.png", scene);
+                  water.windForce = -2;
+                  water.waveHeight = 0.1;
+                  water.bumpHeight = 0.1;
+                  water.waterColor = new BABYLON.Color3(0.1, 0.1, 0.2);
+                  water.colorBlendFactor = 0.5;
+                  water.addToRenderList(skybox);
+                  water.addToRenderList(largeGround);
+                  waterMesh.material = water;
+                  waterMesh.position.x = 2.9;      
+                  waterMesh.position.y = 1.8;
+                  waterMesh.position.z = 16.5;   
+    
+
+    
+              return scene;
+            };
+    
+          const scene = createScene();
+          
+          engine.runRenderLoop(() => {
+            scene.render();
+          });
+          
+          window.addEventListener('resize', () => {
+            engine.resize();
+          });
+    
+          setTimeout(() => {
+            loading.classList.add('js-hidden');
+          }, 1000);
+    
+        }
+        renderfunction();
+      }
+      window.addEventListener('DOMContentLoaded', main);
+    </script>
+  </body>
+</html>
