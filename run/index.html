@@ -133,28 +133,28 @@
             const largeGroundMat = new BABYLON.StandardMaterial("largeGroundMat");
                   largeGroundMat.diffuseTexture = new BABYLON.Texture("textures/ground/valleygrass.png");
             
-            const largeGround = BABYLON.MeshBuilder.CreateGroundFromHeightMap("largeGround", "textures/ground/villageheightmap.png", {width:72, height:72, subdivisions: 200, minHeight:0, maxHeight: 8.5});  
+            const largeGround = BABYLON.MeshBuilder.CreateGroundFromHeightMap("largeGround", "textures/ground/villageheightmap.png", {width:72, height:72, subdivisions: 300, minHeight:0, maxHeight: 8});  
                   largeGround.material = largeGroundMat;
                   largeGround.rotation.y = degree(90);
                   largeGround.position.y = -0.5;            
 
     
             // 水を作成
-            const waterMesh = BABYLON.Mesh.CreateGround("waterMesh", 20, 37, 10, scene, false);
+            const waterMesh = BABYLON.Mesh.CreateGround("waterMesh", 67, 67, 10, scene, false);
             const water = new BABYLON.WaterMaterial("water", scene, new BABYLON.Vector2(512, 512));
                   water.backFaceCulling = true;
                   water.bumpTexture = new BABYLON.Texture("textures/water/waterbump.png", scene);
                   water.windForce = -2;
                   water.waveHeight = 0.1;
-                  water.bumpHeight = 0.1;
-                  water.waterColor = new BABYLON.Color3(0.1, 0.1, 0.2);
+                  water.bumpHeight = 0.5;
+                  water.waterColor = new BABYLON.Color3(0.1, 0.1, 0.1);
                   water.colorBlendFactor = 0.5;
                   water.addToRenderList(skybox);
                   water.addToRenderList(largeGround);
                   waterMesh.material = water;
-                  waterMesh.position.x = 2.9;      
-                  waterMesh.position.y = 1.8;
-                  waterMesh.position.z = 16.5;   
+                  waterMesh.position.x = 0;      
+                  waterMesh.position.y = 1.72;
+                  waterMesh.position.z = 0;   
     
 
     
