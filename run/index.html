@@ -144,7 +144,7 @@
             const water = new BABYLON.WaterMaterial("water", scene, new BABYLON.Vector2(512, 512));
                   water.backFaceCulling = true;
                   water.bumpTexture = new BABYLON.Texture("textures/water/waterbump.png", scene);
-                  water.windForce = -2;
+                  water.windForce = -1;
                   water.waveHeight = 0.1;
                   water.bumpHeight = 0.5;
                   water.waterColor = new BABYLON.Color3(0.1, 0.1, 0.1);
@@ -156,7 +156,35 @@
                   waterMesh.position.y = 1.72;
                   waterMesh.position.z = 0;   
     
+              // 木を作成
+              const elementree = "textures/tree/wood.png";
+              const spritetree = new BABYLON.SpriteManager("treesManager", elementree, 200, {width: 135, height: 170}, scene);
+            
+              for (let i = 0; i < 200; i++) {
+                switch(true) {
+                  // right side
+                  case i > 0 && i < 10:
+                    const treer_1 = new BABYLON.Sprite("tree", spritetree);
+                    treer_1.width = 2;
+                    treer_1.height = 3;              
+                    treer_1.position.x = Math.random() * 0.5 - ( 24.2 + ( (10 * 2 - i * 2) * 0.1 ) );
+                    treer_1.position.z = Math.random() * -.5  - ( 13 - ( (10 * 2 - i * 2) * 0.5 ) );
+                    treer_1.position.y = 3.5;
+                    break;
+                  case i > 11 && i < 20:
+                    const treer_2 = new BABYLON.Sprite("tree", spritetree);
+                    treer_2.width = 2;
+                    treer_2.height = 3;              
+                    treer_2.position.x = Math.random() * 0.5 - ( 26.5 + ( (20 * 2 - i * 2) * -0.1 ) );
+                    treer_2.position.z = Math.random() * -.5  - ( 4 - ( (20 * 2 - i * 2) * 0.5 ) );
+                    treer_2.position.y = 3.5;
+                    break;
+                  default:
 
+                    break;
+                }
+              }
+                
     
               return scene;
             };
