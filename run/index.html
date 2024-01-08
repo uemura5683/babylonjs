@@ -133,7 +133,7 @@
             const largeGroundMat = new BABYLON.StandardMaterial("largeGroundMat");
                   largeGroundMat.diffuseTexture = new BABYLON.Texture("textures/ground/valleygrass.png");
             
-            const largeGround = BABYLON.MeshBuilder.CreateGroundFromHeightMap("largeGround", "textures/ground/villageheightmap.png", {width:72, height:72, subdivisions: 300, minHeight:0, maxHeight: 8});  
+            const largeGround = BABYLON.MeshBuilder.CreateGroundFromHeightMap("largeGround", "textures/ground/villageheightmap.png", {width:72, height:72, subdivisions: 750, minHeight:0, maxHeight: 8});  
                   largeGround.material = largeGroundMat;
                   largeGround.rotation.y = degree(90);
                   largeGround.position.y = -0.5;            
@@ -145,7 +145,7 @@
                   water.backFaceCulling = true;
                   water.bumpTexture = new BABYLON.Texture("textures/water/waterbump.png", scene);
                   water.windForce = -1;
-                  water.waveHeight = 0.1;
+                  water.waveHeight = 0;
                   water.bumpHeight = 0.5;
                   water.waterColor = new BABYLON.Color3(0.1, 0.1, 0.1);
                   water.colorBlendFactor = 0.5;
@@ -153,7 +153,7 @@
                   water.addToRenderList(largeGround);
                   waterMesh.material = water;
                   waterMesh.position.x = 0;      
-                  waterMesh.position.y = 1.72;
+                  waterMesh.position.y = 2.13;
                   waterMesh.position.z = 0;   
     
               // 木を作成
@@ -178,6 +178,39 @@
                     treer_2.position.x = Math.random() * 0.5 - ( 26.5 + ( (20 * 2 - i * 2) * -0.1 ) );
                     treer_2.position.z = Math.random() * -.5  - ( 4 - ( (20 * 2 - i * 2) * 0.5 ) );
                     treer_2.position.y = 3.5;
+                    break;
+                  case i > 21 && i < 38:
+                    const treer_3 = new BABYLON.Sprite("tree", spritetree);
+                    treer_3.width = 2;
+                    treer_3.height = 3;              
+                    treer_3.position.x = Math.random() * 0.5 - ( 20.5 + ( (38 * 2 - i * 2) * -0.1 ) );
+                    treer_3.position.z = Math.random() * -.5  - ( -5 - ( (38 * 2 - i * 2) * 0.5 ) );
+                    treer_3.position.y = 3.5;
+                    break;   
+                  case i > 39 && i < 45:
+                    const treer_4 = new BABYLON.Sprite("tree", spritetree);
+                    treer_4.width = 2;
+                    treer_4.height = 3;              
+                    treer_4.position.x = Math.random() * 0.5 - ( 24 + ( (45 * 2 - i * 2) * -0.3 ) );
+                    treer_4.position.z = Math.random() * -.5  - ( -3 - ( (45 * 2 - i * 2) * 0.5 ) );
+                    treer_4.position.y = 3.5;
+                    break;
+                  case i > 46 && i < 51:
+                    const treer_5 = new BABYLON.Sprite("tree", spritetree);
+                    treer_5.width = 2;
+                    treer_5.height = 3;              
+                    treer_5.position.x = Math.random() * 0.5 - ( 18 + ( (51 * 2 - i * 2) * -.8 ) );
+                    treer_5.position.z = Math.random() * -.1  - ( -21 - ( (51 * 2 - i * 2) * -0.1 ) );
+                    treer_5.position.y = 3.5;
+                    break;
+                  // center before  
+                  case i > 52 && i < 63:
+                    const treer_6 = new BABYLON.Sprite("tree", spritetree);
+                    treer_6.width = 2;
+                    treer_6.height = 3;              
+                    treer_6.position.x = Math.random() * 0.5 - ( 4.5 + ( (63 * 2 - i * 2) * -0.2 ) );
+                    treer_6.position.z = Math.random() * -.5  - ( -17.5 - ( (63 * 2 - i * 2) * 0.5 ) );
+                    treer_6.position.y = 3.5;
                     break;
                   default:
 
