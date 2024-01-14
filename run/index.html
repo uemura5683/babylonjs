@@ -274,7 +274,7 @@
             
               for (let i = 0; i < 200; i++) {
                 switch(true) {
-                  // right side
+                  // center left
                   case i >= 0 && i <= 11:
                     const treer_1 = new BABYLON.Sprite("tree", spritetree2);
                     treer_1.width = 1;
@@ -282,11 +282,21 @@
                     treer_1.position.x = Math.random() * 0.5 - ( 17 + ( (10 - i) * -0.1 ) );
                     treer_1.position.y = 2.8;
                     treer_1.position.z = Math.random() * 0.5 - ( 10 - ( (10 - i) * 0.9 ) );
-                    break;                
+                    break;  
+                  case i >= 12 && i <= 21:
+                    const treer_2 = new BABYLON.Sprite("tree", spritetree2);
+                    treer_2.width = 1;
+                    treer_2.height = 1.1;              
+                    treer_2.position.x = Math.random() * 0.5 - ( 16 + ( (21 - i) * -0.8 ) );
+                    treer_2.position.y = 2.8;
+                    treer_2.position.z = Math.random() * 0.5 - ( 2 - ( (21 - i) * 0.1 ) );
+                    break;  
                   default:
                     break;
                 }
               }
+
+
 
               BABYLON.OBJFileLoader.OPTIMIZE_WITH_UV = true;
 
