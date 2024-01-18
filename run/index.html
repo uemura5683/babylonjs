@@ -306,7 +306,39 @@
                     treer_4.position.x = Math.random() * 0.5 - (18 + ((43 - i) * -0.50));
                     treer_4.position.y = 2.8;
                     treer_4.position.z = Math.random() * 0.5 - (11 - ((43 - i) * 0.05));
-                    break;                     
+                    break;
+                  case i >= 44 && i <= 50:
+                    const treer_5 = new BABYLON.Sprite("tree", spritetree2);
+                    treer_5.width = 1;
+                    treer_5.height = 1.1;              
+                    treer_5.position.x = Math.random() * 0.5 - (16 + ((50 - i) * -0.55));
+                    treer_5.position.y = 2.8;
+                    treer_5.position.z = Math.random() * 0.5 - (1 - ((50 - i) * 0.05));
+                    break; 
+                  case i >= 51 && i <= 57:
+                    const treer_6 = new BABYLON.Sprite("tree", spritetree2);
+                    treer_6.width = 1;
+                    treer_6.height = 1.1;              
+                    treer_6.position.x = Math.random() * 0.5 - (12 + ((57 - i) * -0.55));
+                    treer_6.position.y = 2.8;
+                    treer_6.position.z = Math.random() * 0.5 - (2 - ((57 - i) * 0.1));
+                    break; 
+                  case i >= 58 && i <= 70:
+                    const treer_7 = new BABYLON.Sprite("tree", spritetree2);
+                    treer_7.width = 1;
+                    treer_7.height = 1.1;              
+                    treer_7.position.x = Math.random() * 2 - 8.5;
+                    treer_7.position.y = 2.8;
+                    treer_7.position.z = Math.random() * 2 - 0;
+                    break;                    
+                  case i >= 71 && i <= 110:
+                    const treer_8 = new BABYLON.Sprite("tree", spritetree2);
+                    treer_8.width = 1;
+                    treer_8.height = 1.1;              
+                    treer_8.position.x = Math.random() * 5.5 - 8;
+                    treer_8.position.y = 2.8;
+                    treer_8.position.z = Math.random() * 2 + 1;
+                    break; 
                   default:
                     break;
                 }
