@@ -339,6 +339,14 @@
                     treer_8.position.y = 2.8;
                     treer_8.position.z = Math.random() * 2 + 1;
                     break; 
+                  case i >= 111 && i <= 118:
+                    const treer_9 = new BABYLON.Sprite("tree", spritetree2);
+                    treer_9.width = 1;
+                    treer_9.height = 1.1;              
+                    treer_9.position.x = Math.random() * 2 - 6;
+                    treer_9.position.y = 2.8;
+                    treer_9.position.z = Math.random() * 2 + 3;
+                    break;            
                   default:
                     break;
                 }
@@ -363,7 +371,7 @@
 
               BABYLON.SceneLoader.ImportMeshAsync("", "textures/build/", "build3.glb", scene).then(function(result) {
                  result.meshes[0].position.x = -17.3;
-                 result.meshes[0].position.y = 0.5;
+                 result.meshes[0].position.y = 2.5;
                  result.meshes[0].position.z = -12.2;
                });
 
