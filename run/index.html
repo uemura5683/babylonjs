@@ -30,6 +30,7 @@
         width: 100%;
         height: 100vh;
         z-index: 1000;
+        display: none;
       }
       .js-hidden {
         display: none;
@@ -135,7 +136,7 @@
             const largeGroundMat = new BABYLON.StandardMaterial("largeGroundMat");
                   largeGroundMat.diffuseTexture = new BABYLON.Texture("textures/ground/valleygrass.png");
             
-            const largeGround = BABYLON.MeshBuilder.CreateGroundFromHeightMap("largeGround", "textures/ground/villageheightmap.png", {width:72, height:72, subdivisions: 750, minHeight:0, maxHeight: 8});  
+            const largeGround = BABYLON.MeshBuilder.CreateGroundFromHeightMap("largeGround", "textures/ground/villageheightmap.png", {width:72, height:72, subdivisions: 500, minHeight:0, maxHeight: 8});  
                   largeGround.material = largeGroundMat;
                   largeGround.rotation.y = degree(90);
                   largeGround.position.y = -0.5;            
@@ -346,7 +347,15 @@
                     treer_9.position.x = Math.random() * 2 - 6;
                     treer_9.position.y = 2.8;
                     treer_9.position.z = Math.random() * 2 + 3;
-                    break;            
+                    break;
+                  case i >= 119 && i <= 140:
+                    const treer_10 = new BABYLON.Sprite("tree", spritetree2);
+                    treer_10.width = 1;
+                    treer_10.height = 1.1;              
+                    treer_10.position.x = Math.random() * 3 - 9;
+                    treer_10.position.y = 2.8;
+                    treer_10.position.z = Math.random() * 3 - 9;
+                    break;    
                   default:
                     break;
                 }
