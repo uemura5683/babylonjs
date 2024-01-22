@@ -136,7 +136,7 @@
             const largeGroundMat = new BABYLON.StandardMaterial("largeGroundMat");
                   largeGroundMat.diffuseTexture = new BABYLON.Texture("textures/ground/valleygrass.png");
             
-            const largeGround = BABYLON.MeshBuilder.CreateGroundFromHeightMap("largeGround", "textures/ground/villageheightmap.png", {width:72, height:72, subdivisions: 500, minHeight:0, maxHeight: 8});  
+            const largeGround = BABYLON.MeshBuilder.CreateGroundFromHeightMap("largeGround", "textures/ground/villageheightmap.png", {width:72, height:72, subdivisions: 250, minHeight:0, maxHeight: 8});  
                   largeGround.material = largeGroundMat;
                   largeGround.rotation.y = degree(90);
                   largeGround.position.y = -0.5;            
@@ -156,7 +156,7 @@
                   water.addToRenderList(largeGround);
                   waterMesh.material = water;
                   waterMesh.position.x = 0;      
-                  waterMesh.position.y = 2;
+                  waterMesh.position.y = 1.8;
                   waterMesh.position.z = 0;   
     
               // 木を作成
@@ -271,9 +271,9 @@
 
               // 小さなを作成
               const elementree2 = "textures/tree/wood_two.png";
-              const spritetree2 = new BABYLON.SpriteManager("treesManager", elementree2, 200, {width: 70, height: 75}, scene);
+              const spritetree2 = new BABYLON.SpriteManager("treesManager", elementree2, 300, {width: 70, height: 75}, scene);
             
-              for (let i = 0; i < 200; i++) {
+              for (let i = 0; i < 300; i++) {
                 switch(true) {
                   // center left
                   case i >= 0 && i <= 15:
@@ -371,7 +371,15 @@
                     treer_12.position.x = Math.random() * 0.5 - (10 + ((190 - i) * -0.4));
                     treer_12.position.y = 2.8;
                     treer_12.position.z = Math.random() * 0.5 - (12.5 + ((190 - i) * 0.03));
-                    break;                    
+                    break;
+                  case i >= 191 && i <= 210:
+                    const treer_13 = new BABYLON.Sprite("tree", spritetree2);
+                    treer_13.width = 1;
+                    treer_13.height = 1.1;              
+                    treer_13.position.x = Math.random() * 1.5 - (1.8 + ((230 - i) * -0.1));
+                    treer_13.position.y = 2.8;
+                    treer_13.position.z = Math.random() * 2 - (6.5 + ((230 - i) * 0.3));
+                    break;  
                   default:
                     break;
                 }
