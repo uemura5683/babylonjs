@@ -136,7 +136,7 @@
             const largeGroundMat = new BABYLON.StandardMaterial("largeGroundMat");
                   largeGroundMat.diffuseTexture = new BABYLON.Texture("textures/ground/valleygrass.png");
             
-            const largeGround = BABYLON.MeshBuilder.CreateGroundFromHeightMap("largeGround", "textures/ground/villageheightmap.png", {width:72, height:72, subdivisions: 500, minHeight:0, maxHeight: 8});  
+            const largeGround = BABYLON.MeshBuilder.CreateGroundFromHeightMap("largeGround", "textures/ground/villageheightmap.png", {width:72, height:72, subdivisions: 350, minHeight:0, maxHeight: 8});  
                   largeGround.material = largeGroundMat;
                   largeGround.rotation.y = degree(90);
                   largeGround.position.y = -0.5;            
@@ -404,14 +404,22 @@
                     treer_16.position.y = 2.7;
                     treer_16.position.z = Math.random() * 0.5 - (-5 + ((270 - i) * 0.4));
                     break;   
-                  case i >= 271 && i <= 320:
+                  case i >= 271 && i <= 390:
                     const treer_17 = new BABYLON.Sprite("tree", spritetree2);
                     treer_17.width = 1;
                     treer_17.height = 1.1;              
-                    treer_17.position.x = Math.random() * 3.5 - 3;
+                    treer_17.position.x = Math.random() * 6.5 - 3;
                     treer_17.position.y = 2.7;
-                    treer_17.position.z = Math.random() * 4.5 + 4.5;
+                    treer_17.position.z = Math.random() * 5 + 4.5;
                     break;  
+                  case i >= 391 && i <= 420:
+                    const treer_18 = new BABYLON.Sprite("tree", spritetree2);
+                    treer_18.width = 1;
+                    treer_18.height = 1.1;              
+                    treer_18.position.x = Math.random() * 0.5 - (1.5 + ((420 - i) * -0.1));
+                    treer_18.position.y = 2.7;
+                    treer_18.position.z = Math.random() * 0.5 - (-5.5 + ((420 - i) * 0.4));
+                    break;                       
                   default:
                     break;
                 }
