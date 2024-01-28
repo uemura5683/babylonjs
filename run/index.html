@@ -271,9 +271,9 @@
 
               // 小さなを作成
               const elementree2 = "textures/tree/wood_two.png";
-              const spritetree2 = new BABYLON.SpriteManager("treesManager", elementree2, 500, {width: 70, height: 75}, scene);
+              const spritetree2 = new BABYLON.SpriteManager("treesManager", elementree2, 1000, {width: 70, height: 75}, scene);
             
-              for (let i = 0; i < 500; i++) {
+              for (let i = 0; i < 1000; i++) {
                 switch(true) {
                   // center left
                   case i >= 0 && i <= 15:
@@ -428,6 +428,30 @@
                     treer_19.position.y = 2.7;
                     treer_19.position.z = Math.random() * 3 + 9.5;
                     break;  
+                  case i >= 461 && i <= 560:
+                    const treer_20 = new BABYLON.Sprite("tree", spritetree2);
+                    treer_20.width = 1;
+                    treer_20.height = 1.1;              
+                    treer_20.position.x = Math.random() * 3 + 3.8;
+                    treer_20.position.y = 2.7;
+                    treer_20.position.z = Math.random() * 8 - 5;
+                    break;
+                  case i >= 561 && i <= 590:
+                    const treer_21 = new BABYLON.Sprite("tree", spritetree2);
+                    treer_21.width = 1;
+                    treer_21.height = 1.1;              
+                    treer_21.position.x = Math.random() * 3 + 5.5;
+                    treer_21.position.y = 2.7;
+                    treer_21.position.z = Math.random() * 3 - 8;
+                    break; 
+                  case i >= 591 && i <= 620:
+                    const treer_22 = new BABYLON.Sprite("tree", spritetree2);
+                    treer_22.width = 1;
+                    treer_22.height = 1.1;              
+                    treer_22.position.x = Math.random() * 3 + 0.5;
+                    treer_22.position.y = 2.7;
+                    treer_22.position.z = Math.random() * 3 + 2.5;
+                    break; 
                   default:
                     break;
                 }
