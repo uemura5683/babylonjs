@@ -39,48 +39,48 @@
           // ”” 相対パス ファイル
           BABYLON.SceneLoader.ImportMeshAsync("", "https://assets.babylonjs.com/meshes/", "both_houses_scene.babylon");
           BABYLON.SceneLoader.ImportMeshAsync("", "https://assets.babylonjs.com/meshes/", "car.babylon").then(() => {
-              const car = scene.getMeshByName("car");
-              car.rotation = new BABYLON.Vector3(-Math.PI / 2, -Math.PI, -Math.PI / 2);
-              car.position.y = 0.16;
-              car.position.x = -3;
-              car.position.z = 8;
+            const car = scene.getMeshByName("car");
+            car.rotation = new BABYLON.Vector3(-Math.PI / 2, -Math.PI, -Math.PI / 2);
+            car.position.y = 0.16;
+            car.position.x = -3;
+            car.position.z = 8;
 
-              const animCar = new BABYLON.Animation("carAnimation", "position.z", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+            const animCar = new BABYLON.Animation("carAnimation", "position.z", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
 
-              const carKeys = []; 
+            const carKeys = []; 
 
-              carKeys.push({
-                  frame: 0, // 時間
-                  value: 4 // 距離
-              });
+            carKeys.push({
+                frame: 0, // 時間
+                value: 4 // 距離
+            });
 
-              carKeys.push({
-                  frame: 150,
-                  value: -4
-              });
+            carKeys.push({
+                frame: 150,
+                value: -4
+            });
 
-              carKeys.push({
-                  frame: 200,
-                  value: -4
-              });
+            carKeys.push({
+                frame: 200,
+                value: -4
+            });
 
-              animCar.setKeys(carKeys);
+            animCar.setKeys(carKeys);
 
-              car.animations = [];
-              car.animations.push(animCar);
+            car.animations = [];
+            car.animations.push(animCar);
 
-              scene.beginAnimation(car, 0, 200, true);
-            
-              //wheel animation
-              const wheelRB = scene.getMeshByName("wheelRB");
-              const wheelRF = scene.getMeshByName("wheelRF");
-              const wheelLB = scene.getMeshByName("wheelLB");
-              const wheelLF = scene.getMeshByName("wheelLF");
-            
-              scene.beginAnimation(wheelRB, 0, 30, true);
-              scene.beginAnimation(wheelRF, 0, 30, true);
-              scene.beginAnimation(wheelLB, 0, 30, true);
-              scene.beginAnimation(wheelLF, 0, 30, true);
+            scene.beginAnimation(car, 0, 200, true);
+          
+            //wheel animation
+            const wheelRB = scene.getMeshByName("wheelRB");
+            const wheelRF = scene.getMeshByName("wheelRF");
+            const wheelLB = scene.getMeshByName("wheelLB");
+            const wheelLF = scene.getMeshByName("wheelLF");
+          
+            scene.beginAnimation(wheelRB, 0, 30, true);
+            scene.beginAnimation(wheelRF, 0, 30, true);
+            scene.beginAnimation(wheelLB, 0, 30, true);
+            scene.beginAnimation(wheelLF, 0, 30, true);
           });
 
           return scene;
