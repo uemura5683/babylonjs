@@ -69,17 +69,17 @@
           // 球を動かす
           scene.onBeforeRenderObservable.add(() => {
           sphere.movePOV(0, 0, step);
-              distance += step;
-              if (distance > track[p].dist) {        
-                  sphere.rotate(BABYLON.Axis.Y, track[p].turn, BABYLON.Space.LOCAL);
-                  p +=1;
-                  p %= track.length;
-                  if (p === 0) {
-                      distance = 0;
-                      sphere.position = new BABYLON.Vector3(2, 0, 2);
-                      sphere.rotation = BABYLON.Vector3.Zero();
-                  }
+            distance += step;
+            if (distance > track[p].dist) {        
+              sphere.rotate(BABYLON.Axis.Y, track[p].turn, BABYLON.Space.LOCAL);
+              p +=1;
+              p %= track.length;
+              if (p === 0) {
+                distance = 0;
+                sphere.position = new BABYLON.Vector3(2, 0, 2);
+                sphere.rotation = BABYLON.Vector3.Zero();
               }
+            }
           });
           return scene;
         };
