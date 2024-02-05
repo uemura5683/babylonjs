@@ -294,8 +294,24 @@
                     treer_16.height = 3;
                     treer_16.position.x = Math.random() * 3 + 4.5;
                     treer_16.position.y = 3.5;
-                    treer_16.position.z = Math.random() * 3 - 20;
-                    break;   
+                    treer_16.position.z = Math.random() * 3 - 19.5;
+                    break;  
+                  case i >= 163 && i <= 170:
+                    const treer_17 = new BABYLON.Sprite("tree", spritetree);
+                    treer_17.width = 2;
+                    treer_17.height = 3;              
+                    treer_17.position.x = Math.random() * 0.5 - (2.2 + ((170 - i) * -0.8));
+                    treer_17.position.y = 3.5;
+                    treer_17.position.z = Math.random() * -0.1  - ( 19 - ((170 - i) * 0.1));
+                    break;  
+                  case i >= 171 && i <= 183:
+                    const treer_18 = new BABYLON.Sprite("tree", spritetree);
+                    treer_18.width = 2;
+                    treer_18.height = 3;              
+                    treer_18.position.x = Math.random() * 0.5 - (17.2 + ((183 - i) * -0.9));
+                    treer_18.position.y = 3.5;
+                    treer_18.position.z = Math.random() * -0.1  - ( 21 - ((183 - i) * 0.05));
+                    break;                      
                   default:
                     break;
                 }
