@@ -161,9 +161,9 @@
     
               // 木を作成
               const elementree = "textures/tree/wood.png";
-              const spritetree = new BABYLON.SpriteManager("treesManager", elementree, 200, {width: 135, height: 170}, scene);
+              const spritetree = new BABYLON.SpriteManager("treesManager", elementree, 250, {width: 135, height: 170}, scene);
             
-              for (let i = 0; i < 200; i++) {
+              for (let i = 0; i < 250; i++) {
                 switch(true) {
                   // right side
                   case i >= 0 && i <= 10:
@@ -327,7 +327,15 @@
                     treer_20.position.x = Math.random() * 0.5 - (16.5 + ((195 - i) * 0.9));
                     treer_20.position.y = 3.5;
                     treer_20.position.z = Math.random() * -0.1  - ( 16 - ((195 - i) * 0.05));
-                    break;                      
+                    break;
+                  case i >= 196 && i <= 212:
+                    const treer_21 = new BABYLON.Sprite("tree", spritetree);
+                    treer_21.width = 2;
+                    treer_21.height = 3;              
+                    treer_21.position.x = Math.random() * 0.5 - (-6 + ((205 - i) * 0.9));
+                    treer_21.position.y = 3.5;
+                    treer_21.position.z = Math.random() * -0.1  - ( 24.5 - ((205 - i) * 0.25));
+                    break;   
                   default:
                     break;
                 }
