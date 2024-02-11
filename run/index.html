@@ -605,7 +605,14 @@
                  result.meshes[0].position.x = -10;
                  result.meshes[0].position.y = 2.1;
                  result.meshes[0].position.z = 8.4;
-               });              
+               });   
+
+              BABYLON.SceneLoader.ImportMeshAsync("", "textures/build/", "build3.glb", scene).then(function(result) {
+                 result.meshes[0].position.x = 4.2;
+                 result.meshes[0].position.y = 2.1;
+                 result.meshes[0].position.z = -8.4;
+               });   
+
 
               return scene;
             };
