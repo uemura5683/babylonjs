@@ -27,20 +27,20 @@
 
             const buildHouse_large = () => {
               const house = new BABYLON.StandardMaterial("house");
-              house.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/kirby_village/textures/house/chimney.jpg");   
+              house.diffuseTexture = new BABYLON.Texture("https://babylonjs-two.vercel.app/kirby_village/textures/house/chimney.jpg");   
               const hoysesphere = BABYLON.MeshBuilder.CreateCylinder("icosphere", {});
               hoysesphere.material = house;
               hoysesphere.position.y = -0.30;
 
               const chimney = new BABYLON.StandardMaterial("chimney");
-              chimney.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/kirby_village/textures/house/bricktile.jpg");   
+              chimney.diffuseTexture = new BABYLON.Texture("https://babylonjs-two.vercel.app/kirby_village/textures/house/bricktile.jpg");   
               const chimneybox = BABYLON.MeshBuilder.CreateBox("box", {width: .2, height: .7, depth: .2}); 
               chimneybox.material = chimney;            
               chimneybox.position.x = 0.30;
               chimneybox.position.y = 0.5;
 
               const door = new BABYLON.StandardMaterial("door");
-              door.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/kirby_village/textures/house/door.jpg");   
+              door.diffuseTexture = new BABYLON.Texture("https://babylonjs-two.vercel.app/kirby_village/textures/house/door.jpg");   
               const doorbox = BABYLON.MeshBuilder.CreateBox("boor", {width: .3, height: .3, depth: .3}); 
               doorbox.material = door;
               doorbox.position.y = -0.2;
@@ -51,19 +51,19 @@
 
             const buildHouse = () => {
               const house = new BABYLON.StandardMaterial("house");
-              house.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/kirby_village/textures/house/home.jpg");   
+              house.diffuseTexture = new BABYLON.Texture("https://babylonjs-two.vercel.app/kirby_village/textures/house/home.jpg");   
               const hoysesphere = BABYLON.MeshBuilder.CreateSphere("icosphere", {slice: 0.5});
               hoysesphere.material = house;
               hoysesphere.position.y = -0.30;
 
               const chimney = new BABYLON.StandardMaterial("chimney");
-              chimney.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/kirby_village/textures/house/bricktile.jpg");   
+              chimney.diffuseTexture = new BABYLON.Texture("https://babylonjs-two.vercel.app/kirby_village/textures/house/bricktile.jpg");   
               const chimneybox = BABYLON.MeshBuilder.CreateBox("box", {width: .2, height: .7, depth: .2}); 
               chimneybox.material = chimney;            
               chimneybox.position.x = -0.20;
 
               const door = new BABYLON.StandardMaterial("door");
-              door.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/kirby_village/textures/house/door.jpg");   
+              door.diffuseTexture = new BABYLON.Texture("https://babylonjs-two.vercel.app/kirby_village/textures/house/door.jpg");   
               const doorbox = BABYLON.MeshBuilder.CreateBox("boor", {width: .3, height: .3, depth: .3}); 
               doorbox.material = door;
               doorbox.position.y = -0.2;
@@ -173,7 +173,7 @@
 
               // マテリアル
               const carMat = new BABYLON.StandardMaterial("carMat");
-              carMat.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/sample11/car.png");
+              carMat.diffuseTexture = new BABYLON.Texture("https://babylonjs-two.vercel.app/sample11/car.png");
 
               const car = BABYLON.MeshBuilder.ExtrudePolygon(
                   "car_top", 

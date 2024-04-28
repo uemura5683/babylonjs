@@ -30,7 +30,7 @@
             wheelUV[2] = new BABYLON.Vector4(0, 0, 1, 1);
 
             const wheelMat = new BABYLON.StandardMaterial("wheelMat");
-            wheelMat.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/sample11/wheel.png");
+            wheelMat.diffuseTexture = new BABYLON.Texture("https://babylonjs-two.vercel.app/sample11/wheel.png");
             
             const wheelRB = BABYLON.MeshBuilder.CreateCylinder("wheelRB", {diameter: 0.125, height: 0.05, faceUV: wheelUV})
             wheelRB.parent = car2;
@@ -121,7 +121,7 @@
 
               // マテリアル
               const carMat = new BABYLON.StandardMaterial("carMat");
-              carMat.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/sample11/car.png");
+              carMat.diffuseTexture = new BABYLON.Texture("https://babylonjs-two.vercel.app/sample11/car.png");
 
               const car = BABYLON.MeshBuilder.ExtrudePolygon(
                   "car_top", 

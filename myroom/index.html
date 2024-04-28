@@ -86,7 +86,7 @@
           
           //玄関
           const entrance_door_texture = new BABYLON.StandardMaterial("");
-                entrance_door_texture.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/myroom/texture/common/entrance_door.png");
+                entrance_door_texture.diffuseTexture = new BABYLON.Texture("https://babylonjs-two.vercel.app/myroom/texture/common/entrance_door.png");
           const entrance_door =  BABYLON.MeshBuilder.CreateBox("door", {width:2, height:4, depth:0.2}, scene);
 
           entrance_door.position.x = -1;
@@ -99,7 +99,7 @@
 
           //1つのドア         
           const door_texture = new BABYLON.StandardMaterial("");
-          door_texture.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/myroom/texture/common/western_door.png");
+          door_texture.diffuseTexture = new BABYLON.Texture("https://babylonjs-two.vercel.app/myroom/texture/common/western_door.png");
 
           // 洋室1のドア
           const door1_1 =  BABYLON.MeshBuilder.CreateBox("door", {width:2, height:4, depth:0.2}, scene);
@@ -140,7 +140,7 @@
 
           // 2つのドア
           const door_texture_two = new BABYLON.StandardMaterial("");
-          door_texture_two.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/myroom/texture/common/western_door2.png");
+          door_texture_two.diffuseTexture = new BABYLON.Texture("https://babylonjs-two.vercel.app/myroom/texture/common/western_door2.png");
 
           // 洋室のドア
           const door2_1 =  BABYLON.MeshBuilder.CreateBox("door", {width:2, height:4, depth:0.2}, scene);
@@ -157,7 +157,7 @@
 
           // 靴入れのドア
           const door_shoes_texture = new BABYLON.StandardMaterial("");
-          door_shoes_texture.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/myroom/texture/common/shoecase_door.png");
+          door_shoes_texture.diffuseTexture = new BABYLON.Texture("https://babylonjs-two.vercel.app/myroom/texture/common/shoecase_door.png");
 
           const door_shoes =  BABYLON.MeshBuilder.CreateBox("door", {width:3, height:4, depth:0.2}, scene);
           door_shoes.rotation.y = Math.PI/2;
@@ -169,7 +169,7 @@
 
           // 本棚のドア
           const door_book_texture = new BABYLON.StandardMaterial("");
-          door_book_texture.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/myroom/texture/common/bookshelf_door.png");
+          door_book_texture.diffuseTexture = new BABYLON.Texture("https://babylonjs-two.vercel.app/myroom/texture/common/bookshelf_door.png");
 
           const door_book =  BABYLON.MeshBuilder.CreateBox("door", {width:4, height:4, depth:0.2}, scene);
           door_book.rotation.y = Math.PI/2;
@@ -181,7 +181,7 @@
 
           // 浴槽のドア
           const door_bath_texture = new BABYLON.StandardMaterial("");
-          door_bath_texture.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/myroom/texture/bath/bath_door.png");
+          door_bath_texture.diffuseTexture = new BABYLON.Texture("https://babylonjs-two.vercel.app/myroom/texture/bath/bath_door.png");
 
           const door_bath =  BABYLON.MeshBuilder.CreateBox("door", {width:2.5, height:4, depth:0.2}, scene);
           door_bath.position.x = 3.65;
@@ -192,7 +192,7 @@
 
           // 浴槽のタオル入れ
           const door_bathcloset_texture = new BABYLON.StandardMaterial("");
-          door_bathcloset_texture.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/myroom/texture/bath/bath_closet.png");
+          door_bathcloset_texture.diffuseTexture = new BABYLON.Texture("https://babylonjs-two.vercel.app/myroom/texture/bath/bath_closet.png");
           door_bathcloset_texture.diffuseTexture.uScale = 1;
           door_bathcloset_texture.diffuseTexture.vScale = 2;            
 
@@ -403,7 +403,7 @@
 
           // 床
           const floor_texture = new BABYLON.StandardMaterial("");
-          floor_texture.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/myroom/texture/common/floor.png");
+          floor_texture.diffuseTexture = new BABYLON.Texture("https://babylonjs-two.vercel.app/myroom/texture/common/floor.png");
           floor_texture.diffuseTexture.uScale = 6;
           floor_texture.diffuseTexture.vScale = 6;     
 
@@ -413,7 +413,7 @@
 
           // 浴室 床
           const bathinnerfloor_texture = new BABYLON.StandardMaterial("");
-          bathinnerfloor_texture.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/myroom/texture/bath/bath_inner_floor.png");
+          bathinnerfloor_texture.diffuseTexture = new BABYLON.Texture("https://babylonjs-two.vercel.app/myroom/texture/bath/bath_inner_floor.png");
           bathinnerfloor_texture.diffuseTexture.uScale = 18;
           bathinnerfloor_texture.diffuseTexture.vScale = 18;     
 
@@ -425,7 +425,7 @@
 
           // 浴室 床
           const bathouterfloor_texture = new BABYLON.StandardMaterial("");
-          bathouterfloor_texture.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/myroom/texture/bath/bath_floor.png");
+          bathouterfloor_texture.diffuseTexture = new BABYLON.Texture("https://babylonjs-two.vercel.app/myroom/texture/bath/bath_floor.png");
           bathouterfloor_texture.diffuseTexture.uScale = 6;
           bathouterfloor_texture.diffuseTexture.vScale = 3;
 
@@ -437,7 +437,7 @@
 
           // トイレ 床
           const toiletfloor_texture = new BABYLON.StandardMaterial("");
-          toiletfloor_texture.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/myroom/texture/toilet/toilet_floor.png");
+          toiletfloor_texture.diffuseTexture = new BABYLON.Texture("https://babylonjs-two.vercel.app/myroom/texture/toilet/toilet_floor.png");
           toiletfloor_texture.diffuseTexture.uScale = 3;
           toiletfloor_texture.diffuseTexture.vScale = 3;
 
@@ -449,7 +449,7 @@
 
           // 玄関 床
           const entrance_texture = new BABYLON.StandardMaterial("");
-          entrance_texture.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/myroom/texture/common/entrance_floor.png");
+          entrance_texture.diffuseTexture = new BABYLON.Texture("https://babylonjs-two.vercel.app/myroom/texture/common/entrance_floor.png");
           entrance_texture.diffuseTexture.uScale = 5;
           entrance_texture.diffuseTexture.vScale = 4;
 
@@ -461,7 +461,7 @@
 
           // 靴入れ 床
           const shoescloset_texture = new BABYLON.StandardMaterial("");
-          shoescloset_texture.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/myroom/texture/common/shoescloset.png");
+          shoescloset_texture.diffuseTexture = new BABYLON.Texture("https://babylonjs-two.vercel.app/myroom/texture/common/shoescloset.png");
 
           const shoesclosetground = BABYLON.MeshBuilder.CreateGround("ground", {width:1.5, height:3.5});
           shoesclosetground.position.x = 2.3;
@@ -471,11 +471,11 @@
 
           // 壁
           const cross_material = new BABYLON.StandardMaterial("");
-          cross_texture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/myroom/texture/common/cross.png");
+          cross_texture = new BABYLON.Texture("https://babylonjs-two.vercel.app/myroom/texture/common/cross.png");
           cross_material.diffuseTexture = cross_texture;
 
           const bath_material = new BABYLON.StandardMaterial("");
-          bath_texture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/myroom/texture/bath/bath_wall.png");
+          bath_texture = new BABYLON.Texture("https://babylonjs-two.vercel.app/myroom/texture/bath/bath_wall.png");
           bath_material.diffuseTexture = bath_texture;
 
           // 外壁
@@ -756,7 +756,7 @@
           box_side4.material = whiteMaterial;
 
           const kitchen_texture = new BABYLON.StandardMaterial("");
-          kitchen_texture.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/myroom/texture/kitchen/kitchen.png");
+          kitchen_texture.diffuseTexture = new BABYLON.Texture("https://babylonjs-two.vercel.app/myroom/texture/kitchen/kitchen.png");
 
           const kitchen_door =  BABYLON.MeshBuilder.CreateBox("kitchen_door", {width:7.5, height:2.5, depth:0.1});
           kitchen_door.position.x = 0;
@@ -765,7 +765,7 @@
           kitchen_door.material = kitchen_texture;  
 
           const cross_texture = new BABYLON.StandardMaterial("");
-          cross_texture.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/myroom/texture/common/cross.png");
+          cross_texture.diffuseTexture = new BABYLON.Texture("https://babylonjs-two.vercel.app/myroom/texture/common/cross.png");
           cross_texture.diffuseTexture.uScale = 3;
           cross_texture.diffuseTexture.vScale = 1; 
 
@@ -776,7 +776,7 @@
           kitchen_cross.material = cross_texture;  
 
           const cross_texture_side = new BABYLON.StandardMaterial("");
-          cross_texture_side.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/myroom/texture/common/cross.png");
+          cross_texture_side.diffuseTexture = new BABYLON.Texture("https://babylonjs-two.vercel.app/myroom/texture/common/cross.png");
 
           const kitchen_cross_side_left =  BABYLON.MeshBuilder.CreateBox("kitchen_cross", {width:2.5, height:2.5, depth:0.01});
           kitchen_cross_side_left.rotation.y = -Math.PI / 2;
@@ -789,7 +789,7 @@
           kitchen_cross_side_right.position.x = -3.75;
 
           const stove_texture = new BABYLON.StandardMaterial("");
-          stove_texture.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/myroom/texture/kitchen/stove.png");
+          stove_texture.diffuseTexture = new BABYLON.Texture("https://babylonjs-two.vercel.app/myroom/texture/kitchen/stove.png");
 
           const stove =  BABYLON.MeshBuilder.CreateBox("stove", {width:2.5, height:2, depth:0.01});
           stove.rotation.x = -Math.PI / 2;
@@ -974,7 +974,7 @@
           cabinet_top_bottom.material = whiteMaterial;
 
           const cabinet_texture = new BABYLON.StandardMaterial("");
-          cabinet_texture.diffuseTexture = new BABYLON.Texture("https://babylonjs-tau.vercel.app/myroom/texture/bath/cabinet.jpg");
+          cabinet_texture.diffuseTexture = new BABYLON.Texture("https://babylonjs-two.vercel.app/myroom/texture/bath/cabinet.jpg");
 
           const cabinet_door =  BABYLON.MeshBuilder.CreateBox("cabinet_door", {width:3.2, height:1.5, depth:0.1});
           cabinet_door.rotation.y = Math.PI/2;
