@@ -1,0 +1,3 @@
+https://playground.babylonjs.com/#FJNR5#193
+
+https://doc.babylonjs.com/communityExtensions/dynamicTerrains
