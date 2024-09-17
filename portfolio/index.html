@@ -132,7 +132,7 @@
               const scene = new BABYLON.Scene(engine);
       
               const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 15, new BABYLON.Vector3(0, 0, 0));
-              camera.position = new BABYLON.Vector3(80, 80, 80);
+              camera.position = new BABYLON.Vector3(100, 100, 100);
               camera.attachControl(canvas, true);
       
               const spot = new BABYLON.SpotLight("lampLight", BABYLON.Vector3.Zero(), new BABYLON.Vector3(0.25, -1, 0), 1 * Math.PI, 0.01, scene);
@@ -146,7 +146,7 @@
 
               const moonmat = new BABYLON.StandardMaterial("moonMat");
                     moonmat.ambientColor = new BABYLON.Color3(1, 1, 1);
-                    moonmat.diffuseTexture = new BABYLON.Texture("textures/moon.jpg");
+                    moonmat.diffuseTexture = new BABYLON.Texture("textures/earch.jpg");
                     moon = BABYLON.MeshBuilder.CreateSphere("moon", {diameter: 50});
                     moon.material = moonmat;
                     moon.position.y = 60;
@@ -156,29 +156,27 @@
               const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, -1, 0), scene);
                     light.diffuse = new BABYLON.Color3(0.58, 0.63, 0.83);
                     light.specular = new BABYLON.Color3(1, 1, 1);
-                    light.groundColor = new BABYLON.Color3(0.01, 0.01, 0.24, 0.6);
+                    light.groundColor = new BABYLON.Color3(1, 1, 1, 1);
 
       
               // 空
               const skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size: 1000}, scene);
               const skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
                     skyboxMaterial.backFaceCulling = false;
-              const skyboxTexture = "textures/sky_dark/skybox";
+              const skyboxTexture = "textures/sky/skybox";
       
                     skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture(skyboxTexture, scene);
                     skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
                     skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
                     skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-                    skybox.material = skyboxMaterial;
-      
+                    skybox.material = skyboxMaterial;   
+
               // グランドを作成
-              var terrainTexture = new BABYLON.Texture("textures/ground.jpg", scene);
-              terrainTexture.uScale = 0.5;
-              terrainTexture.vScale = terrainTexture.uScale;
+              const terrainTexture = new BABYLON.Texture("textures/ground.jpg", scene);
 
               var t = 0.0;
               window.onload = function() {
-                  var terrainSub = 300;
+                  var terrainSub = 600;
                   var params = {
                       terrainSub: terrainSub
                   }
@@ -197,9 +195,23 @@
 
               }
               scene.registerBeforeRender(function() {
-                  t += 0.01;
+                  t += 0.2;
               });
-            
+              
+
+              var spriteManagerstars = new BABYLON.SpriteManager("starsManager", "textures/lensflare.png", 2500, {width: 250, height: 250}, scene);
+              var star = new BABYLON.Sprite("star", spriteManagerstars);
+              for (var i = 0; i < 2500; i++) {
+                  var star = new BABYLON.Sprite("star", spriteManagerstars);
+                  star.width = 2;
+                  star.height = 2;     
+                  star.position.x = Math.random() * 300 - 150;
+                  star.position.z = Math.random() * 300 - 150;
+                  star.position.y = Math.random() * 600 + 20;
+                  star.isPickable = true;
+              }
+
+
               return scene;
             };
     
@@ -218,8 +230,6 @@
           }, 1000);
     
         }
-
-
 
         // ******************
         // Noise Library : https://github.com/josephg/noisejs/blob/master/perlin.js
@@ -287,12 +297,6 @@
             };
 
             module.seed(0);
-
-            /*
-            for(var i=0; i<256; i++) {
-              perm[i] = perm[i + 256] = p[i];
-              gradP[i] = gradP[i + 256] = grad3[perm[i] % 12];
-            }*/
 
             // Skewing and unskewing factors for 2, 3, and 4 dimensions
             var F2 = 0.5 * (Math.sqrt(3) - 1);
