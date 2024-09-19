@@ -132,31 +132,45 @@
               const scene = new BABYLON.Scene(engine);
       
               const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 15, new BABYLON.Vector3(0, 0, 0));
-              camera.position = new BABYLON.Vector3(100, 100, 100);
+
+              camera.useAutoRotationBehavior = true;
+              camera.autoRotationBehavior.idleRotationSpeed = Math.PI * 10 / 180;             
+              camera.position = new BABYLON.Vector3(200, 10, 200);
               camera.attachControl(canvas, true);
       
               const spot = new BABYLON.SpotLight("lampLight", BABYLON.Vector3.Zero(), new BABYLON.Vector3(0.25, -1, 0), 1 * Math.PI, 0.01, scene);
-                    spot.intensity = .8;
+                    spot.intensity = 1;
                     spot.diffuse = new BABYLON.Color3(0.58, 0.63, 0.83);
                     spot.specular = new BABYLON.Color3(1, 1, 1);
                     spot.groundColor = new BABYLON.Color3(0, 0.02, 1, 0.6);
-                    spot.position.y = 60;
+                    spot.position.y = 55;
                     spot.position.x = 45;
                     spot.position.z = -45;
 
-              const moonmat = new BABYLON.StandardMaterial("moonMat");
-                    moonmat.ambientColor = new BABYLON.Color3(1, 1, 1);
-                    moonmat.diffuseTexture = new BABYLON.Texture("textures/earch.jpg");
+              const earthmat = new BABYLON.StandardMaterial("earthMat");
+                    earthmat.ambientColor = new BABYLON.Color3(1, 1, 1);
+                    earthmat.diffuseTexture = new BABYLON.Texture("textures/earch.jpg");
                     moon = BABYLON.MeshBuilder.CreateSphere("moon", {diameter: 50});
-                    moon.material = moonmat;
-                    moon.position.y = 60;
+                    moon.material = earthmat;
+                    moon.position.y = 30;
                     moon.position.x = 45;
-                    moon.position.z = -45;
+                    moon.position.z = -350;
 
-              const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, -1, 0), scene);
+
+              const sunmat = new BABYLON.StandardMaterial("sunMat");
+                    sunmat.ambientColor = new BABYLON.Color3(1, 1, 1);
+                    sunmat.diffuseTexture = new BABYLON.Texture("textures/sun.jpg");
+                    moon = BABYLON.MeshBuilder.CreateSphere("moon", {diameter: 50});
+                    moon.material = sunmat;
+                    moon.position.y = 30;
+                    moon.position.x = 45;
+                    moon.position.z = 350;
+
+
+              const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
                     light.diffuse = new BABYLON.Color3(0.58, 0.63, 0.83);
-                    light.specular = new BABYLON.Color3(1, 1, 1);
-                    light.groundColor = new BABYLON.Color3(1, 1, 1, 1);
+                    light.specular = new BABYLON.Color3(0.58, 0.63, 0.83);
+                    light.groundColor = new BABYLON.Color3(0.58, 0.63, 0.83);
 
       
               // 空
@@ -176,7 +190,7 @@
 
               var t = 0.0;
               window.onload = function() {
-                  var terrainSub = 600;
+                  var terrainSub = 800;
                   var params = {
                       terrainSub: terrainSub
                   }
@@ -189,13 +203,13 @@
                   terrain.computeNormals = false;
                   terrain.refreshEveryFrame = true;
                   terrain.updateVertex = function(vertex, i, j) {
-                      vertex.position.y = 2.0 * Math.sin((vertex.position.x + t) / 5.0)  *  Math.cos((vertex.position.z +  5 * t) / 5.0);
+                      vertex.position.y = 1.5 * Math.sin((vertex.position.x + t) / 5.0)  *  Math.cos((vertex.position.z +  5 * t) / 5.0);
                   };
                   terrain.update(true);
 
               }
               scene.registerBeforeRender(function() {
-                  t += 0.2;
+                  t += 0.1;
               });
               
 
@@ -205,9 +219,9 @@
                   var star = new BABYLON.Sprite("star", spriteManagerstars);
                   star.width = 2;
                   star.height = 2;     
-                  star.position.x = Math.random() * 300 - 150;
-                  star.position.z = Math.random() * 300 - 150;
-                  star.position.y = Math.random() * 600 + 20;
+                  star.position.x = Math.random() * 400 - 200;
+                  star.position.z = Math.random() * 400 - 200;
+                  star.position.y = Math.random() * 600 + 0;
                   star.isPickable = true;
               }
 
