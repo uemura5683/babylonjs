@@ -98,28 +98,7 @@
         function degree(degrees) {
           return degrees * (Math.PI / 180);
         }
-    
-        const button_targets = document.getElementsByClassName('c-button');
 
-        for(let i = 0; i < button_targets.length; i++){
-          button_targets[i].addEventListener("click",(e) => {
-            light_dark(e.target.getAttribute('id'));
-          }, false);
-        }
-    
-        function light_dark(target) {
-          const canvas = document.getElementById('renderCanvas');
-                canvas.remove();
-    
-          const canvas_element = document.createElement('canvas');
-                canvas_element.setAttribute("id",'renderCanvas');
-          const main = document.getElementsByTagName("main");
-                main[0].prepend(canvas_element);
-          const new_canvas = document.getElementById('renderCanvas');
-          const engine = new BABYLON.Engine(new_canvas);
-          renderfunction(target);
-        }
-    
         function renderfunction(light_dark) {
     
             const loading = document.getElementById("js-loading");
@@ -134,37 +113,46 @@
               const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 15, new BABYLON.Vector3(0, 0, 0));
 
               camera.useAutoRotationBehavior = true;
-              camera.autoRotationBehavior.idleRotationSpeed = Math.PI * 10 / 180;             
+              camera.autoRotationBehavior.idleRotationSpeed = - Math.PI * 10 / 180;             
               camera.position = new BABYLON.Vector3(200, 10, 200);
               camera.attachControl(canvas, true);
       
-              const spot = new BABYLON.SpotLight("lampLight", BABYLON.Vector3.Zero(), new BABYLON.Vector3(0.25, -1, 0), 1 * Math.PI, 0.01, scene);
+              const spot = new BABYLON.SpotLight("SpotLight", BABYLON.Vector3.Zero(), new BABYLON.Vector3(0.25, -1, 0), 1 * Math.PI, 0.01, scene);
                     spot.intensity = 1;
                     spot.diffuse = new BABYLON.Color3(0.58, 0.63, 0.83);
                     spot.specular = new BABYLON.Color3(1, 1, 1);
                     spot.groundColor = new BABYLON.Color3(0, 0.02, 1, 0.6);
-                    spot.position.y = 55;
-                    spot.position.x = 45;
-                    spot.position.z = -45;
+                    spot.position.y = 75;
+                    spot.position.x = 0;
+                    spot.position.z = 0;
 
               const earthmat = new BABYLON.StandardMaterial("earthMat");
                     earthmat.ambientColor = new BABYLON.Color3(1, 1, 1);
                     earthmat.diffuseTexture = new BABYLON.Texture("textures/earch.jpg");
-                    moon = BABYLON.MeshBuilder.CreateSphere("moon", {diameter: 50});
+                    moon = BABYLON.MeshBuilder.CreateSphere("moon", {diameter: 30});
                     moon.material = earthmat;
-                    moon.position.y = 30;
-                    moon.position.x = 45;
-                    moon.position.z = -350;
+                    moon.position.y = 40;
+                    moon.position.x = -450;
+                    moon.position.z = -450;
 
 
               const sunmat = new BABYLON.StandardMaterial("sunMat");
                     sunmat.ambientColor = new BABYLON.Color3(1, 1, 1);
                     sunmat.diffuseTexture = new BABYLON.Texture("textures/sun.jpg");
-                    moon = BABYLON.MeshBuilder.CreateSphere("moon", {diameter: 50});
+                    moon = BABYLON.MeshBuilder.CreateSphere("moon", {diameter: 70});
                     moon.material = sunmat;
-                    moon.position.y = 30;
-                    moon.position.x = 45;
-                    moon.position.z = 350;
+                    moon.position.y = 40;
+                    moon.position.x = -450;
+                    moon.position.z = 450;
+
+              const saturnmat = new BABYLON.StandardMaterial("saturnMat");
+                    saturnmat.ambientColor = new BABYLON.Color3(1, 1, 1);
+                    saturnmat.diffuseTexture = new BABYLON.Texture("textures/saturn.jpg");
+                    moon = BABYLON.MeshBuilder.CreateSphere("moon", {diameter: 50});
+                    moon.material = saturnmat;
+                    moon.position.y = 40;
+                    moon.position.x = 350;
+                    moon.position.z = 0;
 
 
               const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
@@ -203,7 +191,7 @@
                   terrain.computeNormals = false;
                   terrain.refreshEveryFrame = true;
                   terrain.updateVertex = function(vertex, i, j) {
-                      vertex.position.y = 1.5 * Math.sin((vertex.position.x + t) / 5.0)  *  Math.cos((vertex.position.z +  5 * t) / 5.0);
+                      vertex.position.y = 2.0 * Math.sin((vertex.position.x + t) / 5.0)  *  Math.cos((vertex.position.z +  5 * t) / 5.0);
                   };
                   terrain.update(true);
 
@@ -211,7 +199,7 @@
               scene.registerBeforeRender(function() {
                   t += 0.1;
               });
-              
+
 
               var spriteManagerstars = new BABYLON.SpriteManager("starsManager", "textures/lensflare.png", 2500, {width: 250, height: 250}, scene);
               var star = new BABYLON.Sprite("star", spriteManagerstars);
