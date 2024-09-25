@@ -117,6 +117,7 @@
               camera.position = new BABYLON.Vector3(200, 10, 200);
               camera.attachControl(canvas, true);
       
+              // スポットライト
               const spot = new BABYLON.SpotLight("SpotLight", BABYLON.Vector3.Zero(), new BABYLON.Vector3(0.25, -1, 0), 1 * Math.PI, 0.01, scene);
                     spot.intensity = 1;
                     spot.diffuse = new BABYLON.Color3(0.58, 0.63, 0.83);
@@ -126,25 +127,28 @@
                     spot.position.x = 0;
                     spot.position.z = 0;
 
+              // 地球
               const earthmat = new BABYLON.StandardMaterial("earthMat");
                     earthmat.ambientColor = new BABYLON.Color3(1, 1, 1);
                     earthmat.diffuseTexture = new BABYLON.Texture("textures/earch.jpg");
                     moon = BABYLON.MeshBuilder.CreateSphere("moon", {diameter: 30});
                     moon.material = earthmat;
                     moon.position.y = 40;
-                    moon.position.x = -450;
-                    moon.position.z = -450;
+                    moon.position.x = 0;
+                    moon.position.z = -350;
 
 
+              // 太陽
               const sunmat = new BABYLON.StandardMaterial("sunMat");
                     sunmat.ambientColor = new BABYLON.Color3(1, 1, 1);
                     sunmat.diffuseTexture = new BABYLON.Texture("textures/sun.jpg");
                     moon = BABYLON.MeshBuilder.CreateSphere("moon", {diameter: 70});
                     moon.material = sunmat;
                     moon.position.y = 40;
-                    moon.position.x = -450;
-                    moon.position.z = 450;
+                    moon.position.x = 0;
+                    moon.position.z = 350;
 
+              // 土星
               const saturnmat = new BABYLON.StandardMaterial("saturnMat");
                     saturnmat.ambientColor = new BABYLON.Color3(1, 1, 1);
                     saturnmat.diffuseTexture = new BABYLON.Texture("textures/saturn.jpg");
@@ -200,8 +204,7 @@
                   t += 0.1;
               });
 
-
-              var spriteManagerstars = new BABYLON.SpriteManager("starsManager", "textures/lensflare.png", 2500, {width: 250, height: 250}, scene);
+              const spriteManagerstars = new BABYLON.SpriteManager("starsManager", "textures/lensflare.png", 2500, {width: 250, height: 250}, scene);
               var star = new BABYLON.Sprite("star", spriteManagerstars);
               for (var i = 0; i < 2500; i++) {
                   var star = new BABYLON.Sprite("star", spriteManagerstars);
@@ -213,6 +216,66 @@
                   star.isPickable = true;
               }
 
+              const aurora = BABYLON.MeshBuilder.CreateSphere("aurora", {diameter: 1});
+                    aurora.position.x = 340; 
+                    aurora.position.y = 40; 
+                    aurora.position.z = 0;
+                    aurora.rotation.z = degree(20);
+              const target_aurora = scene.getMeshById(`aurora`);
+              
+              // オーロラ
+              const radius = 100;
+              const angle = 0;
+              const particleSystem = new BABYLON.ParticleSystem("particles", 5000, scene);
+              particleSystem.particleTexture = new BABYLON.Texture("textures/flare.png", scene);
+              particleSystem.emitter = aurora;
+              particleSystem.emitter.z = target_aurora.position.z;
+              particleSystem.emitter.y = target_aurora.position.y;
+              particleSystem.emitter.x = target_aurora.position.x;              
+              particleSystem.color1 = new BABYLON.Color4(0.3, 0.7, 1)
+              particleSystem.color2 = new BABYLON.Color4(0.3, 0.5, 1)
+              particleSystem.colorDead = new BABYLON.Color4(0.3, 0.3, 1)
+              particleSystem.minSize = 3;
+              particleSystem.maxSize = 5;
+              particleSystem.minLifeTime = 0;
+              particleSystem.maxLifeTime = 1;
+              particleSystem.emitRate = 5000;
+              particleSystem.createConeEmitter(radius, angle);
+              particleSystem.minEmitPower = 40;
+              particleSystem.maxEmitPower = 40;
+              particleSystem.updateSpeed = 0.05;
+              particleSystem.start();
+
+
+              const aurora2 = BABYLON.MeshBuilder.CreateSphere("aurora", {diameter: 1});
+                    aurora2.position.x = -500; 
+                    aurora2.position.y = 300; 
+                    aurora2.position.z = -200;
+                    aurora2.rotation.x = degree(-190);
+              const target_aurora2 = scene.getMeshById(`aurora`);
+
+              const radius_2 = 20;
+              const angle_2 = Math.PI / 60;
+              const particleSystem2 = new BABYLON.ParticleSystem("particles", 10000, scene);
+              particleSystem2.particleTexture = new BABYLON.Texture("textures/flare.png", scene);
+              particleSystem2.emitter = aurora2;
+              particleSystem2.emitter.z = target_aurora2.position.z;
+              particleSystem2.emitter.y = target_aurora2.position.y;
+              particleSystem2.emitter.x = target_aurora2.position.x;                
+              particleSystem2.color1 = new BABYLON.Color4(0.77, 0.81, 0.45);
+              particleSystem2.color2 = new BABYLON.Color4(0.89, 0.36, 0.73);
+              particleSystem2.colorDead = new BABYLON.Color4(0, 0, 0.2, 0.0);
+              
+              particleSystem2.minSize = 30;
+              particleSystem2.maxSize = 30;
+              particleSystem2.minLifeTime = 0;
+              particleSystem2.maxLifeTime = 1;
+              particleSystem2.emitRate = 10000;
+              particleSystem2.createConeEmitter(radius_2, angle_2);
+              particleSystem2.minEmitPower = 40;
+              particleSystem2.maxEmitPower = 40;
+              particleSystem2.updateSpeed = 0.01;
+              particleSystem2.start();
 
               return scene;
             };
