@@ -39,7 +39,7 @@
               const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 15, new BABYLON.Vector3(0, 0, 0));
 
               camera.useAutoRotationBehavior = true;
-              camera.autoRotationBehavior.idleRotationSpeed = - Math.PI * 10 / 180;             
+              camera.autoRotationBehavior.idleRotationSpeed = - Math.PI * 20 / 180;             
               camera.position = new BABYLON.Vector3(100, 20, 100);
               camera.attachControl(canvas, true);
       
@@ -132,7 +132,7 @@
 
               const spriteManagerstars = new BABYLON.SpriteManager("starsManager", "textures/lensflare.png", 2500, {width: 250, height: 250}, scene);
               var star = new BABYLON.Sprite("star", spriteManagerstars);
-              for (var i = 0; i < 2500; i++) {
+              for (var i = 0; i < 1500; i++) {
                   var star = new BABYLON.Sprite("star", spriteManagerstars);
                   star.width = 2;
                   star.height = 2;     
@@ -174,47 +174,54 @@
 
               // オーロラ
               var position = 0;
-              for (let i = 1; 50 > i; i++) {
+              for (let i = 1; 13 > i; i++) {
                 aulolasystem(i, position);
-                var position = position +  10;
+                var position = position +  100;
               }
 
               function aulolasystem(i, position) {
 
                 const aurora = BABYLON.MeshBuilder.CreateSphere("aurora", {diameter: 1});
-                      aurora.position.x = -250; 
-                      aurora.position.y = ((Math.sin(- i * Math.PI / 10) * 30) / 20) + 30;
-                      aurora.position.z = 400;
-                      aurora.rotation.y = (Math.sin(- i * Math.PI / 200)) / 2;
+                      aurora.position.x = -500; 
+                      aurora.position.y = ((Math.sin(- i * Math.PI / 20) * 30) / 30) + 30;
+                      aurora.position.z = 450;
+                      aurora.rotation.y = (Math.sin(- i * Math.PI / 200)) / 2.5;
                 const target_aurora = scene.getMeshById(`aurora`);
 
                 const sedentarymin = position;
-                const sedentarymax = 10 + position;
+                const sedentarymax = 100 + position;
 
-                const auroraSystem = new BABYLON.ParticleSystem("particles", 10000, scene);
+                const randomNum = (Math.random() * 0.99 + 0.01).toFixed(2)
+                    , randomNum2 = (Math.random() * 0.99 + 0.01).toFixed(2)
+                    , randomNum3 = (Math.random() * 0.99 + 0.01).toFixed(2)
+                    , randomNum4 = (Math.random() * 0.99 + 0.01).toFixed(2)
+                    , randomNum5 = (Math.random() * 0.99 + 0.01).toFixed(2)
+                    , randomNum6 = (Math.random() * 0.99 + 0.01).toFixed(2);
+
+                const auroraSystem = new BABYLON.ParticleSystem("particles", 15000, scene);
                       auroraSystem.particleTexture = new BABYLON.Texture("textures/bar.png", scene);
                       auroraSystem.emitter = aurora;
                       auroraSystem.minEmitBox = new BABYLON.Vector3(sedentarymin, 0, 0); // Starting all from
                       auroraSystem.maxEmitBox = new BABYLON.Vector3(sedentarymax, 0, 0); // To...
-
-                      auroraSystem.color1 = new BABYLON.Color4(0.77, 0.81, 0.45);
-                      auroraSystem.color2 = new BABYLON.Color4(0.89, 0.36, 0.73);
-                      auroraSystem.colorDead = new BABYLON.Color4(0, 0, 0.2, 0.0);
+                      auroraSystem.color1 = new BABYLON.Color4(Number(randomNum), Number(randomNum2), Number(randomNum3), 0.5);
+                      auroraSystem.color2 = new BABYLON.Color4(Number(randomNum4), Number(randomNum5), Number(randomNum6), 0.5);
+                      auroraSystem.colorDead = new BABYLON.Color4(0, 0, 0, 0.0);
                       
                       auroraSystem.minSize = 1;
-                      auroraSystem.maxSize = 1;
+                      auroraSystem.maxSize = 2;
 
                       auroraSystem.minLifeTime = 0;
                       auroraSystem.maxLifeTime = 1;
 
-                      auroraSystem.emitRate = 10000;
+                      auroraSystem.emitRate = 15000;
 
                       auroraSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
 
                       auroraSystem.gravity = new BABYLON.Vector3(0, -9.81, 0);
 
                       auroraSystem.direction1 = new BABYLON.Vector3(0, 450, 0);
-                      auroraSystem.direction2 = new BABYLON.Vector3(0, 50, 0);
+                      auroraSystem.direction2 = new BABYLON.Vector3(0, 350, 0);
+                      auroraSystem.direction3 = new BABYLON.Vector3(0, 300, 0);
 
                       auroraSystem.updateSpeed = 0.001;
                       
