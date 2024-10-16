@@ -49,7 +49,7 @@
               );
 
               camera.useAutoRotationBehavior = true;
-              camera.autoRotationBehavior.idleRotationSpeed = (Math.PI * 2) / 45;
+              camera.autoRotationBehavior.idleRotationSpeed = degree(15);
               camera.position = new BABYLON.Vector3(100, 5, 100);
               camera.attachControl(canvas, true);
             }
@@ -71,6 +71,7 @@
               spot.position.y = 65;
               spot.position.x = 0;
               spot.position.z = 0;
+
 
               const light = new BABYLON.HemisphericLight(
                 "light",
