@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Babylon.js Mainvisual</title>
+    <title>Mainvisual</title>
     <script src="https://preview.babylonjs.com/babylon.js"></script>
     <script src="https://cdn.babylonjs.com/materialsLibrary/babylon.gridMaterial.js"></script>
     <script src="https://code.jquery.com/pep/0.4.1/pep.js"></script>
@@ -72,7 +72,6 @@
               spot.position.x = 0;
               spot.position.z = 0;
 
-
               const light = new BABYLON.HemisphericLight(
                 "light",
                 new BABYLON.Vector3(0, 1, 0),
@@ -125,14 +124,14 @@
               moon.position.z = 0;
 
               // 土星のチリ
-              const dust = BABYLON.MeshBuilder.CreateSphere("aurora", {
+              const dust = BABYLON.MeshBuilder.CreateSphere("saturn_dust", {
                 diameter: 1,
               });
               dust.position.x = 340;
               dust.position.y = 40;
               dust.position.z = 0;
               dust.rotation.z = degree(20);
-              const dust_id = scene.getMeshById(`aurora`);
+              const dust_id = scene.getMeshById(`saturn_dust`);
 
               const radius = 50;
               const angle = 0;
@@ -229,7 +228,6 @@
                 { width: 250, height: 250 },
                 scene
               );
-              var star = new BABYLON.Sprite("star", spriteManagerstars);
               for (var i = 0; i < 1500; i++) {
                 var star = new BABYLON.Sprite("star", spriteManagerstars);
                 star.width = 2;
