@@ -218,7 +218,7 @@
                 terrain.update(true);
               };
               scene.registerBeforeRender(function () {
-                t += 1;
+                t += 0.5;
               });
 
               const spriteManagerstars = new BABYLON.SpriteManager(
@@ -264,11 +264,11 @@
 
                 const auroraSystem = new BABYLON.ParticleSystem(
                   "particles",
-                  3000,
+                  5000,
                   scene
                 );
                 auroraSystem.particleTexture = new BABYLON.Texture(
-                  "textures/bar.png",
+                  "textures/flare.png",
                   scene
                 );
                 auroraSystem.emitter = aurora;
@@ -303,7 +303,7 @@
                 auroraSystem.minLifeTime = 0;
                 auroraSystem.maxLifeTime = 3;
 
-                auroraSystem.emitRate = 3000;
+                auroraSystem.emitRate = 5000;
 
                 auroraSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
 

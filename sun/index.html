@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Babylon.js Mainvisual</title>
+    <script src="https://preview.babylonjs.com/babylon.js"></script>
+    <script src="https://cdn.babylonjs.com/materialsLibrary/babylon.gridMaterial.js"></script>
+    <script src="https://code.jquery.com/pep/0.4.1/pep.js"></script>
+    <script src="https://unpkg.com/earcut@latest/dist/earcut.min.js"></script>
+    <script src="https://cdn.rawgit.com/BabylonJS/Extensions/master/DynamicTerrain/dist/babylon.dynamicTerrain.min.js"></script>
+    <style type="text/css">
+      body {
+        margin: 0;
+      }
+      #renderCanvas {
+        width   : 100%;
+        height  : 100vh;
+        touch-action: none;
+        top: 0;
+        left: 0;
+      }
+    </style>      
+  </head>
+  <body>
+    <main>
+      <canvas id="renderCanvas"></canvas>
+    </main>
+    <script type="text/javascript">
+      function main() {
+        const canvas = document.getElementById('renderCanvas');
+        const engine = new BABYLON.Engine(canvas);
+
+        function createScene() {
+          // シーンを作成
+          const scene = new BABYLON.Scene(engine);
+          // カメラを作成
+          const camera = new BABYLON.ArcRotateCamera("ArcRotateCamera", 1, 0.8, 5, new BABYLON.Vector3(0, 0, 0), scene);
+          // カメラがユーザからの入力で動くように
+          camera.attachControl(canvas, true);
+          camera.lowerRadiusLimit = 2.5;
+          camera.upperRadiusLimit = 10;
+          camera.pinchDeltaPercentage = 0.01;
+          camera.wheelDeltaPercentage = 0.01;
+
+          scene.clearColor = new BABYLON.Color3(0.0, 0.0, 0.0);
+
+          // Lets create a sun effect made of 3 different particle system
+          // Definition: https://assets.babylonjs.com/particles/systems/sun.json
+          BABYLON.ParticleHelper.CreateAsync("sun", scene).then((set) => {
+              set.start();
+          });
+          
+          return scene;
+        }
+        
+        const scene = createScene();
+        
+        engine.runRenderLoop(() => {
+          scene.render();
+        });
+        
+        window.addEventListener('resize', () => {
+          engine.resize();
+        });
+      }
+      window.addEventListener('DOMContentLoaded', main);
+    </script>
+  </body>
+</html>
