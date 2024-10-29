@@ -137,12 +137,12 @@
             const tea = BABYLON.Mesh.CreateSphere("tea", 10, .3);
                   tea.material = new BABYLON.StandardMaterial("teamaterial");
                   tea.material.diffuseColor = new BABYLON.Color3(1, 1, 1);  
-                  tea.position.y = 8.3;
+                  tea.position.y = 2.6;
                   tea.position.x = -27.5;
                   tea.position.z = 24;
     
             const tea1 = tea.clone();
-                  tea1.position.y = 8.3;
+                  tea1.position.y = 2.6;
                   tea1.position.x = -23.5;
                   tea1.position.z = 28.5;
     
@@ -151,7 +151,7 @@
                   tea_under_material.diffuseColor = new BABYLON.Color3(0.8, 0.8, 0.8);
                   tea_under_material.alpha = .9;
                   tea_under.material = tea_under_material;
-                  tea_under.position.y = 8;
+                  tea_under.position.y = 2.3;
                   tea_under.position.x = -27.5;
                   tea_under.position.z = 24;
     
@@ -252,30 +252,8 @@
                     treef_1.position.z = Math.random() * 15  - 4;
                     treef_1.position.y = 5;
                     break;
-                  case i > 80 && i < 95:
-                    const treef_2 = new BABYLON.Sprite("tree", spritetree);
-                    treef_2.width = 4;
-                    treef_2.height = 6;              
-                    treef_2.position.x = Math.random() * (6) - 18;
-                    treef_2.position.z = Math.random() * 10  + 6;
-                    treef_2.position.y = 5;
-                    break;
-                  case i > 95 && i < 105:
-                    const treef_3 = new BABYLON.Sprite("tree", spritetree);
-                    treef_3.width = 4;
-                    treef_3.height = 6;              
-                    treef_3.position.x = Math.random() * (6) - 13;
-                    treef_3.position.z = Math.random() * 6  + 14;
-                    treef_3.position.y = 5;
-                    break;
-                  case i > 105 && i < 112:
-                    const treef_4 = new BABYLON.Sprite("tree", spritetree);
-                    treef_4.width = 4;
-                    treef_4.height = 6;              
-                    treef_4.position.x = Math.random() * (6) - 10;
-                    treef_4.position.z = Math.random() * 6  + 20;
-                    treef_4.position.y = 5;
-                    break;
+
+
                   case i > 112 && i < 127:
                     const treef_5 = new BABYLON.Sprite("tree", spritetree);
                     treef_5.width = 4;
@@ -294,31 +272,7 @@
                     break;
                 }
               }
-                
-              // ランプを作成
-              BABYLON.SceneLoader.ImportMeshAsync("", "", "lamp.babylon").then(() =>{
-                const lignts =  0;
-                const lampLight = new BABYLON.SpotLight("lampLight", BABYLON.Vector3.Zero(), new BABYLON.Vector3(0.25, -1, 0), lignts * Math.PI, 0.01, scene);
-    
-                      lampLight.diffuse = BABYLON.Color3.White();
-                      lampLight.parent = scene.getMeshByName("bulb");
-    
-                const lamp = scene.getMeshByName("lamp");
-                      lamp.position = new BABYLON.Vector3(2, 2, 2); 
-                      lamp.rotation = BABYLON.Vector3.Zero();
-                      lamp.rotation.y = -Math.PI / 2;
-                      lamp.position.x = 23;
-                      lamp.position.z = -27;
-    
-                lamp1 = lamp.clone("lamp1");
-                lamp1.position.z = -20;
-                lamp1.position.x = 0;
-    
-                lamp2 = lamp.clone("lamp2");
-                lamp2.position.z = -12;
-                lamp2.position.x = -23;
-              });
-    
+                    
               // 噴水を作成
               BABYLON.SceneLoader.ImportMeshAsync("", "", "fountain.babylon").then(() =>  {
     
