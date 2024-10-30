@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Babylon.js golf</title>
+    <title>Babylon.js golf No.2</title>
     <script src="https://preview.babylonjs.com/babylon.js"></script>
     <script src="https://cdn.babylonjs.com/materialsLibrary/babylon.gridMaterial.js"></script>
     <script src="https://code.jquery.com/pep/0.4.1/pep.js"></script>
@@ -19,68 +19,6 @@
         touch-action: none;
         top: 0;
         left: 0;
-      }
-      #js-loading {
-        position: fixed;
-        top: 0;
-        left: 0;
-        background: black;
-        width: 100%;
-        height: 100vh;
-        z-index: 1000;
-      }
-      .js-hidden {
-        display: none;
-      }
-      .c-circle-border {
-        width: 80px;
-        height: 80px;
-        border-radius: 80px;
-        border: 5px solid #fff;
-        border-top-color: rgba(0,0,0,0.3);
-        box-sizing: border-box;
-        position: absolute;
-        top: calc(50% - 40px);
-        left: calc(50% - 40px);
-        animation: spin 1.2s linear infinite;
-        -webkit-animation: spin 1.2s linear infinite;     
-      }
-      .c-button-wrap {
-         position: absolute;
-         z-index: 10;
-         padding: 20px;
-         top: 0px;
-         right: 0px;
-         gap: 10px;
-         display: flex;
-      }
-      .c-button {
-        text-shadow: 0px 0px 3px white;
-        background: transparent;
-        border: none;
-        font-size: 18px;
-        cursor: pointer;
-      }
-      @-webkit-keyframes spin {
-        0% {
-          -webkit-transform: rotate(0);
-          transform: rotate(0)
-        }
-        to {
-          -webkit-transform: rotate(359deg);
-          transform: rotate(359deg)
-        }
-      }
-
-      @keyframes spin {
-        0% {
-          -webkit-transform: rotate(0);
-          transform: rotate(0)
-        }
-        to {
-          -webkit-transform: rotate(359deg);
-          transform: rotate(359deg)
-        }
       }
     </style>
   </head>
@@ -160,6 +98,7 @@
                   tea_under1.position.z = 28.5;      
     
             // カップを作成
+            /*
             const golfcup = BABYLON.MeshBuilder.CreateCylinder("golfcup", {height:1, depth:0.1});
             const golfcupMaterial = new BABYLON.StandardMaterial("golfcupmaterial", scene);
                   golfcupMaterial.diffuseColor = new BABYLON.Color3(0.8, 0.8, 0.8);
@@ -170,6 +109,7 @@
                   golfcup.position.z = -10.8;
                   golfcup.rotation.z = degree(2);
                   golfcup.rotation.x = degree(-3);
+            */
     
             // 水を作成
             const waterMesh = BABYLON.Mesh.CreateGround("waterMesh", 20, 37, 10, scene, false);
