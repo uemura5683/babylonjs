@@ -112,7 +112,7 @@
             */
     
             // 水を作成
-            const waterMesh = BABYLON.Mesh.CreateGround("waterMesh", 20, 37, 10, scene, false);
+            const waterMesh = BABYLON.Mesh.CreateGround("waterMesh", 30, 40, 10, scene, false);
             const water = new BABYLON.WaterMaterial("water", scene, new BABYLON.Vector2(512, 512));
                   water.backFaceCulling = true;
                   water.bumpTexture = new BABYLON.Texture("textures/water/waterbump.png", scene);
@@ -124,9 +124,9 @@
                   water.addToRenderList(skybox);
                   water.addToRenderList(largeGround);
                   waterMesh.material = water;
-                  waterMesh.position.x = 2.9;      
-                  waterMesh.position.y = 1.8;
-                  waterMesh.position.z = 16.5;   
+                  waterMesh.position.x = -11;      
+                  waterMesh.position.y = 1.7;
+                  waterMesh.position.z = 16;   
     
               // 木を作成
               const elementree = "textures/wood/wood.png";
@@ -188,17 +188,15 @@
                     const treef_1 = new BABYLON.Sprite("tree", spritetree);
                     treef_1.width = 4;
                     treef_1.height = 6;              
-                    treef_1.position.x = Math.random() * (15) - 23;
-                    treef_1.position.z = Math.random() * 15  - 4;
+                    treef_1.position.x = Math.random() * (10) + 1;
+                    treef_1.position.z = Math.random() * 20  - 9;
                     treef_1.position.y = 5;
                     break;
-
-
                   case i > 112 && i < 127:
                     const treef_5 = new BABYLON.Sprite("tree", spritetree);
                     treef_5.width = 4;
                     treef_5.height = 6;              
-                    treef_5.position.x = Math.random() * (6) - 8;
+                    treef_5.position.x = Math.random() * (6) + 4;
                     treef_5.position.z = Math.random() * 8  + 27;
                     treef_5.position.y = 5;
                     break;
@@ -217,7 +215,7 @@
               BABYLON.SceneLoader.ImportMeshAsync("", "", "fountain.babylon").then(() =>  {
     
                 const fountain = scene.getMeshByName("fountain");
-                fountain.position.x = -27.7;
+                fountain.position.x = -29.7;
                 fountain.position.y = 2.3;
                 fountain.position.z = 6.8;
     
@@ -225,7 +223,7 @@
     
                 particleSystem.particleTexture = new BABYLON.Texture("textures/flare/flare.png", scene);
     
-                particleSystem.emitter = new BABYLON.Vector3(-27.7, 6.3, 6.8);
+                particleSystem.emitter = new BABYLON.Vector3(-29.7, 6.3, 6.8);
                 particleSystem.minEmitBox = new BABYLON.Vector3(0, 0, 0);
                 particleSystem.maxEmitBox = new BABYLON.Vector3(0, 0, 0);
     
