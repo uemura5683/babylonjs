@@ -76,13 +76,13 @@
                   tea.material = new BABYLON.StandardMaterial("teamaterial");
                   tea.material.diffuseColor = new BABYLON.Color3(1, 1, 1);  
                   tea.position.y = 2.6;
-                  tea.position.x = -27.5;
+                  tea.position.x = -25.5;
                   tea.position.z = 24;
     
             const tea1 = tea.clone();
                   tea1.position.y = 2.6;
-                  tea1.position.x = -23.5;
-                  tea1.position.z = 28.5;
+                  tea1.position.x = -20.5;
+                  tea1.position.z = 32.5;
     
             const tea_under = BABYLON.MeshBuilder.CreateCylinder("tea_under", {height:.5, diameter: .1});
             const tea_under_material = new BABYLON.StandardMaterial("tea_under_material", scene);
@@ -90,12 +90,12 @@
                   tea_under_material.alpha = .9;
                   tea_under.material = tea_under_material;
                   tea_under.position.y = 2.3;
-                  tea_under.position.x = -27.5;
+                  tea_under.position.x = -25.5;
                   tea_under.position.z = 24;
     
             const tea_under1 = tea_under.clone();
-                  tea_under1.position.x = -23.5;
-                  tea_under1.position.z = 28.5;      
+                  tea_under1.position.x = -20.5;
+                  tea_under1.position.z = 32.5;      
     
             // カップを作成
             /*
