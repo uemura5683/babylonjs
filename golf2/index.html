@@ -215,7 +215,7 @@
               BABYLON.SceneLoader.ImportMeshAsync("", "", "fountain.babylon").then(() =>  {
     
                 const fountain = scene.getMeshByName("fountain");
-                fountain.position.x = -29.7;
+                fountain.position.x = -28.7;
                 fountain.position.y = 2.3;
                 fountain.position.z = 6.8;
     
@@ -223,7 +223,7 @@
     
                 particleSystem.particleTexture = new BABYLON.Texture("textures/flare/flare.png", scene);
     
-                particleSystem.emitter = new BABYLON.Vector3(-29.7, 6.3, 6.8);
+                particleSystem.emitter = new BABYLON.Vector3(-28.7, 6.3, 6.8);
                 particleSystem.minEmitBox = new BABYLON.Vector3(0, 0, 0);
                 particleSystem.maxEmitBox = new BABYLON.Vector3(0, 0, 0);
     
