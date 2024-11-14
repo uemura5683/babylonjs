@@ -132,7 +132,7 @@
               const elementree = "textures/wood/wood.png";
               const spritetree = new BABYLON.SpriteManager("treesManager", elementree, 135, {width: 538, height: 680}, scene);
             
-              for (let i = 0; i < 135; i++) {
+              for (let i = 0; i < 90; i++) {
                 switch(true) {
                   // right side
                   case i > 0 && i < 3:
@@ -196,9 +196,9 @@
                     const treef_5 = new BABYLON.Sprite("tree", spritetree);
                     treef_5.width = 4;
                     treef_5.height = 6;              
-                    treef_5.position.x = Math.random() * 15 + 6;
-                    treef_5.position.z = Math.random() * 15 + 19;
-                    treef_5.position.y = 5;
+                    treef_5.position.x = Math.random() * 3 + 4;
+                    treef_5.position.z = Math.random() * 13 + 21;
+                    treef_5.position.y = 6;
                     break;
                 }
               }
