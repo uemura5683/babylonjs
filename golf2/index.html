@@ -66,7 +66,7 @@
             const largeGroundMat = new BABYLON.StandardMaterial("largeGroundMat");
                   largeGroundMat.diffuseTexture = new BABYLON.Texture("textures/ground/valleygrass.png");
             
-            const largeGround = BABYLON.MeshBuilder.CreateGroundFromHeightMap("largeGround", "textures/ground/villageheightmap.png", {width:72, height:72, subdivisions: 200, minHeight:0, maxHeight: 8.5});  
+            const largeGround = BABYLON.MeshBuilder.CreateGroundFromHeightMap("largeGround", "textures/ground/villageheightmap.png", {width:72, height:72, subdivisions: 200, minHeight:0, maxHeight: 7.5});  
                   largeGround.material = largeGroundMat;
                   largeGround.rotation.y = degree(90);
                   largeGround.position.y = -0.5;            
@@ -75,12 +75,12 @@
             const tea = BABYLON.Mesh.CreateSphere("tea", 10, .3);
                   tea.material = new BABYLON.StandardMaterial("teamaterial");
                   tea.material.diffuseColor = new BABYLON.Color3(1, 1, 1);  
-                  tea.position.y = 2.6;
+                  tea.position.y = 2.4;
                   tea.position.x = -25.5;
                   tea.position.z = 24;
     
             const tea1 = tea.clone();
-                  tea1.position.y = 2.6;
+                  tea1.position.y = 2.4;
                   tea1.position.x = -20.5;
                   tea1.position.z = 32.5;
     
@@ -125,7 +125,7 @@
                   water.addToRenderList(largeGround);
                   waterMesh.material = water;
                   waterMesh.position.x = -11;      
-                  waterMesh.position.y = 1.9;
+                  waterMesh.position.y = 1.6;
                   waterMesh.position.z = 16;   
     
               // 木を作成
