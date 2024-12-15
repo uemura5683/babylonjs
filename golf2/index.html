@@ -211,15 +211,15 @@
               BABYLON.SceneLoader.ImportMeshAsync("", "", "fountain.babylon").then(() =>  {
     
                 const fountain = scene.getMeshByName("fountain");
-                fountain.position.x = -23.7;
-                fountain.position.y = 2.3;
-                fountain.position.z = -5.8;
+                fountain.position.x = -10.7;
+                fountain.position.y = -0.5;
+                fountain.position.z = 15.8;
     
                 let particleSystem = new BABYLON.ParticleSystem("particles", 5000, scene);
     
                 particleSystem.particleTexture = new BABYLON.Texture("textures/flare/flare.png", scene);
     
-                particleSystem.emitter = new BABYLON.Vector3(-23.7, 6.3, -5.8);
+                particleSystem.emitter = new BABYLON.Vector3(-10.7, 3.3, 15.8);
                 particleSystem.minEmitBox = new BABYLON.Vector3(0, 0, 0);
                 particleSystem.maxEmitBox = new BABYLON.Vector3(0, 0, 0);
     
@@ -228,28 +228,28 @@
                 particleSystem.colorDead = new BABYLON.Color4(0.1, 0.1, 0.2, 0.8);
     
                 // パーティクルのサイズ
-                particleSystem.minSize = 0.1 / 2;
-                particleSystem.maxSize = 0.8 / 2;
+                particleSystem.minSize = 0.1;
+                particleSystem.maxSize = 0.8 / 1.5;
     
                 particleSystem.minLifeTime = 1;
                 particleSystem.maxLifeTime = 2.5;
     
-                particleSystem.emitRate = 1500;
+                particleSystem.emitRate = 5000;
     
                 particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
     
                 particleSystem.gravity = new BABYLON.Vector3(0, -3.81, 0);
     
                 // 噴水のばら撒く距離
-                particleSystem.direction1 = new BABYLON.Vector3(-.2, 1, .2);
-                particleSystem.direction2 = new BABYLON.Vector3(.2, 1, -.2);
+                particleSystem.direction1 = new BABYLON.Vector3(-1, 1, 1);
+                particleSystem.direction2 = new BABYLON.Vector3(1, 1, -1);
     
                 particleSystem.minAngularSpeed = 0;
                 particleSystem.maxAngularSpeed = Math.PI;
     
                 particleSystem.minEmitPower = 2;
-                particleSystem.maxEmitPower = 3;
-                particleSystem.updateSpeed = 0.025;
+                particleSystem.maxEmitPower = 4.5;
+                particleSystem.updateSpeed = 0.03;
     
                 particleSystem.start();
               });
