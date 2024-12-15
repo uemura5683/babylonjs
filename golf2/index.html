@@ -134,7 +134,7 @@
             
               for (let i = 0; i < 100; i++) {
 
-                const tree_array = [{w:3,h:4.5,y:4.25},{w:4,h:6,y:5},{w:5,h:7,y:6},];
+                const tree_array = [{w:3,h:4.5,y:3.8},{w:3.2,h:4.8,y:4},{w:3.6,h:5.4,y:4.5},{w:4,h:6,y:5},{w:4.4,h:6.6,y:5.5},{w:4.8,h:7.2,y:6},];
                 const tree_data = tree_array[Math.floor(Math.random() * tree_array.length)];
 
                 switch(true) {
@@ -197,12 +197,12 @@
                     treef_1.position.y = tree_data.y;
                     break;
                   default:
-                    const treef_5 = new BABYLON.Sprite("tree", spritetree);
-                    treef_5.width = tree_data.w;
-                    treef_5.height = tree_data.h;
-                    treef_5.position.x = Math.random() * 7 + 4;
-                    treef_5.position.z = Math.random() * 20 + 13;
-                    treef_5.position.y = tree_data.y;
+                    const treef_2 = new BABYLON.Sprite("tree", spritetree);
+                    treef_2.width = tree_data.w;
+                    treef_2.height = tree_data.h;
+                    treef_2.position.x = Math.random() * 7 + 4;
+                    treef_2.position.z = Math.random() * 20 + 13;
+                    treef_2.position.y = tree_data.y;
                     break;
                 }
               }
@@ -211,15 +211,15 @@
               BABYLON.SceneLoader.ImportMeshAsync("", "", "fountain.babylon").then(() =>  {
     
                 const fountain = scene.getMeshByName("fountain");
-                fountain.position.x = -28.7;
+                fountain.position.x = -23.7;
                 fountain.position.y = 2.3;
-                fountain.position.z = 6.8;
+                fountain.position.z = -5.8;
     
                 let particleSystem = new BABYLON.ParticleSystem("particles", 5000, scene);
     
                 particleSystem.particleTexture = new BABYLON.Texture("textures/flare/flare.png", scene);
     
-                particleSystem.emitter = new BABYLON.Vector3(-28.7, 6.3, 6.8);
+                particleSystem.emitter = new BABYLON.Vector3(-23.7, 6.3, -5.8);
                 particleSystem.minEmitBox = new BABYLON.Vector3(0, 0, 0);
                 particleSystem.maxEmitBox = new BABYLON.Vector3(0, 0, 0);
     
