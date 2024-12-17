@@ -43,11 +43,10 @@
             const scene = new BABYLON.Scene(engine);
     
             const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 15, new BABYLON.Vector3(0, 0, 0));
-            camera.position = new BABYLON.Vector3(40, 40, 40);
+            camera.position = new BABYLON.Vector3(32, 32, 32);
             camera.attachControl(canvas, true);
     
             // 光源設定
-
             const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
                   light.intensity = .6;
     
@@ -97,20 +96,6 @@
                   tea_under1.position.x = -20.5;
                   tea_under1.position.z = 32.5;      
     
-            // カップを作成
-            /*
-            const golfcup = BABYLON.MeshBuilder.CreateCylinder("golfcup", {height:1, depth:0.1});
-            const golfcupMaterial = new BABYLON.StandardMaterial("golfcupmaterial", scene);
-                  golfcupMaterial.diffuseColor = new BABYLON.Color3(0.8, 0.8, 0.8);
-                  golfcupMaterial.alpha = .9;
-                  golfcup.material = golfcupMaterial;
-                  golfcup.position.x = 32;
-                  golfcup.position.y = 2.12;
-                  golfcup.position.z = -10.8;
-                  golfcup.rotation.z = degree(2);
-                  golfcup.rotation.x = degree(-3);
-            */
-    
             // 水を作成
             const waterMesh = BABYLON.Mesh.CreateGround("waterMesh", 30, 40, 10, scene, false);
             const water = new BABYLON.WaterMaterial("water", scene, new BABYLON.Vector2(512, 512));
@@ -132,7 +117,7 @@
               const elementree = "textures/wood/wood.png";
               const spritetree = new BABYLON.SpriteManager("treesManager", elementree, 135, {width: 538, height: 680}, scene);
             
-              for (let i = 0; i < 100; i++) {
+              for (let i = 0; i < 150; i++) {
 
                 const tree_array = [{w:3,h:4.5,y:3.8},{w:3.2,h:4.8,y:4},{w:3.6,h:5.4,y:4.5},{w:4,h:6,y:5},{w:4.4,h:6.6,y:5.5},{w:4.8,h:7.2,y:6},];
                 const tree_data = tree_array[Math.floor(Math.random() * tree_array.length)];
@@ -187,8 +172,16 @@
                     treer_6.position.z = Math.random() * -1  - (33.5 - ((38 * 2 - i * 2) * .6));
                     treer_6.position.y = tree_data.y;
                     break;
+                  case i > 39 && i < 69:
+                    const treer_7 = new BABYLON.Sprite("tree", spritetree);
+                    treer_7.width = tree_data.w;
+                    treer_7.height = tree_data.h;              
+                    treer_7.position.x = Math.random() * 5 - 30;
+                    treer_7.position.z = Math.random() * 20 - 4;
+                    treer_7.position.y = tree_data.y;
+                    break;
                   // front area
-                  case i > 38 && i < 80:
+                  case i > 70 && i < 120:
                     const treef_1 = new BABYLON.Sprite("tree", spritetree);
                     treef_1.width = tree_data.w;
                     treef_1.height = tree_data.h;              
@@ -197,12 +190,12 @@
                     treef_1.position.y = tree_data.y;
                     break;
                   default:
-                    const treef_2 = new BABYLON.Sprite("tree", spritetree);
-                    treef_2.width = tree_data.w;
-                    treef_2.height = tree_data.h;
-                    treef_2.position.x = Math.random() * 7 + 4;
-                    treef_2.position.z = Math.random() * 20 + 13;
-                    treef_2.position.y = tree_data.y;
+                    const treef_3 = new BABYLON.Sprite("tree", spritetree);
+                    treef_3.width = tree_data.w;
+                    treef_3.height = tree_data.h;
+                    treef_3.position.x = Math.random() * 7 + 4;
+                    treef_3.position.z = Math.random() * 20 + 13;
+                    treef_3.position.y = tree_data.y;
                     break;
                 }
               }
