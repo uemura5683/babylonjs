@@ -32,8 +32,7 @@
         function degree(degrees) {
           return degrees * (Math.PI / 180);
         }
-  
-    
+
         function renderfunction() {
         
           const canvas = document.getElementById('renderCanvas');
@@ -41,7 +40,6 @@
     
           const createScene = function () {
             const scene = new BABYLON.Scene(engine);
-    
             const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 15, new BABYLON.Vector3(0, 0, 0));
             camera.position = new BABYLON.Vector3(32, 32, 32);
             camera.attachControl(canvas, true);
@@ -190,61 +188,51 @@
                     treef_1.position.y = tree_data.y;
                     break;
                   default:
-                    const treef_3 = new BABYLON.Sprite("tree", spritetree);
-                    treef_3.width = tree_data.w;
-                    treef_3.height = tree_data.h;
-                    treef_3.position.x = Math.random() * 7 + 4;
-                    treef_3.position.z = Math.random() * 20 + 13;
-                    treef_3.position.y = tree_data.y;
+                    const treef_2 = new BABYLON.Sprite("tree", spritetree);
+                    treef_2.width = tree_data.w;
+                    treef_2.height = tree_data.h;
+                    treef_2.position.x = Math.random() * 7 + 4;
+                    treef_2.position.z = Math.random() * 20 + 13;
+                    treef_2.position.y = tree_data.y;
                     break;
                 }
               }
                     
               // 噴水を作成
               BABYLON.SceneLoader.ImportMeshAsync("", "", "fountain.babylon").then(() =>  {
-    
+
                 const fountain = scene.getMeshByName("fountain");
-                fountain.position.x = -10.7;
-                fountain.position.y = -0.5;
-                fountain.position.z = 15.8;
-    
+                      fountain.position.x = -10.7;
+                      fountain.position.y = -0.5;
+                      fountain.position.z = 15.8;
+
                 let particleSystem = new BABYLON.ParticleSystem("particles", 5000, scene);
-    
-                particleSystem.particleTexture = new BABYLON.Texture("textures/flare/flare.png", scene);
-    
-                particleSystem.emitter = new BABYLON.Vector3(-10.7, 3.3, 15.8);
-                particleSystem.minEmitBox = new BABYLON.Vector3(0, 0, 0);
-                particleSystem.maxEmitBox = new BABYLON.Vector3(0, 0, 0);
-    
-                particleSystem.color1 = new BABYLON.Color4(0.1, 0.1, 0.2, 0.8);
-                particleSystem.color2 = new BABYLON.Color4(0.1, 0.1, 0.2, 0.8);
-                particleSystem.colorDead = new BABYLON.Color4(0.1, 0.1, 0.2, 0.8);
-    
-                // パーティクルのサイズ
-                particleSystem.minSize = 0.1;
-                particleSystem.maxSize = 0.8 / 1.5;
-    
-                particleSystem.minLifeTime = 1;
-                particleSystem.maxLifeTime = 2.5;
-    
-                particleSystem.emitRate = 5000;
-    
-                particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
-    
-                particleSystem.gravity = new BABYLON.Vector3(0, -3.81, 0);
-    
-                // 噴水のばら撒く距離
-                particleSystem.direction1 = new BABYLON.Vector3(-1, 1, 1);
-                particleSystem.direction2 = new BABYLON.Vector3(1, 1, -1);
-    
-                particleSystem.minAngularSpeed = 0;
-                particleSystem.maxAngularSpeed = Math.PI;
-    
-                particleSystem.minEmitPower = 2;
-                particleSystem.maxEmitPower = 4.5;
-                particleSystem.updateSpeed = 0.03;
-    
-                particleSystem.start();
+                    particleSystem.particleTexture = new BABYLON.Texture("textures/flare/flare.png", scene);
+                    particleSystem.emitter = new BABYLON.Vector3(-10.7, 3.3, 15.8);
+                    particleSystem.minEmitBox = new BABYLON.Vector3(0, 0, 0);
+                    particleSystem.maxEmitBox = new BABYLON.Vector3(0, 0, 0);
+                    particleSystem.color1 = new BABYLON.Color4(0.1, 0.1, 0.2, 0.8);
+                    particleSystem.color2 = new BABYLON.Color4(0.1, 0.1, 0.2, 0.8);
+                    particleSystem.colorDead = new BABYLON.Color4(0.1, 0.1, 0.2, 0.8);
+
+                    // パーティクルのサイズ
+                    particleSystem.minSize = 0.1;
+                    particleSystem.maxSize = 0.8 / 1.5;
+                    particleSystem.minLifeTime = 1;
+                    particleSystem.maxLifeTime = 2.5;
+                    particleSystem.emitRate = 5000;
+                    particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
+                    particleSystem.gravity = new BABYLON.Vector3(0, -3.81, 0);
+        
+                    // 噴水のばら撒く距離
+                    particleSystem.direction1 = new BABYLON.Vector3(-1, 1, 1);
+                    particleSystem.direction2 = new BABYLON.Vector3(1, 1, -1);
+                    particleSystem.minAngularSpeed = 0;
+                    particleSystem.maxAngularSpeed = Math.PI;
+                    particleSystem.minEmitPower = 2;
+                    particleSystem.maxEmitPower = 4.5;
+                    particleSystem.updateSpeed = 0.03;
+                    particleSystem.start();
               });
     
               return scene;
