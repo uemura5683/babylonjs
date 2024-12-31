@@ -114,11 +114,11 @@
               saturnmat.diffuseTexture = new BABYLON.Texture(
                 "textures/saturn.jpg"
               );
-              moon = BABYLON.MeshBuilder.CreateSphere("moon", { diameter: 50 });
-              moon.material = saturnmat;
-              moon.position.y = 40;
-              moon.position.x = 350;
-              moon.position.z = 0;
+              saturn = BABYLON.MeshBuilder.CreateSphere("saturn", { diameter: 50 });
+              saturn.material = saturnmat;
+              saturn.position.y = 40;
+              saturn.position.x = 350;
+              saturn.position.z = 0;
 
               // 土星のチリ
               const dust = BABYLON.MeshBuilder.CreateSphere("saturn_dust", {
@@ -194,7 +194,7 @@
 
               var t = 0.0;
               window.onload = function () {
-                var terrainSub = 800;
+                var terrainSub = 400;
                 var params = {
                   terrainSub: terrainSub,
                 };
@@ -208,14 +208,14 @@
                 terrain.refreshEveryFrame = true;
                 terrain.updateVertex = function (vertex, i, j) {
                   vertex.position.y =
-                    2.0 *
+                    1.0 *
                     Math.sin((vertex.position.x + t) / 5.0) *
                     Math.cos((vertex.position.z + 5 * t) / 5.0);
                 };
                 terrain.update(true);
               };
               scene.registerBeforeRender(function () {
-                t += 0.5;
+                t += 0.1;
               });
 
               const spriteManagerstars = new BABYLON.SpriteManager(
@@ -383,8 +383,8 @@
             66, 215, 61, 156, 180,
           ];
           // インデックスのラッピングの必要性を取り除くため、置換テーブルの長さを2倍にする
-          var perm = new Array(512);
-          var gradP = new Array(512);
+          var perm = new Array(256);
+          var gradP = new Array(256);
 
           // これはあまり良いシード関数ではありませんが、うまく機能します。2^16の異なるシード値をサポートします。
           // より多くのシードが必要な場合は、より良いものを書いてください。
@@ -395,11 +395,11 @@
             }
 
             seed = Math.floor(seed);
-            if (seed < 256) {
+            if (seed < 128) {
               seed |= seed << 8;
             }
 
-            for (var i = 0; i < 256; i++) {
+            for (var i = 0; i < 128; i++) {
               var v;
               if (i & 1) {
                 v = p[i] ^ (seed & 255);

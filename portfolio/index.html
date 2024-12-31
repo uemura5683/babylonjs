@@ -114,11 +114,11 @@
               saturnmat.diffuseTexture = new BABYLON.Texture(
                 "textures/saturn.jpg"
               );
-              moon = BABYLON.MeshBuilder.CreateSphere("moon", { diameter: 50 });
-              moon.material = saturnmat;
-              moon.position.y = 40;
-              moon.position.x = 350;
-              moon.position.z = 0;
+              saturn = BABYLON.MeshBuilder.CreateSphere("saturn", { diameter: 50 });
+              saturn.material = saturnmat;
+              saturn.position.y = 40;
+              saturn.position.x = 350;
+              saturn.position.z = 0;
 
               // 土星のチリ
               const dust = BABYLON.MeshBuilder.CreateSphere("saturn_dust", {
