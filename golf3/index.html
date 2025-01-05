@@ -74,7 +74,7 @@
                   tea.material.diffuseColor = new BABYLON.Color3(1, 1, 1);  
                   tea.position.y = 2.4;
                   tea.position.x = -57;
-                  tea.position.z = -3;
+                  tea.position.z = -2;
     
             const tea1 = tea.clone();
                   tea1.position.y = 2.4;
@@ -87,11 +87,11 @@
                   tea_under_material.alpha = .9;
                   tea_under.material = tea_under_material;
                   tea_under.position.y = 2.3;
-                  tea_under.position.x = -57;
-                  tea_under.position.z = -3;
+                  tea_under.position.x = -54;
+                  tea_under.position.z = -2;
     
             const tea_under1 = tea_under.clone();
-                  tea_under1.position.x = -57;
+                  tea_under1.position.x = -54;
                   tea_under1.position.z = 7;      
     
             // 水を作成
@@ -155,13 +155,13 @@
               BABYLON.SceneLoader.ImportMeshAsync("", "", "fountain.babylon").then(() =>  {
 
                 const fountain = scene.getMeshByName("fountain");
-                      fountain.position.x = -10.7;
+                      fountain.position.x = -60.7;
                       fountain.position.y = 2;
                       fountain.position.z = 15.8;
 
                 let particleSystem = new BABYLON.ParticleSystem("particles", 5000, scene);
                     particleSystem.particleTexture = new BABYLON.Texture("textures/flare/flare.png", scene);
-                    particleSystem.emitter = new BABYLON.Vector3(-10.7, 6.2, 15.8);
+                    particleSystem.emitter = new BABYLON.Vector3(-60.7, 6.2, 15.8);
                     particleSystem.minEmitBox = new BABYLON.Vector3(0, 0, 0);
                     particleSystem.maxEmitBox = new BABYLON.Vector3(0, 0, 0);
                     particleSystem.color1 = new BABYLON.Color4(0.1, 0.1, 0.2, 0.8);
