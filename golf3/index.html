@@ -63,7 +63,7 @@
             const largeGroundMat = new BABYLON.StandardMaterial("largeGroundMat");
                   largeGroundMat.diffuseTexture = new BABYLON.Texture("textures/ground/valleygrass.png");
             
-            const largeGround = BABYLON.MeshBuilder.CreateGroundFromHeightMap("largeGround", "textures/ground/villageheightmap.png", {width:72, height:144, subdivisions: 200, minHeight:0, maxHeight: 7.5});  
+            const largeGround = BABYLON.MeshBuilder.CreateGroundFromHeightMap("largeGround", "textures/ground/villageheightmap.png", {width:72, height:144, subdivisions: 200, minHeight:0, maxHeight: 15});  
                   largeGround.material = largeGroundMat;
                   largeGround.rotation.y = degree(90);
                   largeGround.position.y = -0.5;            
@@ -72,12 +72,12 @@
             const tea = BABYLON.Mesh.CreateSphere("tea", 10, .3);
                   tea.material = new BABYLON.StandardMaterial("teamaterial");
                   tea.material.diffuseColor = new BABYLON.Color3(1, 1, 1);  
-                  tea.position.y = 2.4;
+                  tea.position.y = 14.8;
                   tea.position.x = -57;
                   tea.position.z = -2;
     
             const tea1 = tea.clone();
-                  tea1.position.y = 2.4;
+                  tea1.position.y = 14.8;
                   tea1.position.x = -57;
                   tea1.position.z = 7;
     
@@ -86,12 +86,12 @@
                   tea_under_material.diffuseColor = new BABYLON.Color3(0.8, 0.8, 0.8);
                   tea_under_material.alpha = .9;
                   tea_under.material = tea_under_material;
-                  tea_under.position.y = 2.3;
-                  tea_under.position.x = -54;
+                  tea_under.position.y = 14.7;
+                  tea_under.position.x = -57;
                   tea_under.position.z = -2;
     
             const tea_under1 = tea_under.clone();
-                  tea_under1.position.x = -54;
+                  tea_under1.position.x = -57;
                   tea_under1.position.z = 7;      
     
             // 水を作成
@@ -156,12 +156,12 @@
 
                 const fountain = scene.getMeshByName("fountain");
                       fountain.position.x = -60.7;
-                      fountain.position.y = 2;
+                      fountain.position.y = 14.4;
                       fountain.position.z = 15.8;
 
                 let particleSystem = new BABYLON.ParticleSystem("particles", 5000, scene);
                     particleSystem.particleTexture = new BABYLON.Texture("textures/flare/flare.png", scene);
-                    particleSystem.emitter = new BABYLON.Vector3(-60.7, 6.2, 15.8);
+                    particleSystem.emitter = new BABYLON.Vector3(-60.7, 18.2, 15.8);
                     particleSystem.minEmitBox = new BABYLON.Vector3(0, 0, 0);
                     particleSystem.maxEmitBox = new BABYLON.Vector3(0, 0, 0);
                     particleSystem.color1 = new BABYLON.Color4(0.1, 0.1, 0.2, 0.8);
