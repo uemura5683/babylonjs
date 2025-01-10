@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Babylon.js golf No.2</title>
+    <title>Babylon.js golf No.3</title>
     <script src="https://preview.babylonjs.com/babylon.js"></script>
     <script src="https://cdn.babylonjs.com/materialsLibrary/babylon.gridMaterial.js"></script>
     <script src="https://code.jquery.com/pep/0.4.1/pep.js"></script>
@@ -125,12 +125,20 @@
                 switch(true) {
                   // right side
                   case i > 0 && i < 18:
+                    const treer = new BABYLON.Sprite("tree", spritetree);
+                    treer.width = tree_data.w;
+                    treer.height = tree_data.h;              
+                    treer.position.x = Math.random() * (1) - (27 + ((18 * 2 - i * 2) * 1.2 ));
+                    treer.position.z = Math.random() * -1  - (33 - ((18 * 2 - i * 1.2) * .7 ));
+                    treer.position.y = tree_data.y + 12;
+                    break;   
+                  case i > 19 && i < 26:
                     const treer_2 = new BABYLON.Sprite("tree", spritetree);
-                    treer_2.width = tree_data.w;
-                    treer_2.height = tree_data.h;              
-                    treer_2.position.x = Math.random() * (1) - (27 + ((18 * 2 - i * 2) * 1.2 ));
-                    treer_2.position.z = Math.random() * -1  - (33 - ((18 * 2 - i * 1.2) * .7 ));
-                    treer_2.position.y = tree_data.y + 12;
+                    treer_2.width = 3.6;
+                    treer_2.height = 5.4;              
+                    treer_2.position.x = Math.random() * (1) - (-4 + ((26 * 2 - i * 2) * 1.2 ));
+                    treer_2.position.z = Math.random() * -1  - (46 - ((26 * 2 - i * 1.2) * .7 ));
+                    treer_2.position.y = 20 - (i * 0.3);
                     break;   
                   default:
                     // const treef_2 = new BABYLON.Sprite("tree", spritetree);
