@@ -39,79 +39,60 @@
           const engine = new BABYLON.Engine(canvas);      
     
           const createScene = function () {
-            const scene = new BABYLON.Scene(engine);
-            const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 15, new BABYLON.Vector3(0, 0, 0));
-            camera.position = new BABYLON.Vector3(50, 50, 50);
-            camera.attachControl(canvas, true);
-    
-            // 光源設定
-            const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
-                  light.intensity = .6;
-    
-            // 空
-            const skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size: 1000}, scene);
-            const skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
-                  skyboxMaterial.backFaceCulling = false;
-            const skyboxTexture = "textures/sky/skybox";
-                  skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture(skyboxTexture, scene);
-                  skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
-                  skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
-                  skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-                  skybox.material = skyboxMaterial;
-    
-            // グランドを作成
-            const largeGroundMat = new BABYLON.StandardMaterial("largeGroundMat");
-                  largeGroundMat.diffuseTexture = new BABYLON.Texture("textures/ground/valleygrass.png");
-            
-            const largeGround = BABYLON.MeshBuilder.CreateGroundFromHeightMap("largeGround", "textures/ground/villageheightmap.png", {width:72, height:144, subdivisions: 300, minHeight:0, maxHeight: 15});  
-                  largeGround.material = largeGroundMat;
-                  largeGround.rotation.y = degree(90);
-                  largeGround.position.y = -0.5;            
-    
-            // ティー
-            const tea = BABYLON.Mesh.CreateSphere("tea", 10, .3);
-                  tea.material = new BABYLON.StandardMaterial("teamaterial");
-                  tea.material.diffuseColor = new BABYLON.Color3(1, 1, 1);  
-                  tea.position.y = 14.8;
-                  tea.position.x = -57;
-                  tea.position.z = -2;
-    
-            const tea1 = tea.clone();
-                  tea1.position.y = 14.8;
-                  tea1.position.x = -57;
-                  tea1.position.z = 7;
-    
-            const tea_under = BABYLON.MeshBuilder.CreateCylinder("tea_under", {height:.5, diameter: .1});
-            const tea_under_material = new BABYLON.StandardMaterial("tea_under_material", scene);
-                  tea_under_material.diffuseColor = new BABYLON.Color3(0.8, 0.8, 0.8);
-                  tea_under_material.alpha = .9;
-                  tea_under.material = tea_under_material;
-                  tea_under.position.y = 14.7;
-                  tea_under.position.x = -57;
-                  tea_under.position.z = -2;
-    
-            const tea_under1 = tea_under.clone();
-                  tea_under1.position.x = -57;
-                  tea_under1.position.z = 7;      
-    
-            // 水を作成
-            /*
-            const waterMesh = BABYLON.Mesh.CreateGround("waterMesh", 30, 40, 10, scene, false);
-            const water = new BABYLON.WaterMaterial("water", scene, new BABYLON.Vector2(512, 512));
-                  water.backFaceCulling = true;
-                  water.bumpTexture = new BABYLON.Texture("textures/water/waterbump.png", scene);
-                  water.windForce = -2;
-                  water.waveHeight = 0;
-                  water.bumpHeight = 1;
-                  water.waterColor = new BABYLON.Color3(0.1, 0.1, 0.2);
-                  water.colorBlendFactor = 0.5;
-                  water.addToRenderList(skybox);
-                  water.addToRenderList(largeGround);
-                  waterMesh.material = water;
-                  waterMesh.position.x = -11;      
-                  waterMesh.position.y = 1.6;
-                  waterMesh.position.z = 16;
-              */
+              const scene = new BABYLON.Scene(engine);
+              const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 15, new BABYLON.Vector3(0, 0, 0));
+              camera.position = new BABYLON.Vector3(50, 50, 50);
+              camera.attachControl(canvas, true);
+      
+              // 光源設定
+              const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+                    light.intensity = .6;
+      
+              // 空
+              const skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size: 1000}, scene);
+              const skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
+                    skyboxMaterial.backFaceCulling = false;
+              const skyboxTexture = "textures/sky/skybox";
+                    skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture(skyboxTexture, scene);
+                    skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+                    skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
+                    skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+                    skybox.material = skyboxMaterial;
+      
+              // グランドを作成
+              const largeGroundMat = new BABYLON.StandardMaterial("largeGroundMat");
+                    largeGroundMat.diffuseTexture = new BABYLON.Texture("textures/ground/valleygrass.png");
+              
+              const largeGround = BABYLON.MeshBuilder.CreateGroundFromHeightMap("largeGround", "textures/ground/villageheightmap.png", {width:72, height:144, subdivisions: 300, minHeight:0, maxHeight: 15});  
+                    largeGround.material = largeGroundMat;
+                    largeGround.rotation.y = degree(90);
+                    largeGround.position.y = -0.5;            
+      
+              // ティー
+              const tea = BABYLON.Mesh.CreateSphere("tea", 10, .3);
+                    tea.material = new BABYLON.StandardMaterial("teamaterial");
+                    tea.material.diffuseColor = new BABYLON.Color3(1, 1, 1);  
+                    tea.position.y = 14.8;
+                    tea.position.x = -57;
+                    tea.position.z = -2;
+      
+              const tea1 = tea.clone();
+                    tea1.position.y = 14.8;
+                    tea1.position.x = -57;
+                    tea1.position.z = 7;
+      
+              const tea_under = BABYLON.MeshBuilder.CreateCylinder("tea_under", {height:.5, diameter: .1});
+              const tea_under_material = new BABYLON.StandardMaterial("tea_under_material", scene);
+                    tea_under_material.diffuseColor = new BABYLON.Color3(0.8, 0.8, 0.8);
+                    tea_under_material.alpha = .9;
+                    tea_under.material = tea_under_material;
+                    tea_under.position.y = 14.7;
+                    tea_under.position.x = -57;
+                    tea_under.position.z = -2;
+      
+              const tea_under1 = tea_under.clone();
+                    tea_under1.position.x = -57;
+                    tea_under1.position.z = 7;
     
               // 木を作成
               const elementree = "textures/wood/wood.png";
@@ -189,13 +170,13 @@
                     treel.position.y = tree_data.y + 12.5;
                     break;   
                   case i >= 60 && i <= 80:
-                    const treef_2 = new BABYLON.Sprite("tree", spritetree);
-                    treef_2.width = 3.6;
-                    treef_2.height = 5.4;   
-                    treef_2.position.x = Math.random() * (5) - (-75 + ((80 * 2 - i * 1) * 1.2 ));
-                    treef_2.position.z = Math.random() * -5  - (-0 - ((80 * 2 - i * 1) * .2 ));
-                    treef_2.position.y = 27 - (i * 0.2);
-                    break;   
+                    const treel_2 = new BABYLON.Sprite("tree", spritetree);
+                    treel_2.width = 3.6;
+                    treel_2.height = 5.4;   
+                    treel_2.position.x = Math.random() * (5) - (-75 + ((80 * 2 - i * 1) * 1.2 ));
+                    treel_2.position.z = Math.random() * -5  - (-0 - ((80 * 2 - i * 1) * .2 ));
+                    treel_2.position.y = 30.5 - (i * 0.25);
+                    break;
                   default:
                     break;
                 }
@@ -239,20 +220,20 @@
               });
     
               return scene;
-            };
+          };
     
           const scene = createScene();
           
           engine.runRenderLoop(() => {
-            scene.render();
+              scene.render();
           });
           
           window.addEventListener('resize', () => {
-            engine.resize();
+              engine.resize();
           });
     
           setTimeout(() => {
-            loading.classList.add('js-hidden');
+              loading.classList.add('js-hidden');
           }, 1000);
     
         }
