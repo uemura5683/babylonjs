@@ -173,9 +173,17 @@
                     const treel_2 = new BABYLON.Sprite("tree", spritetree);
                     treel_2.width = 3.6;
                     treel_2.height = 5.4;   
-                    treel_2.position.x = Math.random() * (5) - (-75 + ((80 * 2 - i * 1) * 1.2 ));
-                    treel_2.position.z = Math.random() * -5  - (-0 - ((80 * 2 - i * 1) * .2 ));
+                    treel_2.position.x = Math.random() * 5 - (-75 + ((80 * 2 - i * 1) * 1.2 ));
+                    treel_2.position.z = Math.random() * 5  - (5 - ((80 * 2 - i * 1) * .2 ));
                     treel_2.position.y = 30.5 - (i * 0.25);
+                    break;
+                  case i >= 81 && i <= 90:
+                    const treel_3 = new BABYLON.Sprite("tree", spritetree);
+                    treel_3.width = 3.6;
+                    treel_3.height = 5.4;   
+                    treel_3.position.x = Math.random() * 10 - (-115 + ((90 * 2 - i * 1) * 1.2 ));
+                    treel_3.position.z = Math.random() * 5  - (8 - ((90 * 2 - i * 1) * .2 ));
+                    treel_3.position.y = 27.5 - (i * 0.25);
                     break;
                   default:
                     break;
