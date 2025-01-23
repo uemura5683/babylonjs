@@ -20,80 +20,11 @@
         top: 0;
         left: 0;
       }
-      #js-loading {
-        position: fixed;
-        top: 0;
-        left: 0;
-        background: black;
-        width: 100%;
-        height: 100vh;
-        z-index: 1000;
-      }
-      .js-hidden {
-        display: none;
-      }
-      .c-circle-border {
-        width: 80px;
-        height: 80px;
-        border-radius: 80px;
-        border: 5px solid #fff;
-        border-top-color: rgba(0,0,0,0.3);
-        box-sizing: border-box;
-        position: absolute;
-        top: calc(50% - 40px);
-        left: calc(50% - 40px);
-        animation: spin 1.2s linear infinite;
-        -webkit-animation: spin 1.2s linear infinite;     
-      }
-      .c-button-wrap {
-         position: absolute;
-         z-index: 10;
-         padding: 20px;
-         top: 0px;
-         right: 0px;
-         gap: 10px;
-         display: flex;
-      }
-      .c-button {
-        text-shadow: 0px 0px 3px white;
-        background: transparent;
-        border: none;
-        font-size: 18px;
-        cursor: pointer;
-      }
-      @-webkit-keyframes spin {
-        0% {
-          -webkit-transform: rotate(0);
-          transform: rotate(0)
-        }
-        to {
-          -webkit-transform: rotate(359deg);
-          transform: rotate(359deg)
-        }
-      }
-
-      @keyframes spin {
-        0% {
-          -webkit-transform: rotate(0);
-          transform: rotate(0)
-        }
-        to {
-          -webkit-transform: rotate(359deg);
-          transform: rotate(359deg)
-        }
-      }
     </style>
   </head>
   <body>
     <main>
-      <div id="js-loading">
-        <div class="c-circle-border"></div>		
-      </div>    
       <canvas id="renderCanvas"></canvas>
-      <div class="c-button-wrap">
-        <button type="button" class="c-button" id="light">Light</button>
-        <button type="button" class="c-button" id="dark">Dark</button>
-      </div>  
     </main>  
     <script type="text/javascript">
       function main() {
@@ -102,31 +33,8 @@
           return degrees * (Math.PI / 180);
         }
     
-        const button_targets = document.getElementsByClassName('c-button');
-
-        for(let i = 0; i < button_targets.length; i++){
-          button_targets[i].addEventListener("click",(e) => {
-            light_dark(e.target.getAttribute('id'));
-          }, false);
-        }
     
-        function light_dark(target) {
-          const canvas = document.getElementById('renderCanvas');
-                canvas.remove();
-    
-          const canvas_element = document.createElement('canvas');
-                canvas_element.setAttribute("id",'renderCanvas');
-          const main = document.getElementsByTagName("main");
-                main[0].prepend(canvas_element);
-          const new_canvas = document.getElementById('renderCanvas');
-          const engine = new BABYLON.Engine(new_canvas);
-          renderfunction(target);
-        }
-    
-        function renderfunction(light_dark) {
-    
-          const loading = document.getElementById("js-loading");
-                loading.classList.remove('js-hidden');
+        function renderfunction() {
     
           const canvas = document.getElementById('renderCanvas');
           const engine = new BABYLON.Engine(canvas);      
@@ -139,28 +47,14 @@
             camera.attachControl(canvas, true);
     
             // 光源設定
-            if( light_dark == 'dark' ) {
-                const spot = new BABYLON.PointLight("spot", new BABYLON.Vector3(5, 5, 5));
-                      spot.diffuse = new BABYLON.Color3(.7, .7, .7);
-                      spot.specular = new BABYLON.Color3(0, 0, 0);
-                      spot.position.y = 20;
-                      spot.position.x = 45;
-    
-                const moon = BABYLON.Mesh.CreateSphere("moon", 10, 4);
-                      moon.material = new BABYLON.StandardMaterial("moon");
-                      moon.material.emissiveColor = new BABYLON.Color3(1, 1, 0);  
-                      moon.position.y = 20;
-                      moon.position.x = 45;
-            } else {
-                const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
-                      light.intensity = .6;
-            }
+            const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+                  light.intensity = .6;
     
             // 空
             const skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size: 1000}, scene);
             const skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
                   skyboxMaterial.backFaceCulling = false;
-            const skyboxTexture = light_dark == 'dark' ? "textures/sky_dark/skybox" : "textures/sky/skybox";
+            const skyboxTexture = "textures/sky/skybox";
     
                   skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture(skyboxTexture, scene);
                   skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
@@ -203,17 +97,17 @@
                   tea_under1.position.x = -23.5;
                   tea_under1.position.z = 28.5;      
     
-            // カップを作成
-            const golfcup = BABYLON.MeshBuilder.CreateCylinder("golfcup", {height:1, depth:0.1});
-            const golfcupMaterial = new BABYLON.StandardMaterial("golfcupmaterial", scene);
-                  golfcupMaterial.diffuseColor = new BABYLON.Color3(0.8, 0.8, 0.8);
-                  golfcupMaterial.alpha = .9;
-                  golfcup.material = golfcupMaterial;
-                  golfcup.position.x = 32;
-                  golfcup.position.y = 2.12;
-                  golfcup.position.z = -10.8;
-                  golfcup.rotation.z = degree(2);
-                  golfcup.rotation.x = degree(-3);
+            // // カップを作成
+            // const golfcup = BABYLON.MeshBuilder.CreateCylinder("golfcup", {height:1, depth:0.1});
+            // const golfcupMaterial = new BABYLON.StandardMaterial("golfcupmaterial", scene);
+            //       golfcupMaterial.diffuseColor = new BABYLON.Color3(0.8, 0.8, 0.8);
+            //       golfcupMaterial.alpha = .9;
+            //       golfcup.material = golfcupMaterial;
+            //       golfcup.position.x = 32;
+            //       golfcup.position.y = 2.12;
+            //       golfcup.position.z = -10.8;
+            //       golfcup.rotation.z = degree(2);
+            //       golfcup.rotation.x = degree(-3);
     
             // 水を作成
             const waterMesh = BABYLON.Mesh.CreateGround("waterMesh", 20, 37, 10, scene, false);
@@ -233,7 +127,7 @@
                   waterMesh.position.z = 16.5;   
     
               // 木を作成
-              const elementree = light_dark == 'dark' ? "textures/wood/wood_dark.png" : "textures/wood/wood.png";
+              const elementree = "textures/wood/wood.png";
               const spritetree = new BABYLON.SpriteManager("treesManager", elementree, 135, {width: 538, height: 680}, scene);
             
               for (let i = 0; i < 135; i++) {
@@ -341,7 +235,7 @@
                 
               // ランプを作成
               BABYLON.SceneLoader.ImportMeshAsync("", "", "lamp.babylon").then(() =>{
-                const lignts =  light_dark == 'dark' ? 0.63 : 0;
+                const lignts =  0;
                 const lampLight = new BABYLON.SpotLight("lampLight", BABYLON.Vector3.Zero(), new BABYLON.Vector3(0.25, -1, 0), lignts * Math.PI, 0.01, scene);
     
                       lampLight.diffuse = BABYLON.Color3.White();
