@@ -63,7 +63,7 @@
               const largeGroundMat = new BABYLON.StandardMaterial("largeGroundMat");
                     largeGroundMat.diffuseTexture = new BABYLON.Texture("textures/ground/valleygrass.png");
               
-              const largeGround = BABYLON.MeshBuilder.CreateGroundFromHeightMap("largeGround", "textures/ground/villageheightmap.png", {width:72, height:144, subdivisions: 300, minHeight:0, maxHeight: 15});  
+              const largeGround = BABYLON.MeshBuilder.CreateGroundFromHeightMap("largeGround", "textures/ground/villageheightmap.png", {width:57.5, height:144, subdivisions: 300, minHeight:0, maxHeight: 15});  
                     largeGround.material = largeGroundMat;
                     largeGround.rotation.y = degree(90);
                     largeGround.position.y = -0.5;            
