@@ -73,13 +73,13 @@
                     tea.material = new BABYLON.StandardMaterial("teamaterial");
                     tea.material.diffuseColor = new BABYLON.Color3(1, 1, 1);  
                     tea.position.y = 14.8;
-                    tea.position.x = -57;
-                    tea.position.z = -2;
+                    tea.position.x = -54;
+                    tea.position.z = -3;
       
               const tea1 = tea.clone();
                     tea1.position.y = 14.8;
-                    tea1.position.x = -57;
-                    tea1.position.z = 7;
+                    tea1.position.x = -54;
+                    tea1.position.z = 2;
       
               const tea_under = BABYLON.MeshBuilder.CreateCylinder("tea_under", {height:.5, diameter: .1});
               const tea_under_material = new BABYLON.StandardMaterial("tea_under_material", scene);
@@ -87,12 +87,12 @@
                     tea_under_material.alpha = .9;
                     tea_under.material = tea_under_material;
                     tea_under.position.y = 14.7;
-                    tea_under.position.x = -57;
-                    tea_under.position.z = -2;
+                    tea_under.position.x = -54;
+                    tea_under.position.z = -3;
       
               const tea_under1 = tea_under.clone();
-                    tea_under1.position.x = -57;
-                    tea_under1.position.z = 7;
+                    tea_under1.position.x = -54;
+                    tea_under1.position.z = 2;
     
               // 木を作成
               const elementree = "textures/wood/wood.png";
@@ -110,7 +110,7 @@
                     treer.width = tree_data.w;
                     treer.height = tree_data.h;              
                     treer.position.x = Math.random() * (1) - (24 + ((18 * 2 - i * 1.8) * 1.2 ));
-                    treer.position.z = Math.random() * -1  - (33 - ((18 * 2 - i * 1.2) * .7 ));
+                    treer.position.z = Math.random() * -1  - (35 - ((18 * 2 - i * .5) * .7 ));
                     treer.position.y = tree_data.y + 12.5;
                     break;   
                   case i >= 19 && i <= 26:
@@ -118,16 +118,16 @@
                     treer_2.width = 3.6;
                     treer_2.height = 5.4;              
                     treer_2.position.x = Math.random() * (1) - (-12 + ((26 * 2 - i * 1.6) * 1.2 ));
-                    treer_2.position.z = Math.random() * -1  - (46 - ((26 * 2 - i * 1.1) * .7 ));
-                    treer_2.position.y = 20 - (i * 0.3);
+                    treer_2.position.z = Math.random() * -1  - (51 - ((26 * 2 - i * -.1) * .7 ));
+                    treer_2.position.y = 17 - (i * 0.3);
                     break;   
                   case i >= 27 && i <= 36:
                     const treer_3 = new BABYLON.Sprite("tree", spritetree);
                     treer_3.width = 3.6;
                     treer_3.height = 5.4;              
                     treer_3.position.x = Math.random() * (1) - (-23 + ((36 * 2 - i * 2) * 1.2 ));
-                    treer_3.position.z = Math.random() * 1  - (103 - ((36 * 2 + i * 1.2) * .7 ));
-                    treer_3.position.y = 31 - (i * 0.7);
+                    treer_3.position.z = Math.random() * 1  - (53 - ((36 * 2 + i * -.5) * .7 ));
+                    treer_3.position.y = 22 - (i * 0.5);
                     break;   
                   case i >= 37 && i <= 40:
                     const treer_4 = new BABYLON.Sprite("tree", spritetree);
@@ -141,7 +141,7 @@
                     const treer_5 = new BABYLON.Sprite("tree", spritetree);
                     treer_5.width = tree_data.w;
                     treer_5.height = tree_data.h;             
-                    treer_5.position.x = Math.random() * (1) - (-151 + ((44 * 2 - i * 0.4) * 1.2 ));
+                    treer_5.position.x = Math.random() * (1) - (-141 + ((44 * 2 - i * 0.4) * 1.2 ));
                     treer_5.position.z = Math.random() * 1  - (-75 - ((44 * 2 - i * 4.5) * 0.7 ));
                     treer_5.position.y = tree_data.y - 0.2;
                     break;   
@@ -149,7 +149,7 @@
                     const treec = new BABYLON.Sprite("tree", spritetree);
                     treec.width = tree_data.w;
                     treec.height = tree_data.h;             
-                    treec.position.x = Math.random() * (1) - (-158 + ((47 * 2 - i * 0.4) * 1.2 ));
+                    treec.position.x = Math.random() * (1) - (-138 + ((47 * 2 - i * 0.4) * 1.2 ));
                     treec.position.z = Math.random() * 1  - (-95 - ((47 * 2 - i * 4.5) * 0.7 ));
                     treec.position.y = tree_data.y - 0.2;
                     break;   
@@ -157,8 +157,8 @@
                     const treec_2 = new BABYLON.Sprite("tree", spritetree);
                     treec_2.width = tree_data.w;
                     treec_2.height = tree_data.h;             
-                    treec_2.position.x = Math.random() * (1) - (-155 + ((49 * 2 - i * 0.4) * 1.2 ));
-                    treec_2.position.z = Math.random() * 1  - (-110 - ((49 * 2 - i * 4.5) * 0.7 ));
+                    treec_2.position.x = Math.random() * (1) - (-145 + ((49 * 2 - i * 0.4) * 1.2 ));
+                    treec_2.position.z = Math.random() * 1  - (-100 - ((49 * 2 - i * 4.5) * 0.7 ));
                     treec_2.position.y = tree_data.y - 0.2;
                     break;   
                   case i >= 50 && i <= 60:
@@ -166,7 +166,7 @@
                     treel.width = tree_data.w;
                     treel.height = tree_data.h;              
                     treel.position.x = Math.random() * 10 - 58;
-                    treel.position.z = Math.random() * 5 + 15;
+                    treel.position.z = Math.random() * 5 + 10;
                     treel.position.y = tree_data.y + 12.5;
                     break;   
                   case i >= 60 && i <= 80:
@@ -189,49 +189,12 @@
                   const treel_4 = new BABYLON.Sprite("tree", spritetree);
                     treel_4.width = 3.6;
                     treel_4.height = 5.4;   
-                    treel_4.position.x = Math.random() * 5 - (-160 + ((110 * 2 - i * 1) * 1.1 ));
+                    treel_4.position.x = Math.random() * 5 - (-150 + ((110 * 2 - i * 1) * 1.1 ));
                     treel_4.position.z = Math.random() * 5  - (-30 + ((110 * 2 - i * 1) * .1 ));
                     treel_4.position.y = 6 - (i * 0.02);
                     break;
                 }
               }
-
-              // 噴水を作成
-              BABYLON.SceneLoader.ImportMeshAsync("", "", "fountain.babylon").then(() =>  {
-
-                const fountain = scene.getMeshByName("fountain");
-                      fountain.position.x = -60.7;
-                      fountain.position.y = 14.4;
-                      fountain.position.z = 15.8;
-
-                let particleSystem = new BABYLON.ParticleSystem("particles", 5000, scene);
-                    particleSystem.particleTexture = new BABYLON.Texture("textures/flare/flare.png", scene);
-                    particleSystem.emitter = new BABYLON.Vector3(-60.7, 18.2, 15.8);
-                    particleSystem.minEmitBox = new BABYLON.Vector3(0, 0, 0);
-                    particleSystem.maxEmitBox = new BABYLON.Vector3(0, 0, 0);
-                    particleSystem.color1 = new BABYLON.Color4(0.1, 0.1, 0.2, 0.8);
-                    particleSystem.color2 = new BABYLON.Color4(0.1, 0.1, 0.2, 0.8);
-                    particleSystem.colorDead = new BABYLON.Color4(0.1, 0.1, 0.2, 0.8);
-
-                    // パーティクルのサイズ
-                    particleSystem.minSize = 0.1;
-                    particleSystem.maxSize = 0.2 / 0.5;
-                    particleSystem.minLifeTime = 1;
-                    particleSystem.maxLifeTime = 2.5;
-                    particleSystem.emitRate = 2000;
-                    particleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
-                    particleSystem.gravity = new BABYLON.Vector3(0, -3.81, 0);
-        
-                    // 噴水のばら撒く距離
-                    particleSystem.direction1 = new BABYLON.Vector3(-1, 1, 1);
-                    particleSystem.direction2 = new BABYLON.Vector3(1, 1, -1);
-                    particleSystem.minAngularSpeed = 0;
-                    particleSystem.maxAngularSpeed = Math.PI;
-                    particleSystem.minEmitPower = 0.5;
-                    particleSystem.maxEmitPower = 1;
-                    particleSystem.updateSpeed = 0.03;
-                    particleSystem.start();
-              });
     
               return scene;
           };
