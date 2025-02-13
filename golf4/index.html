@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Babylon.js golf No.3</title>
+    <title>Babylon.js golf No.4</title>
     <script src="https://preview.babylonjs.com/babylon.js"></script>
     <script src="https://cdn.babylonjs.com/materialsLibrary/babylon.gridMaterial.js"></script>
     <script src="https://code.jquery.com/pep/0.4.1/pep.js"></script>
@@ -137,22 +137,30 @@
                     treer_4.position.z = Math.random() * 5 - 15;
                     treer_4.position.y = tree_data.y + 4.2;
                     break;   
-                  // case i >= 41 && i <= 44:
-                  //   const treer_5 = new BABYLON.Sprite("tree", spritetree);
-                  //   treer_5.width = tree_data.w;
-                  //   treer_5.height = tree_data.h;             
-                  //   treer_5.position.x = Math.random() * (1) - (-141 + ((44 * 2 - i * 0.4) * 1.2 ));
-                  //   treer_5.position.z = Math.random() * 1  - (-75 - ((44 * 2 - i * 4.5) * 0.7 ));
-                  //   treer_5.position.y = tree_data.y - 0.2;
-                  //   break;   
-                  // case i >= 45 && i <= 47:
+                  case i >=  51 && i <= 54:
+                    const treer_5 = new BABYLON.Sprite("tree", spritetree);
+                    treer_5.width = tree_data.w;
+                    treer_5.height = tree_data.h;             
+                    treer_5.position.x = Math.random() * (1) - (-53 + ((54 * 2 - i * 2) * 1.2 ));
+                    treer_5.position.z = Math.random() * 1  - (108 - ((54 * 2 - i * -.5) * 0.7 ));
+                    treer_5.position.y = tree_data.y + 3.3;
+                    break;   
+                  case i >= 55 && i <= 60:
+                    const treec = new BABYLON.Sprite("tree", spritetree);
+                    treec.width = tree_data.w;
+                    treec.height = tree_data.h;             
+                    treec.position.x = Math.random() * (1) - (-235 + ((60 * 2 - i * - 0.4) * 1.2 ));
+                    treec.position.z = Math.random() * 1  - (-85 - ((60 * 2 - i * 4.5) * 0.7 ));
+                    treec.position.y = tree_data.y + 2.7;
+                    break; 
+                  // case i >= 55 && i <= 60:
                   //   const treec = new BABYLON.Sprite("tree", spritetree);
                   //   treec.width = tree_data.w;
                   //   treec.height = tree_data.h;             
-                  //   treec.position.x = Math.random() * (1) - (-138 + ((47 * 2 - i * 0.4) * 1.2 ));
-                  //   treec.position.z = Math.random() * 1  - (-95 - ((47 * 2 - i * 4.5) * 0.7 ));
-                  //   treec.position.y = tree_data.y - 0.2;
-                  //   break;   
+                  //   treec.position.x = Math.random() * (1) - (-191 + ((60 * 2 - i * 0.4) * 1.2 ));
+                  //   treec.position.z = Math.random() * 1  - (-95 - ((60 * 2 - i * 4.5) * 0.7 ));
+                  //   treec.position.y = tree_data.y + 2.7;
+                  //   break; 
                   // case i >= 48 && i <= 49:
                   //   const treec_2 = new BABYLON.Sprite("tree", spritetree);
                   //   treec_2.width = tree_data.w;
