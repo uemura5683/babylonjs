@@ -161,31 +161,23 @@
                     treec_2.position.z = Math.random() * 1  - (-110 - ((70* 2 - i * 4.5) * 0.7 ));
                     treec_2.position.y = tree_data.y + 2.7;
                     break; 
-                  // case i >= 50 && i <= 60:
-                  //   const treel = new BABYLON.Sprite("tree", spritetree);
-                  //   treel.width = tree_data.w;
-                  //   treel.height = tree_data.h;              
-                  //   treel.position.x = Math.random() * 10 - 58;
-                  //   treel.position.z = Math.random() * 5 + 10;
-                  //   treel.position.y = tree_data.y + 12.5;
-                  //   break;   
-                  // case i >= 60 && i <= 80:
-                  //   const treel_2 = new BABYLON.Sprite("tree", spritetree);
-                  //   treel_2.width = 3.6;
-                  //   treel_2.height = 5.4;   
-                  //   treel_2.position.x = Math.random() * 5 - (-75 + ((80 * 2 - i * 1) * 1.2 ));
-                  //   treel_2.position.z = Math.random() * 5  - (5 - ((80 * 2 - i * 1) * .2 ));
-                  //   treel_2.position.y = 30.5 - (i * 0.25);
-                  //   break;
-                  // case i >= 81 && i <= 90:
-                  //   const treel_3 = new BABYLON.Sprite("tree", spritetree);
-                  //   treel_3.width = 3.6;
-                  //   treel_3.height = 5.4;   
-                  //   treel_3.position.x = Math.random() * 10 - (-115 + ((90 * 2 - i * 1) * 1.2 ));
-                  //   treel_3.position.z = Math.random() * 5  - (8 - ((90 * 2 - i * 1) * .2 ));
-                  //   treel_3.position.y = 27.5 - (i * 0.25);
-                  //   break;
-                  // default:
+                  case i >= 50 && i <= 60:
+                    const treel = new BABYLON.Sprite("tree", spritetree);
+                    treel.width = tree_data.w;
+                    treel.height = tree_data.h;              
+                    treel.position.x = Math.random() * 10 - 58;
+                    treel.position.z = Math.random() * 5 + 10;
+                    treel.position.y = tree_data.y + 12.5;
+                    break;   
+                  case i >= 61 && i <= 85:
+                    const treel_2 = new BABYLON.Sprite("tree", spritetree);
+                    treel_2.width = 3.6;
+                    treel_2.height = 5.4;   
+                    treel_2.position.x = Math.random() * 15 + 38;
+                    treel_2.position.z = Math.random() * 5 + 10;
+                    treel_2.position.y = 7.5;
+                    break;
+                  default:
                   // const treel_4 = new BABYLON.Sprite("tree", spritetree);
                   //   treel_4.width = 3.6;
                   //   treel_4.height = 5.4;   
