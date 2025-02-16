@@ -98,7 +98,7 @@
               const elementree = "textures/wood/wood.png";
               const spritetree = new BABYLON.SpriteManager("treesManager", elementree, 135, {width: 538, height: 680}, scene);
 
-              for (let i = 0; i < 110; i++) {
+              for (let i = 0; i < 200; i++) {
 
                 const tree_array = [{w:3,h:4.5,y:3.8},{w:3.2,h:4.8,y:4},{w:3.6,h:5.4,y:4.5},{w:4,h:6,y:5},{w:4.4,h:6.6,y:5.5},{w:4.8,h:7.2,y:6},];
                 const tree_data = tree_array[Math.floor(Math.random() * tree_array.length)];
@@ -177,6 +177,22 @@
                     treel_2.position.z = Math.random() * 5 + 10;
                     treel_2.position.y = 7.5;
                     break;
+                  case i >= 86 && i <= 110:
+                    const treec_3 = new BABYLON.Sprite("tree", spritetree);
+                    treec_3.width = 3.6;
+                    treec_3.height = 5.4;            
+                    treec_3.position.x = Math.random() * (3) - (-120 + ((110 * 2 - i * 1.5) * 1.2 ));
+                    treec_3.position.z = Math.random() * 4  - (148 - ((110 * 2 - i * -.2) * 0.7 ));
+                    treec_3.position.y = 19 - (i * 0.1);
+                    break; 
+                  case i >= 111 && i <= 150:
+                    const treec_4 = new BABYLON.Sprite("tree", spritetree);
+                    treec_4.width = 3.6;
+                    treec_4.height = 5.4;            
+                    treec_4.position.x = Math.random() * (3) - (-120 + ((150 * 2 - i * 1.5) * 1.2 ));
+                    treec_4.position.z = Math.random() * 10  - (214 - ((150 * 2 - i * -.2) * 0.7 ));
+                    treec_4.position.y = 38 - (i * 0.2);
+                    break;                     
                   default:
                   // const treel_4 = new BABYLON.Sprite("tree", spritetree);
                   //   treel_4.width = 3.6;
