@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Babylon.js golf No.5</title>
+    <script src="https://preview.babylonjs.com/babylon.js"></script>
+    <script src="https://cdn.babylonjs.com/materialsLibrary/babylon.gridMaterial.js"></script>
+    <script src="https://code.jquery.com/pep/0.4.1/pep.js"></script>
+    <script src="https://unpkg.com/earcut@latest/dist/earcut.min.js"></script>
+    <script src="https://cdn.babylonjs.com/materialsLibrary/babylon.waterMaterial.js"></script>
+    <style>
+      body {
+        margin: 0;
+      }
+      #renderCanvas {
+        width   : 100%;
+        height  : 100%;
+        touch-action: none;
+        top: 0;
+        left: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <canvas id="renderCanvas"></canvas>
+    </main>  
+    <script type="text/javascript">
+      function main() {
+    
+        function degree(degrees) {
+          return degrees * (Math.PI / 180);
+        }
+
+        function renderfunction() {
+        
+          const canvas = document.getElementById('renderCanvas');
+          const engine = new BABYLON.Engine(canvas);      
+    
+          const createScene = function () {
+              const scene = new BABYLON.Scene(engine);
+              const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 15, new BABYLON.Vector3(0, 0, 0));
+              camera.position = new BABYLON.Vector3(50, 50, 50);
+              camera.attachControl(canvas, true);
+      
+              // 光源設定
+              const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+                    light.intensity = .6;
+      
+              // 空
+              const skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size: 1000}, scene);
+              const skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
+                    skyboxMaterial.backFaceCulling = false;
+              const skyboxTexture = "textures/sky/skybox";
+                    skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture(skyboxTexture, scene);
+                    skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+                    skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
+                    skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+                    skybox.material = skyboxMaterial;
+      
+              // グランドを作成
+              const largeGroundMat = new BABYLON.StandardMaterial("largeGroundMat");
+                    largeGroundMat.diffuseTexture = new BABYLON.Texture("textures/ground/valleygrass.png");
+              
+              const largeGround = BABYLON.MeshBuilder.CreateGroundFromHeightMap("largeGround", "textures/ground/villageheightmap.png", {width:57.5, height:144, subdivisions: 300, minHeight:0, maxHeight: 15});  
+                    largeGround.material = largeGroundMat;
+                    largeGround.rotation.y = degree(90);
+                    largeGround.position.y = -0.5;            
+      
+              // ティー
+              const tea = BABYLON.Mesh.CreateSphere("tea", 10, .3);
+                    tea.material = new BABYLON.StandardMaterial("teamaterial");
+                    tea.material.diffuseColor = new BABYLON.Color3(1, 1, 1);  
+                    tea.position.y = 14.8;
+                    tea.position.x = -54;
+                    tea.position.z = -3;
+      
+              const tea1 = tea.clone();
+                    tea1.position.y = 14.8;
+                    tea1.position.x = -54;
+                    tea1.position.z = 2;
+      
+              const tea_under = BABYLON.MeshBuilder.CreateCylinder("tea_under", {height:.5, diameter: .1});
+              const tea_under_material = new BABYLON.StandardMaterial("tea_under_material", scene);
+                    tea_under_material.diffuseColor = new BABYLON.Color3(0.8, 0.8, 0.8);
+                    tea_under_material.alpha = .9;
+                    tea_under.material = tea_under_material;
+                    tea_under.position.y = 14.7;
+                    tea_under.position.x = -54;
+                    tea_under.position.z = -3;
+      
+              const tea_under1 = tea_under.clone();
+                    tea_under1.position.x = -54;
+                    tea_under1.position.z = 2;
+    
+              // 木を作成
+              const elementree = "textures/wood/wood.png";
+              const spritetree = new BABYLON.SpriteManager("treesManager", elementree, 135, {width: 538, height: 680}, scene);
+
+              for (let i = 0; i < 140; i++) {
+
+                const tree_array = [{w:3,h:4.5,y:3.8},{w:3.2,h:4.8,y:4},{w:3.6,h:5.4,y:4.5},{w:4,h:6,y:5},{w:4.4,h:6.6,y:5.5},{w:4.8,h:7.2,y:6},];
+                const tree_data = tree_array[Math.floor(Math.random() * tree_array.length)];
+                switch(true) {
+                  // right side
+                  case i >= 0 && i <= 18:
+                    const treer = new BABYLON.Sprite("tree", spritetree);
+                    treer.width = tree_data.w;
+                    treer.height = tree_data.h;              
+                    treer.position.x = Math.random() * (1) - (20 + ((18 * 2 - i * 1.8) * 1.2 ));
+                    treer.position.z = Math.random() * -1  - (38 - ((18 * 2 - i * .2) * .7 ));
+                    treer.position.y = tree_data.y + 12.5;
+                    break;   
+                  case i >= 19 && i <= 26:
+                    const treer_2 = new BABYLON.Sprite("tree", spritetree);
+                    treer_2.width = 3.6;
+                    treer_2.height = 5.4;              
+                    treer_2.position.x = Math.random() * (1) - (-12 + ((26 * 2 - i * 1.6) * 1.2 ));
+                    treer_2.position.z = Math.random() * -1  - (51 - ((26 * 2 - i * -.1) * .7 ));
+                    treer_2.position.y = 21 - (i * 0.3);
+                    break;   
+                  case i >= 27 && i <= 36:
+                    const treer_3 = new BABYLON.Sprite("tree", spritetree);
+                    treer_3.width = 3.6;
+                    treer_3.height = 5.4;              
+                    treer_3.position.x = Math.random() * (1) - (-23 + ((36 * 2 - i * 2) * 1.2 ));
+                    treer_3.position.z = Math.random() * 1  - (54 - ((36 * 2 + i * -.5) * .7 ));
+                    treer_3.position.y = 21 - (i * 0.3);
+                    break;   
+                  case i >= 37 && i <= 50:
+                    const treer_4 = new BABYLON.Sprite("tree", spritetree);
+                    treer_4.width = tree_data.w;
+                    treer_4.height = tree_data.h;             
+                    treer_4.position.x = Math.random() * 15 + 28;
+                    treer_4.position.z = Math.random() * 5 - 15;
+                    treer_4.position.y = tree_data.y + 4.2;
+                    break;   
+                  case i >= 51 && i <= 54:
+                    const treer_5 = new BABYLON.Sprite("tree", spritetree);
+                    treer_5.width = tree_data.w;
+                    treer_5.height = tree_data.h;             
+                    treer_5.position.x = Math.random() * (1) - (-53 + ((54 * 2 - i * 2) * 1.2 ));
+                    treer_5.position.z = Math.random() * 1  - (108 - ((54 * 2 - i * -.5) * 0.7 ));
+                    treer_5.position.y = tree_data.y + 3.3;
+                    break;   
+                  case i >= 55 && i <= 60:
+                    const treec = new BABYLON.Sprite("tree", spritetree);
+                    treec.width = tree_data.w;
+                    treec.height = tree_data.h;             
+                    treec.position.x = Math.random() * (1) - (-235 + ((60 * 2 - i * - 0.4) * 1.2 ));
+                    treec.position.z = Math.random() * 1  - (-85 - ((60 * 2 - i * 4.5) * 0.7 ));
+                    treec.position.y = tree_data.y + 2.7;
+                    break; 
+                  case i >= 61 && i <= 70:
+                    const treec_2 = new BABYLON.Sprite("tree", spritetree);
+                    treec_2.width = tree_data.w;
+                    treec_2.height = tree_data.h;             
+                    treec_2.position.x = Math.random() * (1) - (-200 + ((70 * 2 - i * 0.4) * 1.2 ));
+                    treec_2.position.z = Math.random() * 1  - (-110 - ((70* 2 - i * 4.5) * 0.7 ));
+                    treec_2.position.y = tree_data.y + 2.7;
+                    break; 
+                  case i >= 71 && i <= 85:
+                    const treel_2 = new BABYLON.Sprite("tree", spritetree);
+                    treel_2.width = 3.6;
+                    treel_2.height = 5.4;   
+                    treel_2.position.x = Math.random() * 15 + 38;
+                    treel_2.position.z = Math.random() * 5 + 10;
+                    treel_2.position.y = 7.5;
+                    break;
+                  case i >= 86 && i <= 110:
+                    const treec_3 = new BABYLON.Sprite("tree", spritetree);
+                    treec_3.width = 3.6;
+                    treec_3.height = 5.4;            
+                    treec_3.position.x = Math.random() * (3) - (-120 + ((110 * 2 - i * 1.5) * 1.2 ));
+                    treec_3.position.z = Math.random() * 4  - (148 - ((110 * 2 - i * -.2) * 0.7 ));
+                    treec_3.position.y = 19 - (i * 0.1);
+                    break; 
+                  case i >= 111 && i <= 140:
+                    const treec_4 = new BABYLON.Sprite("tree", spritetree);
+                    treec_4.width = 3.6;
+                    treec_4.height = 5.4;            
+                    treec_4.position.x = Math.random() * (3) - (-90 + ((140 * 2 - i * 1.5) * 1.2 ));
+                    treec_4.position.z = Math.random() * 10  - (204 - ((140 * 2 - i * -.2) * 0.7 ));
+                    treec_4.position.y = 38 - (i * 0.2);
+                    break; 
+                }
+              }
+    
+              return scene;
+          };
+    
+          const scene = createScene();
+          
+          engine.runRenderLoop(() => {
+              scene.render();
+          });
+          
+          window.addEventListener('resize', () => {
+              engine.resize();
+          });
+    
+          setTimeout(() => {
+              loading.classList.add('js-hidden');
+          }, 1000);
+    
+        }
+        renderfunction();
+      }
+      window.addEventListener('DOMContentLoaded', main);
+    </script>
+  </body>
+</html>
