@@ -17,10 +17,10 @@
         height: 100vh !important;
         background-image: radial-gradient(#494067, #030D14);
       }
-       canvas {
+      canvas {
         width: 100% !important;
         height: 100vh !important;        
-      } 
+      }
     </style>
   </head>
   <body>
@@ -28,7 +28,6 @@
       <div class="tw-relative" id="Canvas">
         <canvas
           id="renderCanvasList" 
-          data-blog="1,2,3,4,5,6,7,8,9,10,11,12"
           >
         </canvas>
       </div>
@@ -53,11 +52,11 @@
               break;
           }
         }
-        bannerlist() {
+        async bannerlist() {
           // バナーリストを表示
           const canvasblog = document.getElementById('renderCanvasList');
           const engine = new BABYLON.Engine(canvasblog);  
-          const scene = this.createScene(this.degree, engine, canvasblog);
+          const scene = await this.createScene(this.degree, engine, canvasblog);
           engine.runRenderLoop(() => {
             scene.render();
           });
@@ -65,7 +64,7 @@
             engine.resize();
           });
         }
-        createScene(degree, engine, canvasblog) {
+        async createScene(degree, engine, canvasblog) {
           // シーンを作成
           switch(true) {
             case !( degree == undefined ):   
@@ -75,9 +74,7 @@
 
                 // カメラを作成
                 const camera = new BABYLON.ArcRotateCamera("camera2", -Math.PI / 2,  Math.PI / 2, 15, BABYLON.Vector3.Zero(), scene);
-                camera.attachControl(canvasblog, true);
-                camera.useAutoRotationBehavior = true;
-                camera.autoRotationBehavior.idleRotationSpeed = Math.PI * 10 / 180;  
+                camera.attachControl(canvasblog, true);  
 
                 // ライトを作成
                 const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0), scene);
@@ -85,27 +82,37 @@
                 light.specular = new BABYLON.Color3(1, 1, 1);
                 light.groundColor = new BABYLON.Color3(1, 1, 1);
 
-                // ギャラリーリストを作成
-                const canvaslist = canvasblog.dataset.blog;
-                const canvaslistsplit = canvaslist.split(',');
 
-                canvaslistsplit.forEach(async function( value, index ) {
-                  console.log(index);
-                  const boxMat = new BABYLON.StandardMaterial("boxMat");
+                // リファクタリング後：設定駆動アプローチ
+                let fontDataCache = null;
+                
+                const clockRings = [
+                  { node: null, yPosition: -2, numbers: Array.from({ length: 12 }, (_, i) => i + 1).reverse(), rotationSpeed: 60000 },    // 60秒で1周
+                  { node: null, yPosition: 0, numbers: Array.from({ length: 12 }, (_, i) => i + 1), rotationSpeed: 3600000 },             // 1時間で1周
+                  { node: null, yPosition: 2, numbers: Array.from({ length: 12 }, (_, i) => i + 1), rotationSpeed: 43200000 }             // 12時間で1周
+                ];
 
-                  // 比率を計算する
-                  // Earcutライブラリの設定を確認
-                  if (typeof earcut !== 'undefined' && BABYLON.PolygonMeshBuilder) {
-                    BABYLON.PolygonMeshBuilder.prototype.bjsEarcut = earcut;
+                // ノードの作成
+                clockRings.forEach((ring, ringIndex) => {
+                  ring.node = new BABYLON.TransformNode(`rotatingNode${ringIndex}`, scene);
+                });
+
+                // Earcutライブラリの設定
+                if (typeof earcut !== 'undefined' && BABYLON.PolygonMeshBuilder) {
+                  BABYLON.PolygonMeshBuilder.prototype.bjsEarcut = earcut;
+                }
+
+                // テキスト作成関数
+                const createTextMesh = async (value, index, numbers, parentNode, yPosition) => {
+                  // フォントデータを毎回読み込み（awaitエラー回避のため）
+                  if (!fontDataCache) {
+                    const fontResponse = await fetch("https://assets.babylonjs.com/fonts/Droid Sans_Regular.json");
+                    fontDataCache = await fontResponse.json();
                   }
-                  
-                  const response = await fetch("https://assets.babylonjs.com/fonts/Droid Sans_Regular.json");
-                  const fontData = await response.json();
-
                   const letterCount = 10;
                   const step = 1 / letterCount;
 
-                  var myText = BABYLON.MeshBuilder.CreateText("myText", value, fontData, {
+                  const myText = BABYLON.MeshBuilder.CreateText("myText", String(value), fontDataCache, {
                       size: 1,
                       resolution: 1, 
                       depth: .1,
@@ -119,18 +126,32 @@
                       }
                   });
 
-                  myText.rotation.y = degree( index * ( 360 / canvaslistsplit.length ) );
-
-                  myText.position.x = - ( canvaslistsplit.length / 1.5 * Math.sin( degree( index * ( 360 / canvaslistsplit.length ) ) ) );
-                  myText.position.y = 0;
-                  myText.position.z = - ( canvaslistsplit.length / 1.5 * Math.cos( degree( index * ( 360 / canvaslistsplit.length ) ) ) );
+                  myText.rotation.y = degree(index * (360 / numbers.length));
+                  myText.position.x = -(numbers.length / 3 * Math.sin(degree(index * (360 / numbers.length))));
+                  myText.position.y = yPosition;
+                  myText.position.z = -(numbers.length / 3 * Math.cos(degree(index * (360 / numbers.length))));
 
                   const mat = new BABYLON.StandardMaterial("mat");
-                  mat.diffuseTexture = new BABYLON.VideoTexture("vidtex","movie.mp4", scene);
-
+                  mat.diffuseTexture = new BABYLON.VideoTexture("vidtex", "movie.mp4", scene);
                   myText.material = mat;
+                  myText.parent = parentNode;
+                };
 
+                // 各リングを作成
+                for (const ring of clockRings) {
+                  for (let i = 0; i < ring.numbers.length; i++) {
+                    await createTextMesh(ring.numbers[i], i, ring.numbers, ring.node, ring.yPosition);
+                  }
+                }
+
+                // アニメーション
+                scene.registerBeforeRender(() => {
+                  const deltaTime = scene.getEngine().getDeltaTime();
+                  clockRings.forEach(ring => {
+                    ring.node.rotation.y += (2 * Math.PI * deltaTime) / ring.rotationSpeed;
+                  });
                 });
+
                 return scene;
               break;
             default:
