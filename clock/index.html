@@ -87,9 +87,15 @@
                 let fontDataCache = null;
                 
                 const clockRings = [
-                  { node: null, yPosition: -2, numbers: Array.from({ length: 12 }, (_, i) => i + 1).reverse(), rotationSpeed: 60000 },    // 60秒で1周
-                  { node: null, yPosition: 0, numbers: Array.from({ length: 12 }, (_, i) => i + 1), rotationSpeed: 3600000 },             // 1時間で1周
-                  { node: null, yPosition: 2, numbers: Array.from({ length: 12 }, (_, i) => i + 1), rotationSpeed: 43200000 }             // 12時間で1周
+                  { node: null, yPosition: -2, numbers: Array.from({ length: 12 }, (_, i) => {
+                    const value = (12 - i) * 5;
+                    return value === 60 ? '0' : String(value);
+                  }), rotationSpeed: 60000 },    // 60秒で1周 (0,55,50,10,5)
+                  { node: null, yPosition: 0, numbers: Array.from({ length: 12 }, (_, i) => {
+                    const value = (12 - i) * 5;
+                    return value === 60 ? '0' : String(value);
+                  }), rotationSpeed: 3600000 },   // 1時間で1周 (0,55,50,10,5)
+                  { node: null, yPosition: 2, numbers: Array.from({ length: 12 }, (_, i) => i + 1).reverse(), rotationSpeed: 43200000 }  // 12時間で1周 (12,11,10...2,1)
                 ];
 
                 // ノードの作成
@@ -131,9 +137,14 @@
                   myText.position.y = yPosition;
                   myText.position.z = -(numbers.length / 3 * Math.cos(degree(index * (360 / numbers.length))));
 
-                  const mat = new BABYLON.StandardMaterial("mat");
-                  mat.diffuseTexture = new BABYLON.VideoTexture("vidtex", "movie.mp4", scene);
+                  // 光沢のある発光マテリアルを適用
+                  const mat = new BABYLON.StandardMaterial(`textMat_${value}_${index}`, scene);
+                  mat.diffuseColor = new BABYLON.Color3(0.7, 0.7, 0.7);  // 少し明るい灰色
+                  mat.specularColor = new BABYLON.Color3(1, 1, 1);       // 白い光沢
+                  mat.specularPower = 32;                                // 光沢の強度
+                  mat.emissiveColor = new BABYLON.Color3(0.5, 0.5, 0.5); // 強い発光効果
                   myText.material = mat;
+
                   myText.parent = parentNode;
                 };
 
@@ -144,6 +155,17 @@
                   }
                 }
 
+                // 現在時刻に基づいて初期位置を設定
+                const now = new Date();
+                const seconds = now.getSeconds();
+                const minutes = now.getMinutes() + seconds / 60;
+                const hours = (now.getHours() % 12) + minutes / 60;
+                
+                // 各リングの初期回転を設定（0が上にある状態から現在時刻の位置へ）
+                clockRings[0].node.rotation.y = (2 * Math.PI * seconds) / 60;       // 秒針（正方向）
+                clockRings[1].node.rotation.y = (2 * Math.PI * minutes) / 60;       // 分針（正方向）
+                clockRings[2].node.rotation.y = (2 * Math.PI * hours) / 12;         // 時針（正方向、12から時計回り）
+
                 // アニメーション
                 scene.registerBeforeRender(() => {
                   const deltaTime = scene.getEngine().getDeltaTime();
@@ -151,6 +173,14 @@
                     ring.node.rotation.y += (2 * Math.PI * deltaTime) / ring.rotationSpeed;
                   });
                 });
+
+                // 円柱を作成
+                const cylinder = new BABYLON.MeshBuilder.CreateCylinder("cylinder", {height: 15, diameter: 7});
+                cylinder.position.y = .5;
+                const cylindermat = new BABYLON.StandardMaterial("cylindermat", scene);
+                cylindermat.diffuseTexture = new BABYLON.VideoTexture("vidtex", "movie.mp4", scene);
+                cylindermat.alpha = 0.7; // 少し透明に
+                cylinder.material = cylindermat;
 
                 return scene;
               break;
