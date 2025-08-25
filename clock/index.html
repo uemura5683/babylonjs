@@ -119,7 +119,7 @@
                   const step = 1 / letterCount;
 
                   const myText = BABYLON.MeshBuilder.CreateText("myText", String(value), fontDataCache, {
-                      size: 1,
+                      size: 0.7,
                       resolution: 1, 
                       depth: .1,
                       perLetterFaceUV: (index) => {
@@ -133,16 +133,16 @@
                   });
 
                   myText.rotation.y = degree(index * (360 / numbers.length));
-                  myText.position.x = -(numbers.length / 3 * Math.sin(degree(index * (360 / numbers.length))));
+                  myText.position.x = -(numbers.length / 3.4 * Math.sin(degree(index * (360 / numbers.length))));
                   myText.position.y = yPosition;
-                  myText.position.z = -(numbers.length / 3 * Math.cos(degree(index * (360 / numbers.length))));
+                  myText.position.z = -(numbers.length / 3.4 * Math.cos(degree(index * (360 / numbers.length))));
 
                   // 光沢のある発光マテリアルを適用
                   const mat = new BABYLON.StandardMaterial(`textMat_${value}_${index}`, scene);
-                  mat.diffuseColor = new BABYLON.Color3(0.7, 0.7, 0.7);  // 少し明るい灰色
-                  mat.specularColor = new BABYLON.Color3(1, 1, 1);       // 白い光沢
+                  mat.diffuseColor = new BABYLON.Color3(0.4, 1, 0.4);    // 明るめの黄緑色
+                  mat.specularColor = new BABYLON.Color3(0.6, 1, 0.6);   // 黄緑系の光沢
                   mat.specularPower = 32;                                // 光沢の強度
-                  mat.emissiveColor = new BABYLON.Color3(0.5, 0.5, 0.5); // 強い発光効果
+                  mat.emissiveColor = new BABYLON.Color3(0.2, 0.8, 0.2); // デジタル時計風の発光効果
                   myText.material = mat;
 
                   myText.parent = parentNode;
@@ -174,13 +174,25 @@
                   });
                 });
 
-                // 円柱を作成
-                const cylinder = new BABYLON.MeshBuilder.CreateCylinder("cylinder", {height: 15, diameter: 7});
+                // 真ん中の円柱を作成
+                const cylinder = new BABYLON.MeshBuilder.CreateCylinder("cylinder", {height: 6, diameter: 7});
                 cylinder.position.y = .5;
                 const cylindermat = new BABYLON.StandardMaterial("cylindermat", scene);
                 cylindermat.diffuseTexture = new BABYLON.VideoTexture("vidtex", "movie.mp4", scene);
-                cylindermat.alpha = 0.7; // 少し透明に
+                cylindermat.alpha = 1;
                 cylinder.material = cylindermat;
+
+
+                const clockline = BABYLON.MeshBuilder.CreateBox("clockline", {height: 6, width: .05, depth: .05});
+                clockline.position.y = .5;
+                clockline.position.z = -3.5;                
+                const clocklinemat = new BABYLON.StandardMaterial(`clocklinemat`, scene);                
+                clocklinemat.diffuseColor = new BABYLON.Color3(1, 1, 1);  // 少し明るい灰色
+                clocklinemat.specularColor = new BABYLON.Color3(0, 0, 0);       // 白い光沢
+                clocklinemat.specularPower = 32;                                // 光沢の強度
+                clocklinemat.emissiveColor = new BABYLON.Color3(0, 0, 0); // 強い発光効果
+                clocklinemat.alpha = 1; 
+                clockline.material = clocklinemat;
 
                 return scene;
               break;
