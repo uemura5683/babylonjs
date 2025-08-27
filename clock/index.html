@@ -25,7 +25,7 @@
   </head>
   <body>
     <main>
-      <div class="tw-relative" id="Canvas">
+      <div id="Canvas">
         <canvas
           id="renderCanvasList" 
           >
@@ -82,20 +82,26 @@
                 light.specular = new BABYLON.Color3(1, 1, 1);
                 light.groundColor = new BABYLON.Color3(1, 1, 1);
 
-
                 // リファクタリング後：設定駆動アプローチ
                 let fontDataCache = null;
-                
                 const clockRings = [
-                  { node: null, yPosition: -2, numbers: Array.from({ length: 12 }, (_, i) => {
-                    const value = (12 - i) * 5;
-                    return value === 60 ? '0' : String(value);
-                  }), rotationSpeed: 60000 },    // 60秒で1周 (0,55,50,10,5)
-                  { node: null, yPosition: 0, numbers: Array.from({ length: 12 }, (_, i) => {
-                    const value = (12 - i) * 5;
-                    return value === 60 ? '0' : String(value);
-                  }), rotationSpeed: 3600000 },   // 1時間で1周 (0,55,50,10,5)
-                  { node: null, yPosition: 2, numbers: Array.from({ length: 12 }, (_, i) => i + 1).reverse(), rotationSpeed: 43200000 }  // 12時間で1周 (12,11,10...2,1)
+                  { name: 'munute', node: null, yPosition: -2, yPosition_split: -1.85, numbers: Array.from({ length: 60 }, (_, i) => {
+                    const pos = (60 - i) % 60;
+                    return pos % 5 === 0 ? String(pos) : '.';
+                  }), rotationSpeed: 60000 },    // 60秒で1周 (0,·,·,·,·,55,·,·,·,·,50...)
+                  { name: 'hours', node: null, yPosition: 0, yPosition_split: 0.15, numbers: Array.from({ length: 60 }, (_, i) => {
+                    const pos = (60 - i) % 60;
+                    return pos % 5 === 0 ? String(pos) : '.';
+                  }), rotationSpeed: 3600000 },   // 1時間で1周 (0,·,·,·,·,55,·,·,·,·,50...)
+                  { name: 'hulfday', node: null, yPosition: 2.3, yPosition_split: 2.45, numbers: Array.from({ length: 60 }, (_, i) => {
+                    const pos = (60 - i) % 60;
+                    if (pos % 5 === 0) {
+                      const hourValue = Math.floor(pos / 5);
+                      return String(hourValue === 0 ? 12 : hourValue);
+                    } else {
+                      return '.';
+                    }
+                  }), rotationSpeed: 43200000 }  // 12時間で1周 (12,.,.,.,.,11,.,.,.,.,10...)
                 ];
 
                 // ノードの作成
@@ -109,7 +115,8 @@
                 }
 
                 // テキスト作成関数
-                const createTextMesh = async (value, index, numbers, parentNode, yPosition) => {
+                const createTextMesh = async (name, value, index, numbers, parentNode, yPosition, yPosition_split) => {
+
                   // フォントデータを毎回読み込み（awaitエラー回避のため）
                   if (!fontDataCache) {
                     const fontResponse = await fetch("https://assets.babylonjs.com/fonts/Droid Sans_Regular.json");
@@ -119,7 +126,7 @@
                   const step = 1 / letterCount;
 
                   const myText = BABYLON.MeshBuilder.CreateText("myText", String(value), fontDataCache, {
-                      size: 0.7,
+                      size: 0.35,
                       resolution: 1, 
                       depth: .1,
                       perLetterFaceUV: (index) => {
@@ -131,11 +138,19 @@
                           ];
                       }
                   });
+                
 
                   myText.rotation.y = degree(index * (360 / numbers.length));
-                  myText.position.x = -(numbers.length / 3.4 * Math.sin(degree(index * (360 / numbers.length))));
-                  myText.position.y = yPosition;
-                  myText.position.z = -(numbers.length / 3.4 * Math.cos(degree(index * (360 / numbers.length))));
+                  
+                  // Y座標の設定：数字か点かで高さを変える
+                  const isNumber = (name === 'hulfday' && value !== '.') || (name !== 'hulfday' && !isNaN(value) && value % 5 === 0);
+                  myText.position.y = isNumber ? yPosition : yPosition_split;
+                  
+                  // X,Z座標の設定
+                  const angle = degree(index * (360 / numbers.length));
+                  const radius = numbers.length / (3.4 * 5);
+                  myText.position.x = -(radius * Math.sin(angle));
+                  myText.position.z = -(radius * Math.cos(angle));
 
                   // 光沢のある発光マテリアルを適用
                   const mat = new BABYLON.StandardMaterial(`textMat_${value}_${index}`, scene);
@@ -151,7 +166,7 @@
                 // 各リングを作成
                 for (const ring of clockRings) {
                   for (let i = 0; i < ring.numbers.length; i++) {
-                    await createTextMesh(ring.numbers[i], i, ring.numbers, ring.node, ring.yPosition);
+                    await createTextMesh(ring.name, ring.numbers[i], i, ring.numbers, ring.node, ring.yPosition, ring.yPosition_split);
                   }
                 }
 
@@ -206,22 +221,43 @@
                 const cylinderline2 = cylinderline.clone();
                 cylinderline2.position.y = -.7;
 
-                const clockline = BABYLON.MeshBuilder.CreateBox("clockline", {height: 6, width: .05, depth: .05});
-                clockline.position.y = .5;
-                clockline.position.z = -3.5;    
+                
+                // 60分割の目盛りを作成する関数
+                const createClockMarks = (yPosition, suffix) => {
+                  for (let i = 0; i < 60; i++) {
+                    let height;
+                    if (i % 10 === 0) {
+                      height = 0.75; // 0, 10, 20, 30, 40, 50分の長い目盛り
+                    } else if (i % 5 === 0) {
+                      height = 0.5;  // 5, 15, 25, 35, 45, 55分の中間目盛り
+                    } else {
+                      height = 0.25; // その他の短い目盛り
+                    }
+                    const clockline_split = BABYLON.MeshBuilder.CreateBox(`clockline_split_${suffix}_${i}`, {
+                      height: height, width: .025, depth: .025
+                    });
+                    
+                    clockline_split.rotation.y = degree(i * (360 / 60));
+                    clockline_split.position.x = -(48 / 13.5 * Math.sin(degree(i * (360 / 60))));
+                    clockline_split.position.y = yPosition;
+                    clockline_split.position.z = -(48 / 13.5 * Math.cos(degree(i * (360 / 60))));
+                    
+                    // マテリアルを追加
+                    const splitmat = new BABYLON.StandardMaterial(`splitmat_${suffix}_${i}`, scene);
+                    splitmat.diffuseColor = new BABYLON.Color3(0.8, 0.8, 0.8);
+                    splitmat.emissiveColor = new BABYLON.Color3(0.1, 0.1, 0.1);
+                    clockline_split.material = splitmat;
+                  }
+                };
+                
+                // 上部と下部の目盛りを作成
+                createClockMarks(1.3, 'top');
+                createClockMarks(-0.7, 'bottom');
 
-                const clocklinemat = new BABYLON.StandardMaterial(`clocklinemat`, scene);                
-                clocklinemat.diffuseColor = new BABYLON.Color3(1, 1, 1);  // 少し明るい灰色
-                clocklinemat.specularColor = new BABYLON.Color3(0, 0, 0);       // 白い光沢
-                clocklinemat.specularPower = 32;                                // 光沢の強度
-                clocklinemat.emissiveColor = new BABYLON.Color3(0, 0, 0); // 強い発光効果
-                clocklinemat.alpha = 1; 
-                clockline.material = clocklinemat;
 
-                // 1-36までの時計の線を作成
+                // 1-48までの時計の線を作成
                 for (let i = 0; i < 48; i++) {
                   const tube = BABYLON.MeshBuilder.CreateBox(`clockline_${i}`, {height: 6.5, width: .48, depth: .01});
-                  
                   if( i != 46 && i != 47 && i != 48 && i != 0 && i != 1 && i != 2 ) {
                     tube.rotation.y = degree(i * (360 /48));
                     tube.position.x = -(48 / 13 * Math.sin(degree(i * (360 / 48))));
@@ -237,18 +273,14 @@
                     tube.material = tubemat;
                   }
                 }
-
-
                 return scene;
               break;
             default:
               break;
           }
         }
-
       }
       const carousel = new Carousel();
-
     </script>
   </body>
 </html>
