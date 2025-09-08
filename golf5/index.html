@@ -73,13 +73,13 @@
                     tea.material = new BABYLON.StandardMaterial("teamaterial");
                     tea.material.diffuseColor = new BABYLON.Color3(1, 1, 1);  
                     tea.position.y = 14.8;
-                    tea.position.x = -54;
-                    tea.position.z = -3;
+                    tea.position.x = -51;
+                    tea.position.z = -18;
       
               const tea1 = tea.clone();
                     tea1.position.y = 14.8;
-                    tea1.position.x = -54;
-                    tea1.position.z = 2;
+                    tea1.position.x = -53;
+                    tea1.position.z = -14;
       
               const tea_under = BABYLON.MeshBuilder.CreateCylinder("tea_under", {height:.5, diameter: .1});
               const tea_under_material = new BABYLON.StandardMaterial("tea_under_material", scene);
@@ -87,12 +87,12 @@
                     tea_under_material.alpha = .9;
                     tea_under.material = tea_under_material;
                     tea_under.position.y = 14.7;
-                    tea_under.position.x = -54;
-                    tea_under.position.z = -3;
+                    tea_under.position.x = -51;
+                    tea_under.position.z = -18;
       
               const tea_under1 = tea_under.clone();
-                    tea_under1.position.x = -54;
-                    tea_under1.position.z = 2;
+                    tea_under1.position.x = -53;
+                    tea_under1.position.z = -14;
     
               // 木を作成
               const elementree = "textures/wood/wood.png";
@@ -116,9 +116,17 @@
                     const treec_3 = new BABYLON.Sprite("tree", spritetree);
                     treec_3.width = 3.6;
                     treec_3.height = 5.4;            
-                    treec_3.position.x = Math.random() * (3) - (-120 + ((110 * 2 - i * 1.5) * 1.2 ));
+                    treec_3.position.x = Math.random() * 3 - (-120 + ((110 * 2 - i * 1.5) * 1.2 ));
                     treec_3.position.z = Math.random() * 4  - (148 - ((110 * 2 - i * -.2) * 0.7 ));
                     treec_3.position.y = 19 - (i * 0.1);
+                    break; 
+                  case i >= 111 && i <= 115:
+                    const treec_4 = new BABYLON.Sprite("tree", spritetree);
+                    treec_4.width = 3.6;
+                    treec_4.height = 5.4;            
+                    treec_4.position.x = Math.random() * 3 - (-60 + ((115 * 2 - i * 1.5) * 1.2 ));
+                    treec_4.position.z = Math.random() * 4  - (161 - ((115 * 2 - i * -.2) * 0.7 ));
+                    treec_4.position.y = 34 - (i * 0.2);
                     break; 
                 }
               }
