@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>8番出口</title>
+    <script src="https://preview.babylonjs.com/babylon.js"></script>
+    <script src="https://cdn.babylonjs.com/materialsLibrary/babylon.gridMaterial.js"></script>
+    <script src="https://code.jquery.com/pep/0.4.1/pep.js"></script>
+    <script src="https://unpkg.com/earcut@2.2.4/dist/earcut.min.js"></script>
+    <style>
+      html, body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        margin: 0;
+      }
+      #renderCanvas {
+        width   : 100%;
+        height  : 100%;
+        touch-action: none;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="renderCanvas"></canvas>
+    <script>
+      function main() {
+        const canvas = document.getElementById('renderCanvas');
+        const engine = new BABYLON.Engine(canvas);
+
+        function degree(degrees) {
+          return degrees * (Math.PI / 180);
+        }
+
+        const createScene = async function () {
+
+          const scene = new BABYLON.Scene(engine);
+
+          const camera = new BABYLON.ArcRotateCamera("Camera", 1 * Math.PI / 2, Math.PI / 2, -300, BABYLON.Vector3.Zero(), scene);
+          camera.attachControl(canvas, true);
+
+          const spot = new BABYLON.PointLight("spot", new BABYLON.Vector3(5, 5, 5));
+                spot.diffuse = new BABYLON.Color3(1, 1, 1);
+                spot.specular = new BABYLON.Color3(0, 0, 0);
+                spot.position.z = -300;
+                spot.position.y = 0;
+                spot.position.x = 0;
+
+        // 駅内
+        const skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size: 1000}, scene);
+        const skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
+              skyboxMaterial.backFaceCulling = false;
+        const skyboxTexture = "textures/skybox";
+
+              skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture(skyboxTexture, scene);
+              skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+              skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
+              skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+              skybox.material = skyboxMaterial;
+
+
+          // カメラ全体をグループ化
+          const cameraGroup = new BABYLON.TransformNode("cameraGroup", scene);
+
+          // テキスト用の平面を作成
+          var myText = BABYLON.MeshBuilder.CreatePlane("textPlane", {width: 200, height: 200}, scene);
+          myText.position.z = -0;
+          myText.parent = cameraGroup;
+
+          // テクスチャにテキストを描画
+          var dynamicTexture = new BABYLON.DynamicTexture("dynamic texture", {width: 1000, height: 1000}, scene);
+          dynamicTexture.hasAlpha = true;
+          dynamicTexture.drawText("防犯カメラ", null, 580, "600 100px Arial", "#000", "transparent", true);
+          dynamicTexture.drawText("作動中！", null, 700, "600 100px Arial", "#ff0000", "transparent", true);
+          dynamicTexture.drawText("Security camera in operation", null, 900, "600 50px Arial", "#000", "transparent", true);
+
+          // テキスト材質
+          var textMaterial = new BABYLON.StandardMaterial("textMaterial", scene);
+          textMaterial.diffuseTexture = dynamicTexture;
+          textMaterial.backFaceCulling = false; // 両面表示
+
+          myText.material = textMaterial;
+
+          const box = BABYLON.MeshBuilder.CreateBox("box", {height: 200, width: 200, depth: 0.25}, scene);
+          box.position.z = 1;
+          box.parent = cameraGroup;
+
+          const boxMaterial = new BABYLON.StandardMaterial("boxMaterial", scene);
+          boxMaterial.diffuseColor = new BABYLON.Color3(1, 1, 1); // 白色
+          boxMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1); // 自己発光で明るく
+          boxMaterial.backFaceCulling = false; // 両面をレンダリング
+          box.material = boxMaterial;
+
+          // 左目の楕円
+          const leftEllipseblack = BABYLON.MeshBuilder.CreateSphere("leftEllipse", {diameterX: 11, diameterY: 17, diameterZ:1}, scene);
+          leftEllipseblack.scaling.x = 5;
+          leftEllipseblack.scaling.y = 2;
+          leftEllipseblack.scaling.z = 0.5;
+          leftEllipseblack.position.x = -40;
+          leftEllipseblack.position.y = 40;
+          leftEllipseblack.position.z = 0.5;
+          leftEllipseblack.parent = cameraGroup;
+
+          // 右目の楕円
+          const rightEllipseblack = BABYLON.MeshBuilder.CreateSphere("rightEllipseblack", {diameterX: 11, diameterY: 17, diameterZ:1}, scene);
+          rightEllipseblack.scaling.x = 5;
+          rightEllipseblack.scaling.y = 2;
+          rightEllipseblack.scaling.z = 0.5;
+          rightEllipseblack.position.x = 40;
+          rightEllipseblack.position.y = 40;
+          rightEllipseblack.position.z = 0.5;
+          rightEllipseblack.parent = cameraGroup;
+
+          // 楕円の材質を設定
+          const ellipseMaterialblack = new BABYLON.StandardMaterial("ellipseMaterialblack", scene);
+          ellipseMaterialblack.diffuseColor = new BABYLON.Color3(0, 0, 0); // 薄い青色
+          leftEllipseblack.material = ellipseMaterialblack;
+          rightEllipseblack.material = ellipseMaterialblack;
+
+          // 楕円形の追加装飾をグループ化
+          const ellipseGroup = new BABYLON.TransformNode("ellipseGroup", scene);
+          ellipseGroup.parent = cameraGroup;
+
+          // 左目の楕円
+          const leftEllipse = BABYLON.MeshBuilder.CreateSphere("leftEllipse", {diameterX: 10, diameterY: 16, diameterZ:1}, scene);
+          leftEllipse.scaling.x = 5;
+          leftEllipse.scaling.y = 2;
+          leftEllipse.scaling.z = 0.5;
+          leftEllipse.position.x = -40;
+          leftEllipse.position.y = 40;
+          leftEllipse.position.z = 0;
+          leftEllipse.parent = ellipseGroup;
+
+          // 右目の楕円
+          const rightEllipse = BABYLON.MeshBuilder.CreateSphere("rightEllipse", {diameterX: 10, diameterY: 16, diameterZ:1}, scene);
+          rightEllipse.scaling.x = 5;
+          rightEllipse.scaling.y = 2;
+          rightEllipse.scaling.z = 0.5;
+          rightEllipse.position.x = 40;
+          rightEllipse.position.y = 40;
+          rightEllipse.position.z = 0;
+          rightEllipse.parent = ellipseGroup;
+
+          // 左目をグループ化
+          const leftEyeGroup = new BABYLON.TransformNode("leftEyeGroup", scene);
+          leftEyeGroup.parent = cameraGroup;
+
+          // 左目
+          const leftEye = BABYLON.MeshBuilder.CreateDisc("leftEye", {radius: 5}, scene);
+          leftEye.position.x = -40;
+          leftEye.position.y = 40;
+          leftEye.position.z = -1;
+          leftEye.parent = leftEyeGroup;
+
+          // 左目の瞳
+          const leftPupil = BABYLON.MeshBuilder.CreateDisc("leftPupil", {radius: 15}, scene);
+          leftPupil.position.x = -40;
+          leftPupil.position.y = 40;
+          leftPupil.position.z = -0.5;
+          leftPupil.parent = leftEyeGroup;
+
+          // 右目をグループ化
+          const rightEyeGroup = new BABYLON.TransformNode("rightEyeGroup", scene);
+          rightEyeGroup.parent = cameraGroup;
+
+          // 右目
+          const rightEye = BABYLON.MeshBuilder.CreateDisc("rightEye", {radius: 5}, scene);
+          rightEye.position.x = 40;
+          rightEye.position.y = 40;
+          rightEye.position.z = -1;
+          rightEye.parent = rightEyeGroup;
+
+          // 右目の瞳
+          const rightPupil = BABYLON.MeshBuilder.CreateDisc("rightPupil", {radius: 15}, scene);
+          rightPupil.position.x = 40;
+          rightPupil.position.y = 40;
+          rightPupil.position.z = -0.5;
+          rightPupil.parent = rightEyeGroup;
+
+          // 目の材質を設定
+          const eyeMaterial = new BABYLON.StandardMaterial("eyeMaterial", scene);
+          eyeMaterial.diffuseColor = new BABYLON.Color3(1, 1, 1); // 白い眼球
+          leftEyeGroup.material = eyeMaterial;
+          rightEye.material = eyeMaterial;
+
+          // 瞳の材質を設定
+          const pupilMaterial = new BABYLON.StandardMaterial("pupilMaterial", scene);
+          pupilMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0); // 黒い瞳
+          leftPupil.material = pupilMaterial;
+          rightPupil.material = pupilMaterial;
+
+          // 楕円の材質を設定
+          const ellipseMaterial = new BABYLON.StandardMaterial("ellipseMaterial", scene);
+          ellipseMaterial.diffuseColor = new BABYLON.Color3(1, 1, 1); // 薄い青色
+          leftEllipse.material = ellipseMaterial;
+          rightEllipse.material = ellipseMaterial;
+
+          cameraGroup.position.z = 499;
+
+          scene.createDefaultCameraOrLight(true);
+
+          scene.activeCamera.attachControl(canvas, true);
+
+          // マウスの動きで目を動かす
+          canvas.addEventListener('mousemove', (event) => {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = ((event.clientX - rect.left) / rect.width) * 2 - 1; // -1 to 1
+            const mouseY = -((event.clientY - rect.top) / rect.height) * 2 + 1; // -1 to 1
+
+            // 目の動きの範囲を制限
+            const eyeMovementRangeX = 6;
+            const eyeMovementRangeY = 2;            
+            const eyeOffsetX = mouseX * eyeMovementRangeX;
+            const eyeOffsetY = mouseY * eyeMovementRangeY;
+
+            // 左目グループの位置を更新
+            leftEyeGroup.position.x = -0 + eyeOffsetX;
+            leftEyeGroup.position.y = 0 + eyeOffsetY;
+
+            // 右目グループの位置を更新
+            rightEyeGroup.position.x = 0 + eyeOffsetX;
+            rightEyeGroup.position.y = 0 + eyeOffsetY;
+          });
+
+          return scene;
+            
+        };
+
+        const scene = createScene();
+        
+        engine.runRenderLoop(() => {
+          scene.then(value => {
+            value.render();
+          })
+        });
+
+        window.addEventListener('resize', () => {
+          engine.resize();
+        });
+      }
+      window.addEventListener('DOMContentLoaded', main);
+    </script>
+  </body>
+</html>
