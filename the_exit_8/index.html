@@ -47,22 +47,23 @@
                 spot.position.y = 0;
                 spot.position.x = 0;
 
-        // 駅内
-        const skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size: 1000}, scene);
-        const skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
-              skyboxMaterial.backFaceCulling = false;
-        const skyboxTexture = "textures/skybox";
+          // 駅内
+          const skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size: 1000}, scene);
+          const skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
+                skyboxMaterial.backFaceCulling = false;
+          const skyboxTexture = "textures/skybox";
 
-              skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture(skyboxTexture, scene);
-              skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
-              skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
-              skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-              skybox.material = skyboxMaterial;
+                skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture(skyboxTexture, scene);
+                skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+                skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
+                skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+                skybox.material = skyboxMaterial;
 
 
           // カメラ全体をグループ化
           const cameraGroup = new BABYLON.TransformNode("cameraGroup", scene);
 
+          // 目を作成                    
           // テキスト用の平面を作成
           var myText = BABYLON.MeshBuilder.CreatePlane("textPlane", {width: 200, height: 200}, scene);
           myText.position.z = -0;
@@ -198,6 +199,95 @@
 
           cameraGroup.position.z = 499;
 
+          // 防犯カメラ
+          const sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {arc: 0.5, diameter: 50, sideOrientation: BABYLON.Mesh.DOUBLESIDE});
+          sphere.position.y = 500;
+          sphere.rotation.x = -Math.PI / 2;
+
+          const sphereMaterial = new BABYLON.StandardMaterial("sphereMaterial", scene);
+          sphereMaterial.diffuseColor = new BABYLON.Color3(0.1, 0.1, 0.1);  // 少し明るい灰色
+          sphereMaterial.specularColor = new BABYLON.Color3(1, 1, 1);       // 白い光沢
+          sphereMaterial.specularPower = 10;                                // 光沢の強度
+          sphereMaterial.emissiveColor = new BABYLON.Color3(0, 0, 0); // 強い発光効果
+          sphereMaterial.alpha = .5; 
+          sphere.material = sphereMaterial; 
+
+          const spherelignt = BABYLON.MeshBuilder.CreateSphere("sphere", {arc: 1, diameter: 5, sideOrientation: BABYLON.Mesh.DOUBLESIDE});
+          spherelignt.position.y = 477;
+
+          const sphereligntMaterial = new BABYLON.StandardMaterial("sphereligntMaterial", scene);
+          sphereligntMaterial.diffuseColor = new BABYLON.Color3(1, .5, .5);  // 赤色
+          sphereligntMaterial.specularColor = new BABYLON.Color3(1, .5, .5);       // 白い光沢
+          sphereligntMaterial.specularPower = 100;                                // 光沢の強度
+          sphereligntMaterial.emissiveColor = new BABYLON.Color3(1, 0, 0); // 純粋な赤い発光効果
+          spherelignt.material = sphereligntMaterial;
+
+          // ポスター
+          const postersGroup = new BABYLON.TransformNode("postersGroup", scene);
+
+          const posters_array = Array.from({length: 3}, (_, i) => `poster${i + 1}.png`);
+
+          posters_array.map((poster, index) => {
+            createposter(poster, index);
+          });
+
+          postersGroup.rotation.y = -Math.PI / 2;
+
+          function createposter( poster, index ) {
+            const posterMat = new BABYLON.StandardMaterial("posterMat");
+            posterMat.diffuseTexture = new BABYLON.Texture(`textures/${poster}`, scene);
+
+            const posterMesh = BABYLON.MeshBuilder.CreateBox("box", {height: 79.8, width: 70.0, depth: 0.1}, scene);
+            posterMesh.material = posterMat;
+            posterMesh.position.y = 0;
+            posterMesh.position.x = (index * 250) - 250;
+            posterMesh.position.z = 499;
+            posterMesh.parent = postersGroup;
+
+            // 初期スケールを1に設定
+            posterMesh.scaling = new BABYLON.Vector3(1, 1, 1);
+            const scaleAnimation = new BABYLON.Animation("scaleAnimation", "scaling", 30, BABYLON.Animation.ANIMATIONTYPE_VECTOR3, BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+
+            const keys = [];
+            keys.push({frame: 0, value: new BABYLON.Vector3(1, 1, 1)});
+            keys.push({frame: 600, value: new BABYLON.Vector3(3, 3, 3)}); // 10秒 = 300フレーム (30fps)
+
+            scaleAnimation.setKeys(keys);
+            posterMesh.animations.push(scaleAnimation);
+
+            // アニメーションを開始
+            scene.beginAnimation(posterMesh, 0, 600, false);
+           }
+
+           const nosmokingGroup = new BABYLON.TransformNode("postersGroup", scene);
+           nosmokingGroup.position.x = 499;
+           nosmokingGroup.rotation.y = -Math.PI / 2;
+
+           const nosmoking_array = Array.from({length: 20}, (_, i) => i + 1);
+           nosmoking_array.forEach(function(element) {
+            const nosmokingMat = new BABYLON.StandardMaterial("nosmokingMat");
+            nosmokingMat.diffuseTexture = new BABYLON.Texture(`textures/nosmoking.png`, scene);
+
+            const nosmokingMesh = BABYLON.MeshBuilder.CreateBox("box", {height: 153.6, width: 102.4, depth: 0.05}, scene);
+            nosmokingMesh.material = nosmokingMat;
+            const angle = (element / 10) * Math.PI * 2; // 0から2πまで
+            const radius = Math.random() * 100 + 100; // ランダムな半径（50-150）
+            nosmokingMesh.position.y = Math.sin(angle) * radius;
+            nosmokingMesh.position.x = Math.cos(angle) * radius;
+            nosmokingMesh.position.z = element * 0.1;
+
+            nosmokingMesh.rotation.z = Math.sin(angle) * radius;
+            nosmokingMesh.parent = nosmokingGroup;
+
+            // クリックで消せるようにする
+            nosmokingMesh.actionManager = new BABYLON.ActionManager(scene);
+            nosmokingMesh.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, function () {
+                nosmokingMesh.dispose();
+            }));
+
+           });
+
+
           scene.createDefaultCameraOrLight(true);
 
           scene.activeCamera.attachControl(canvas, true);
@@ -211,16 +301,22 @@
             // 目の動きの範囲を制限
             const eyeMovementRangeX = 6;
             const eyeMovementRangeY = 2;            
+
             const eyeOffsetX = mouseX * eyeMovementRangeX;
             const eyeOffsetY = mouseY * eyeMovementRangeY;
 
             // 左目グループの位置を更新
-            leftEyeGroup.position.x = -0 + eyeOffsetX;
+            leftEyeGroup.position.x = 0 + eyeOffsetX;
             leftEyeGroup.position.y = 0 + eyeOffsetY;
 
             // 右目グループの位置を更新
             rightEyeGroup.position.x = 0 + eyeOffsetX;
             rightEyeGroup.position.y = 0 + eyeOffsetY;
+
+            // sphereligntのx, z座標を更新
+            spherelignt.position.x = mouseX * 3;
+            spherelignt.position.z = - mouseY * 3;
+
           });
 
           return scene;
