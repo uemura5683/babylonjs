@@ -200,33 +200,31 @@
           cameraGroup.position.z = 499;
 
           // 防犯カメラ
-          const sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {arc: 0.5, diameter: 50, sideOrientation: BABYLON.Mesh.DOUBLESIDE});
-          sphere.position.y = 500;
-          sphere.rotation.x = -Math.PI / 2;
+          const crimeprevention = BABYLON.MeshBuilder.CreateSphere("sphere", {arc: 0.5, diameter: 50, sideOrientation: BABYLON.Mesh.DOUBLESIDE});
+          crimeprevention.position.y = 500;
+          crimeprevention.rotation.x = -Math.PI / 2;
 
-          const sphereMaterial = new BABYLON.StandardMaterial("sphereMaterial", scene);
-          sphereMaterial.diffuseColor = new BABYLON.Color3(0.1, 0.1, 0.1);  // 少し明るい灰色
-          sphereMaterial.specularColor = new BABYLON.Color3(1, 1, 1);       // 白い光沢
-          sphereMaterial.specularPower = 10;                                // 光沢の強度
-          sphereMaterial.emissiveColor = new BABYLON.Color3(0, 0, 0); // 強い発光効果
-          sphereMaterial.alpha = .5; 
-          sphere.material = sphereMaterial; 
+          const crimepreventionMaterial = new BABYLON.StandardMaterial("crimepreventionMaterial", scene);
+          crimepreventionMaterial.diffuseColor = new BABYLON.Color3(0.1, 0.1, 0.1);  // 少し明るい灰色
+          crimepreventionMaterial.specularColor = new BABYLON.Color3(1, 1, 1);       // 白い光沢
+          crimepreventionMaterial.specularPower = 10;                                // 光沢の強度
+          crimepreventionMaterial.emissiveColor = new BABYLON.Color3(0, 0, 0); // 強い発光効果
+          crimepreventionMaterial.alpha = .5; 
+          crimeprevention.material = crimepreventionMaterial; 
 
-          const spherelignt = BABYLON.MeshBuilder.CreateSphere("sphere", {arc: 1, diameter: 5, sideOrientation: BABYLON.Mesh.DOUBLESIDE});
-          spherelignt.position.y = 477;
+          const crimepreventionlignt = BABYLON.MeshBuilder.CreateSphere("sphere", {arc: 1, diameter: 5, sideOrientation: BABYLON.Mesh.DOUBLESIDE});
+          crimepreventionlignt.position.y = 477;
 
-          const sphereligntMaterial = new BABYLON.StandardMaterial("sphereligntMaterial", scene);
-          sphereligntMaterial.diffuseColor = new BABYLON.Color3(1, .5, .5);  // 赤色
-          sphereligntMaterial.specularColor = new BABYLON.Color3(1, .5, .5);       // 白い光沢
-          sphereligntMaterial.specularPower = 100;                                // 光沢の強度
-          sphereligntMaterial.emissiveColor = new BABYLON.Color3(1, 0, 0); // 純粋な赤い発光効果
-          spherelignt.material = sphereligntMaterial;
+          const crimepreventionligntMaterial = new BABYLON.StandardMaterial("crimepreventionligntMaterial", scene);
+          crimepreventionligntMaterial.diffuseColor = new BABYLON.Color3(1, .5, .5);  // 赤色
+          crimepreventionligntMaterial.specularColor = new BABYLON.Color3(1, .5, .5);       // 白い光沢
+          crimepreventionligntMaterial.specularPower = 100;                                // 光沢の強度
+          crimepreventionligntMaterial.emissiveColor = new BABYLON.Color3(1, 0, 0); // 純粋な赤い発光効果
+          crimepreventionlignt.material = crimepreventionligntMaterial;
 
           // ポスター
           const postersGroup = new BABYLON.TransformNode("postersGroup", scene);
-
           const posters_array = Array.from({length: 3}, (_, i) => `poster${i + 1}.png`);
-
           posters_array.map((poster, index) => {
             createposter(poster, index);
           });
@@ -259,6 +257,7 @@
             scene.beginAnimation(posterMesh, 0, 600, false);
            }
 
+           // 禁煙ポスター
            const nosmokingGroup = new BABYLON.TransformNode("postersGroup", scene);
            nosmokingGroup.position.x = 499;
            nosmokingGroup.rotation.y = -Math.PI / 2;
@@ -313,9 +312,9 @@
             rightEyeGroup.position.x = 0 + eyeOffsetX;
             rightEyeGroup.position.y = 0 + eyeOffsetY;
 
-            // sphereligntのx, z座標を更新
-            spherelignt.position.x = mouseX * 3;
-            spherelignt.position.z = - mouseY * 3;
+            // 防犯カメラの位置を更新
+            crimepreventionlignt.position.x = mouseX * 3;
+            crimepreventionlignt.position.z = - mouseY * 3;
 
           });
 
