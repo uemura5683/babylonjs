@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Clock</title>
+    <script src="https://assets.babylonjs.com/generated/Assets.js"></script>
+    <script src="https://cdn.babylonjs.com/recast.js"></script>
+    <script src="https://cdn.babylonjs.com/ammo.js"></script>
+    <script src="https://cdn.babylonjs.com/havok/HavokPhysics_umd.js"></script>
+    <script src="https://cdn.babylonjs.com/cannon.js"></script>
+    <script src="https://cdn.babylonjs.com/Oimo.js"></script>
+    <script src="https://cdn.babylonjs.com/earcut.min.js"></script>
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script src="https://cdn.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
+    <script src="https://cdn.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js"></script>
+    <script src="https://cdn.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min.js"></script>
+    <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.js"></script>
+    <script src="https://cdn.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
+    <script src="https://cdn.babylonjs.com/gui/babylon.gui.min.js"></script>
+    <script src="https://cdn.babylonjs.com/addons/babylonjs.addons.min.js"></script>
+    <script src="https://cdn.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
+    <style>
+      body {
+        margin: 0;
+      }
+      #Canvas {
+        width: 100% !important;
+        height: 100vh !important;
+        background: linear-gradient(135deg, #000000 0%, #0d1421 30%, #1a2332 60%, #0d1421 90%, #000000 100%),
+                    radial-gradient(ellipse at center, rgba(40, 60, 80, 0.3) 0%, transparent 70%),
+                    radial-gradient(circle at 30% 70%, rgba(25, 25, 25, 0.8) 0%, transparent 40%);
+        background-size: 100% 100%, 800px 600px, 500px 500px;
+        background-attachment: fixed;
+      }
+      canvas {
+        width: 100% !important;
+        height: 100vh !important;        
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div id="Canvas">
+        <canvas
+          id="renderCanvasList" 
+          >
+        </canvas>
+      </div>
+    </main>  
+    <script type="text/javascript">
+
+      // フォトギャラリー一覧・詳細
+      class Carousel {
+        constructor() {
+          this.degree();
+          this.bannerlist();
+          this.createScene();
+        }
+        degree(degrees) {
+          // 度数を取得
+          switch(true) {
+            case degrees !== undefined:
+              return degrees * (Math.PI / 180);
+              break;
+            default:
+              return null;
+              break;
+          }
+        }
+        async bannerlist() {
+          // バナーリストを表示
+          const canvasblog = document.getElementById('renderCanvasList');
+          const engine = new BABYLON.Engine(canvasblog);  
+          const scene = await this.createScene(this.degree, engine, canvasblog);
+          engine.runRenderLoop(() => {
+            scene.render();
+          });
+          window.addEventListener('resize', () => {
+            engine.resize();
+          });
+        }
+        async createScene(degree, engine, canvasblog) {
+          // シーンを作成
+          switch(true) {
+            case !( degree == undefined ):   
+                // シーンを作成
+                const scene = new BABYLON.Scene(engine);
+                scene.clearColor = new BABYLON.Color4(0,0,0,0); 
+
+                // カメラを作成
+                const camera = new BABYLON.ArcRotateCamera("camera2", -Math.PI / 2,  Math.PI / 2, 15, BABYLON.Vector3.Zero(), scene);
+                camera.attachControl(canvasblog, true);  
+
+                // ライトを作成
+                const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0), scene);
+                light.diffuse = new BABYLON.Color3(1, 1, 1);
+                light.specular = new BABYLON.Color3(1, 1, 1);
+                light.groundColor = new BABYLON.Color3(1, 1, 1);
+
+                // Earcutライブラリの設定
+                if (typeof earcut !== 'undefined' && BABYLON.PolygonMeshBuilder) {
+                  BABYLON.PolygonMeshBuilder.prototype.bjsEarcut = earcut;
+                }
+
+                // テキスト作成関数
+                const createTextMesh = async (engine) => {
+                  const sdfFontDefinition = await (
+                      await fetch("https://assets.babylonjs.com/fonts/roboto-regular.json")
+                  ).text();
+
+                  const fontAsset = new ADDONS.FontAsset(
+                      sdfFontDefinition,
+                      "https://assets.babylonjs.com/fonts/roboto-regular.png"
+                  );
+
+                  let textRenderer = null;
+                  let currentText = "";
+                  let updating = false;
+
+                  const formatTime = () => {
+                      const now = new Date();
+                      const hh = String(now.getHours()).padStart(2, "0");
+                      const mm = String(now.getMinutes()).padStart(2, "0");
+                      const ss = String(now.getSeconds()).padStart(2, "0");
+                      return `${hh}:${mm}:${ss}`;
+                  };
+
+                  const rebuildText = async (text) => {
+                      const newRenderer = await ADDONS.TextRenderer.CreateTextRendererAsync(fontAsset, engine);
+                      newRenderer.addParagraph(text);
+
+                      if (textRenderer && typeof textRenderer.dispose === "function") {
+                          textRenderer.dispose();
+                      }
+
+                      textRenderer = newRenderer;
+                  };
+
+                  currentText = formatTime();
+                  await rebuildText(currentText);
+
+                  scene.onAfterRenderObservable.add(() => {
+                      if (textRenderer) {
+                          textRenderer.render(camera.getViewMatrix(), camera.getProjectionMatrix());
+                      }
+                  });
+
+                  setInterval(async () => {
+                      if (updating) return;
+
+                      const newText = formatTime();
+                      if (newText === currentText) return;
+
+                      updating = true;
+                      try {
+                          currentText = newText;
+                          await rebuildText(newText);
+                      } finally {
+                          updating = false;
+                      }
+                  }, 1000);
+              };
+
+                createTextMesh(engine);
+                
+                const meshesToMerge = [];
+
+                // 真ん中の黒円柱
+                const cylinderblack = BABYLON.MeshBuilder.CreateCylinder("cylinderblack", {
+                  height: 6,
+                  diameter: 7,
+                  tessellation: 60
+                }, scene);
+                cylinderblack.position.y = 0.5;
+
+                const cylinderblackmat = new BABYLON.StandardMaterial("cylinderblackmat", scene);
+                cylinderblackmat.diffuseColor = new BABYLON.Color3(0, 0, 0);
+                cylinderblackmat.specularColor = new BABYLON.Color3(1, 1, 1);
+                cylinderblackmat.specularPower = 10;
+                cylinderblackmat.emissiveColor = new BABYLON.Color3(0, 0, 0);
+                cylinderblack.material = cylinderblackmat;
+
+                meshesToMerge.push(cylinderblack);
+
+                // 真ん中の動画円柱
+                const cylinder = BABYLON.MeshBuilder.CreateCylinder("cylinder", {
+                  height: 6,
+                  diameter: 7,
+                  tessellation: 60
+                }, scene);
+                cylinder.position.y = 0.5;
+                cylinder.position.z = 3.6;
+
+                const cylindermat = new BABYLON.StandardMaterial("cylindermat", scene);
+                cylindermat.diffuseTexture = new BABYLON.VideoTexture("vidtex", "movie.mp4", scene);
+                cylinder.material = cylindermat;
+
+                // ※ 動画テクスチャ付きは他とマージしない方が安全
+                // meshesToMerge.push(cylinder);
+
+                // 上部の円柱
+                const cylindertop = BABYLON.MeshBuilder.CreateCylinder("cylindertop", {
+                  height: 0.7,
+                  diameter: 8,
+                  tessellation: 60
+                }, scene);
+                cylindertop.position.y = 3.8;
+
+                const cylindertopmat = new BABYLON.StandardMaterial("cylindertopmat", scene);
+                cylindertopmat.diffuseColor = new BABYLON.Color3(0.1, 0.1, 0.1);
+                cylindertopmat.specularColor = new BABYLON.Color3(1, 1, 1);
+                cylindertopmat.specularPower = 8;
+                cylindertopmat.emissiveColor = new BABYLON.Color3(0, 0, 0);
+                cylindertop.material = cylindertopmat;
+
+                meshesToMerge.push(cylindertop);
+
+                // 下部の円柱
+                const cylinderbottom = cylindertop.clone("cylinderbottom");
+                cylinderbottom.position.y = -3;
+                meshesToMerge.push(cylinderbottom);
+
+                // 時計の線
+                for (let i = 0; i < 120; i++) {
+                  if (
+                    i !== 113 && i !== 114 && i !== 115 && i !== 116 &&
+                    i !== 117 && i !== 118 && i !== 119 &&
+                    i !== 0 && i !== 1 && i !== 2 && i !== 3 &&
+                    i !== 4 && i !== 5 && i !== 6 && i !== 7
+                  ) {
+                    const tube = BABYLON.MeshBuilder.CreateBox(`clockline_${i}`, {
+                      height: 6.5,
+                      width: 0.196,
+                      depth: 0.01
+                    }, scene);
+
+                    tube.rotation.y = degree(i * (360 / 120));
+                    tube.position.x = -(120 / 32 * Math.sin(degree(i * (360 / 120))));
+                    tube.position.y = 0.5;
+                    tube.position.z = -(120 / 32 * Math.cos(degree(i * (360 / 120))));
+
+                    const tubemat = new BABYLON.StandardMaterial(`tubemat_${i}`, scene);
+                    tubemat.diffuseColor = new BABYLON.Color3(0.1, 0.1, 0.1);
+                    tubemat.specularColor = new BABYLON.Color3(1, 1, 1);
+                    tubemat.specularPower = 8;
+                    tubemat.emissiveColor = new BABYLON.Color3(0, 0, 0);
+                    tubemat.alpha = 0.9;
+                    tube.material = tubemat;
+
+                    meshesToMerge.push(tube);
+                  }
+                }
+
+                // マージ
+                const mergedMesh = BABYLON.Mesh.MergeMeshes(
+                  meshesToMerge,
+                  true,   // source meshesをdispose
+                  true,   // 32bit indices
+                  undefined,
+                  false,  // subdivideWithSubMeshes
+                  true    // multiMultiMaterials
+                );
+
+                mergedMesh.position.z = 3.8;
+
+                mergedMesh.name = "clockBody";
+
+                return scene;
+              break;
+            default:
+              break;
+          }
+        }
+      }
+      const carousel = new Carousel();
+    </script>
+  </body>
+</html>
