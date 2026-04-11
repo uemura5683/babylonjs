@@ -102,8 +102,7 @@
                 defaultRenderingPipeline.imageProcessingEnabled = true;
                 defaultRenderingPipeline.imageProcessing.ditheringEnabled = true;
                 defaultRenderingPipeline.imageProcessing.toneMappingEnabled = true;
-                defaultRenderingPipeline.imageProcessing.toneMappingType = 1; // ACES
-                defaultRenderingPipeline.imageProcessing.exposure = 1;
+                defaultRenderingPipeline.imageProcessing.toneMappingType = 0.1; // ACES
                 
                 // Add atmo.
                 const atmosphere = new ADDONS.Atmosphere("Atmosphere", scene, [ light ]);
@@ -125,6 +124,17 @@
 
                     const x = Math.cos(angle);
                     const y = Math.sin(angle);
+
+                    // -1 ～ 1 → 0 ～ 1 に変換
+                    const t = (Math.sin(angle) + 1) / 2;
+
+                    // exposure補間（0.1 → 12）
+                    const minExp = 0.1;
+                    const maxExp = 6;
+
+                    const exposure = minExp + (maxExp - minExp) * t;
+                    console.log(exposure);
+                    defaultRenderingPipeline.imageProcessing.exposure = exposure;
 
                     light.direction.copyFromFloats(-x, -y, 0);
 
@@ -213,7 +223,7 @@
 
                 const cylindermat = new BABYLON.StandardMaterial("cylindermat", scene);
                 cylindermat.diffuseTexture = new BABYLON.VideoTexture("vidtex", "movie.mp4", scene);
-                cylindermat.emissiveColor = new BABYLON.Color3(0.8, 0.8, 0.8);
+                cylindermat.emissiveColor = new BABYLON.Color3(1, 1, 1);
                 cylinder.material = cylindermat;
 
                 // ※ 動画テクスチャ付きは他とマージしない方が安全
@@ -231,7 +241,7 @@
                 cylindertopmat.diffuseColor = new BABYLON.Color3(0.1, 0.1, 0.1);
                 cylindertopmat.specularColor = new BABYLON.Color3(1, 1, 1);
                 cylindertopmat.specularPower = 8;
-                cylindertopmat.emissiveColor = new BABYLON.Color3(0.2, 0.2, 0.2);
+                cylindertopmat.emissiveColor = new BABYLON.Color3(0.1, 0.1, 0.1);
                 cylindertop.material = cylindertopmat;
 
                 meshesToMerge.push(cylindertop);
@@ -262,7 +272,7 @@
                     tubemat.diffuseColor = new BABYLON.Color3(0.1, 0.1, 0.1);
                     tubemat.specularColor = new BABYLON.Color3(1, 1, 1);
                     tubemat.specularPower = 8;
-                    tubemat.emissiveColor = new BABYLON.Color3(0.2, 0.2, 0.2);
+                    tubemat.emissiveColor = new BABYLON.Color3(0.1, 0.1, 0.1);
                     tubemat.alpha = 1;
                     tube.material = tubemat;
 
