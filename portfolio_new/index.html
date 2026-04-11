@@ -27,9 +27,7 @@
       #Canvas {
         width: 100% !important;
         height: 100vh !important;
-        background: linear-gradient(135deg, #000000 0%, #0d1421 30%, #1a2332 60%, #0d1421 90%, #000000 100%),
-                    radial-gradient(ellipse at center, rgba(40, 60, 80, 0.3) 0%, transparent 70%),
-                    radial-gradient(circle at 30% 70%, rgba(25, 25, 25, 0.8) 0%, transparent 40%);
+        background: #000000;
         background-size: 100% 100%, 800px 600px, 500px 500px;
         background-attachment: fixed;
       }
@@ -54,7 +52,7 @@
       class Carousel {
         constructor() {
           this.degree();
-          this.bannerlist();
+          this.render();
           this.createScene();
         }
         degree(degrees) {
@@ -68,7 +66,7 @@
               break;
           }
         }
-        async bannerlist() {
+        async render() {
           // バナーリストを表示
           const canvasblog = document.getElementById('renderCanvasList');
           const engine = new BABYLON.Engine(canvasblog);  
@@ -90,13 +88,47 @@
 
                 // カメラを作成
                 const camera = new BABYLON.ArcRotateCamera("camera2", -Math.PI / 2,  Math.PI / 2, 15, BABYLON.Vector3.Zero(), scene);
-                camera.attachControl(canvasblog, true);  
+                camera.setTarget(BABYLON.Vector3.Zero());
+                camera.attachControl(canvasblog, true);
+                camera.upperBetaLimit = 0.59 * Math.PI;
+                camera.maxZ = 0.0; // 0.0 means use an infinite far plane.
 
-                // ライトを作成
-                const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0), scene);
-                light.diffuse = new BABYLON.Color3(1, 1, 1);
-                light.specular = new BABYLON.Color3(1, 1, 1);
-                light.groundColor = new BABYLON.Color3(1, 1, 1);
+                // Add a light-- it will be the "sun".
+                const light = new BABYLON.DirectionalLight("Sun", new BABYLON.Vector3(0, 1, 0).normalize(), scene);
+                light.intensity = Math.PI;
+
+                // Recommend: Dithering the scene helps avoid banding in the sky.
+                const defaultRenderingPipeline = new BABYLON.DefaultRenderingPipeline("Default");
+                defaultRenderingPipeline.imageProcessingEnabled = true;
+                defaultRenderingPipeline.imageProcessing.ditheringEnabled = true;
+                defaultRenderingPipeline.imageProcessing.toneMappingEnabled = true;
+                defaultRenderingPipeline.imageProcessing.toneMappingType = 1; // ACES
+                defaultRenderingPipeline.imageProcessing.exposure = 1;
+                
+                // Add atmo.
+                const atmosphere = new ADDONS.Atmosphere("Atmosphere", scene, [ light ]);
+                atmosphere.additionalDiffuseSkyIrradianceIntensity = 0.01;
+                atmosphere.minimumMultiScatteringIntensity = 0.2;
+                atmosphere.physicalProperties.ozoneAbsorptionScale = 2;
+                atmosphere.isLinearSpaceComposition = true;
+                atmosphere.isLinearSpaceLight = true;
+                atmosphere.isAerialPerspectiveLutEnabled = false;
+                atmosphere.isSkyViewLutEnabled = false;
+
+                // Slow down animation towards the horizon.
+                scene.onBeforeRenderObservable.add(() => {
+                    const now = new Date();
+                    const hours = now.getHours() + now.getMinutes() / 60 + now.getSeconds() / 3600;
+
+                    // 時間 → 角度変換
+                    const angle = (hours / 24) * 2 * Math.PI - Math.PI / 2;
+
+                    const x = Math.cos(angle);
+                    const y = Math.sin(angle);
+
+                    light.direction.copyFromFloats(-x, -y, 0);
+
+                });
 
                 // Earcutライブラリの設定
                 if (typeof earcut !== 'undefined' && BABYLON.PolygonMeshBuilder) {
@@ -128,7 +160,9 @@
 
                   const rebuildText = async (text) => {
                       const newRenderer = await ADDONS.TextRenderer.CreateTextRendererAsync(fontAsset, engine);
-                      newRenderer.addParagraph(text);
+                      newRenderer.addParagraph(text, {letterSpacing: 5});
+                      newRenderer.color = new BABYLON.Color4(0.1, 0.98, 0.1);
+                      newRenderer.ignoreDepthBuffer = false;
 
                       if (textRenderer && typeof textRenderer.dispose === "function") {
                           textRenderer.dispose();
@@ -166,43 +200,29 @@
                 
                 const meshesToMerge = [];
 
-                // 真ん中の黒円柱
-                const cylinderblack = BABYLON.MeshBuilder.CreateCylinder("cylinderblack", {
-                  height: 6,
-                  diameter: 7,
-                  tessellation: 60
-                }, scene);
-                cylinderblack.position.y = 0.5;
-
-                const cylinderblackmat = new BABYLON.StandardMaterial("cylinderblackmat", scene);
-                cylinderblackmat.diffuseColor = new BABYLON.Color3(0, 0, 0);
-                cylinderblackmat.specularColor = new BABYLON.Color3(1, 1, 1);
-                cylinderblackmat.specularPower = 10;
-                cylinderblackmat.emissiveColor = new BABYLON.Color3(0, 0, 0);
-                cylinderblack.material = cylinderblackmat;
-
-                meshesToMerge.push(cylinderblack);
-
                 // 真ん中の動画円柱
                 const cylinder = BABYLON.MeshBuilder.CreateCylinder("cylinder", {
                   height: 6,
-                  diameter: 7,
+                  diameter: 3.5,
                   tessellation: 60
                 }, scene);
-                cylinder.position.y = 0.5;
-                cylinder.position.z = 3.6;
+                cylinder.position.y = 0.7;
+                cylinder.position.z = 1.9;
+                cylinder.position.x = 0;                
+                cylinder.rotation.z = degree(90);
 
                 const cylindermat = new BABYLON.StandardMaterial("cylindermat", scene);
                 cylindermat.diffuseTexture = new BABYLON.VideoTexture("vidtex", "movie.mp4", scene);
+                cylindermat.emissiveColor = new BABYLON.Color3(0.8, 0.8, 0.8);
                 cylinder.material = cylindermat;
 
                 // ※ 動画テクスチャ付きは他とマージしない方が安全
-                // meshesToMerge.push(cylinder);
+                //meshesToMerge.push(cylinder);
 
                 // 上部の円柱
                 const cylindertop = BABYLON.MeshBuilder.CreateCylinder("cylindertop", {
                   height: 0.7,
-                  diameter: 8,
+                  diameter: 4,
                   tessellation: 60
                 }, scene);
                 cylindertop.position.y = 3.8;
@@ -211,23 +231,21 @@
                 cylindertopmat.diffuseColor = new BABYLON.Color3(0.1, 0.1, 0.1);
                 cylindertopmat.specularColor = new BABYLON.Color3(1, 1, 1);
                 cylindertopmat.specularPower = 8;
-                cylindertopmat.emissiveColor = new BABYLON.Color3(0, 0, 0);
+                cylindertopmat.emissiveColor = new BABYLON.Color3(0.2, 0.2, 0.2);
                 cylindertop.material = cylindertopmat;
 
                 meshesToMerge.push(cylindertop);
 
                 // 下部の円柱
                 const cylinderbottom = cylindertop.clone("cylinderbottom");
-                cylinderbottom.position.y = -3;
+                cylinderbottom.position.y = -2.7;
                 meshesToMerge.push(cylinderbottom);
 
                 // 時計の線
-                for (let i = 0; i < 120; i++) {
+                for (let i = 0; i <60; i++) {
                   if (
-                    i !== 113 && i !== 114 && i !== 115 && i !== 116 &&
-                    i !== 117 && i !== 118 && i !== 119 &&
-                    i !== 0 && i !== 1 && i !== 2 && i !== 3 &&
-                    i !== 4 && i !== 5 && i !== 6 && i !== 7
+                    i !== 57 && i !== 58 && i !== 59 &&
+                    i !== 0 && i !== 1 && i !== 2 && i !== 3
                   ) {
                     const tube = BABYLON.MeshBuilder.CreateBox(`clockline_${i}`, {
                       height: 6.5,
@@ -235,17 +253,17 @@
                       depth: 0.01
                     }, scene);
 
-                    tube.rotation.y = degree(i * (360 / 120));
-                    tube.position.x = -(120 / 32 * Math.sin(degree(i * (360 / 120))));
+                    tube.rotation.y = degree(i * (360 / 60));
+                    tube.position.x = -(60 / 32 * Math.sin(degree(i * (360 / 60))));
                     tube.position.y = 0.5;
-                    tube.position.z = -(120 / 32 * Math.cos(degree(i * (360 / 120))));
+                    tube.position.z = -(60 / 32 * Math.cos(degree(i * (360 / 60))));
 
                     const tubemat = new BABYLON.StandardMaterial(`tubemat_${i}`, scene);
                     tubemat.diffuseColor = new BABYLON.Color3(0.1, 0.1, 0.1);
                     tubemat.specularColor = new BABYLON.Color3(1, 1, 1);
                     tubemat.specularPower = 8;
-                    tubemat.emissiveColor = new BABYLON.Color3(0, 0, 0);
-                    tubemat.alpha = 0.9;
+                    tubemat.emissiveColor = new BABYLON.Color3(0.2, 0.2, 0.2);
+                    tubemat.alpha = 1;
                     tube.material = tubemat;
 
                     meshesToMerge.push(tube);
@@ -262,7 +280,10 @@
                   true    // multiMultiMaterials
                 );
 
-                mergedMesh.position.z = 3.8;
+                mergedMesh.position.z = 1.9;
+                mergedMesh.position.y = 0.6;
+                mergedMesh.position.x = 0.5;                
+                mergedMesh.rotation.z = degree(90);
 
                 mergedMesh.name = "clockBody";
 
