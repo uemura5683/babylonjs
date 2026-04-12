@@ -157,7 +157,7 @@
           cylinder.rotation.z = this.toRadians(90);
 
           const cylinderMaterial = new BABYLON.StandardMaterial("cylindermat", scene);
-          cylinderMaterial.diffuseTexture = new BABYLON.VideoTexture("vidtex", "movie.mp4", scene);
+          cylinderMaterial.diffuseTexture = new BABYLON.VideoTexture("vidtex", "https://babylonjs-two.vercel.app/portfolio_new/movie.mp4", scene);
           cylinderMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
           cylinder.material = cylinderMaterial;
 
@@ -297,7 +297,7 @@
         }
 
         createGround(scene) {
-          const terrainTexture = new BABYLON.Texture("textures/ground.jpg", scene);
+          const terrainTexture = new BABYLON.Texture("https://babylonjs-two.vercel.app/portfolio_new/textures/ground.jpg", scene);
           const terrain = new BABYLON.DynamicTerrain("terrain", { terrainSub: 800 }, scene);
 
           const terrainMaterial = new BABYLON.StandardMaterial("terrainMaterial", scene);
