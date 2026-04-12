@@ -20,6 +20,7 @@
     <script src="https://cdn.babylonjs.com/gui/babylon.gui.min.js"></script>
     <script src="https://cdn.babylonjs.com/addons/babylonjs.addons.min.js"></script>
     <script src="https://cdn.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
+    <script src="https://cdn.rawgit.com/BabylonJS/Extensions/master/DynamicTerrain/dist/babylon.dynamicTerrain.min.js"></script>
     <style>
       body {
         margin: 0;
@@ -82,18 +83,23 @@
           // シーンを作成
           switch(true) {
             case !( degree == undefined ):   
+
+                const now = new Date();
+                const hours = now.getHours() + now.getMinutes() / 60 + now.getSeconds() / 3600;
+                const hour = now.getHours() + now.getMinutes() / 60;
+
                 // シーンを作成
                 const scene = new BABYLON.Scene(engine);
                 scene.clearColor = new BABYLON.Color4(0,0,0,0); 
 
                 // カメラを作成
-                const camera = new BABYLON.ArcRotateCamera("camera2", -Math.PI / 2,  Math.PI / 2, 15, BABYLON.Vector3.Zero(), scene);
+                const camera = new BABYLON.ArcRotateCamera("camera2", -Math.PI / 2,  Math.PI / 2, 20, BABYLON.Vector3.Zero(), scene);
                 camera.setTarget(BABYLON.Vector3.Zero());
                 camera.attachControl(canvasblog, true);
                 camera.upperBetaLimit = 0.59 * Math.PI;
                 camera.maxZ = 0.0; // 0.0 means use an infinite far plane.
 
-                // Add a light-- it will be the "sun".
+                // ライトを作成
                 const light = new BABYLON.DirectionalLight("Sun", new BABYLON.Vector3(0, 1, 0).normalize(), scene);
                 light.intensity = Math.PI;
 
@@ -113,11 +119,8 @@
                 atmosphere.isLinearSpaceLight = true;
                 atmosphere.isAerialPerspectiveLutEnabled = false;
                 atmosphere.isSkyViewLutEnabled = false;
-
-                // Slow down animation towards the horizon.
+                 
                 scene.onBeforeRenderObservable.add(() => {
-                    const now = new Date();
-                    const hours = now.getHours() + now.getMinutes() / 60 + now.getSeconds() / 3600;
 
                     // 時間 → 角度変換
                     const angle = (hours / 24) * 2 * Math.PI - Math.PI / 2;
@@ -125,19 +128,27 @@
                     const x = Math.cos(angle);
                     const y = Math.sin(angle);
 
-                    // -1 ～ 1 → 0 ～ 1 に変換
-                    const t = (Math.sin(angle) + 1) / 2;
+                    light.direction.copyFromFloats(-x, -y, 0);                    
 
                     // exposure補間（0.1 → 12）
                     const minExp = 0.1;
                     const maxExp = 6;
 
-                    const exposure = minExp + (maxExp - minExp) * t;
-                    console.log(exposure);
+                    var exposure;
+
+                    if (hour >= 5 && hour <= 18) {
+                        // 5〜18時を 0〜π にマッピング
+                        const t = (hour - 5) / (18 - 5); // 0〜1
+                        const angle = t * Math.PI;
+
+                        // sinで滑らかに（山型）
+                        const k = Math.sin(angle);
+                        exposure = minExp + (maxExp - minExp) * k;
+                    } else {
+                        // 夜は固定
+                        exposure = minExp;
+                    }
                     defaultRenderingPipeline.imageProcessing.exposure = exposure;
-
-                    light.direction.copyFromFloats(-x, -y, 0);
-
                 });
 
                 // Earcutライブラリの設定
@@ -204,7 +215,7 @@
                           updating = false;
                       }
                   }, 1000);
-              };
+                };
 
                 createTextMesh(engine);
                 
@@ -216,18 +227,15 @@
                   diameter: 3.5,
                   tessellation: 60
                 }, scene);
-                cylinder.position.y = 0.7;
-                cylinder.position.z = 1.9;
-                cylinder.position.x = 0;                
-                cylinder.rotation.z = degree(90);
+                      cylinder.position.y = 0.7;
+                      cylinder.position.z = 1.9;
+                      cylinder.position.x = 0;                
+                      cylinder.rotation.z = degree(90);
 
                 const cylindermat = new BABYLON.StandardMaterial("cylindermat", scene);
-                cylindermat.diffuseTexture = new BABYLON.VideoTexture("vidtex", "movie.mp4", scene);
-                cylindermat.emissiveColor = new BABYLON.Color3(1, 1, 1);
-                cylinder.material = cylindermat;
-
-                // ※ 動画テクスチャ付きは他とマージしない方が安全
-                //meshesToMerge.push(cylinder);
+                      cylindermat.diffuseTexture = new BABYLON.VideoTexture("vidtex", "movie.mp4", scene);
+                      cylindermat.emissiveColor = new BABYLON.Color3(1, 1, 1);
+                      cylinder.material = cylindermat;
 
                 // 上部の円柱
                 const cylindertop = BABYLON.MeshBuilder.CreateCylinder("cylindertop", {
@@ -238,21 +246,21 @@
                 cylindertop.position.y = 3.8;
 
                 const cylindertopmat = new BABYLON.StandardMaterial("cylindertopmat", scene);
-                cylindertopmat.diffuseColor = new BABYLON.Color3(0.1, 0.1, 0.1);
-                cylindertopmat.specularColor = new BABYLON.Color3(1, 1, 1);
-                cylindertopmat.specularPower = 8;
-                cylindertopmat.emissiveColor = new BABYLON.Color3(0.1, 0.1, 0.1);
-                cylindertop.material = cylindertopmat;
+                      cylindertopmat.diffuseColor = new BABYLON.Color3(0.1, 0.1, 0.1);
+                      cylindertopmat.specularColor = new BABYLON.Color3(1, 1, 1);
+                      cylindertopmat.specularPower = 8;
+                      cylindertopmat.emissiveColor = new BABYLON.Color3(0.1, 0.1, 0.1);
+                      cylindertop.material = cylindertopmat;
 
                 meshesToMerge.push(cylindertop);
 
                 // 下部の円柱
                 const cylinderbottom = cylindertop.clone("cylinderbottom");
-                cylinderbottom.position.y = -2.7;
-                meshesToMerge.push(cylinderbottom);
+                      cylinderbottom.position.y = -2.7;
+                      meshesToMerge.push(cylinderbottom);
 
                 // 時計の線
-                for (let i = 0; i <60; i++) {
+                for (let i = 0; i < 60; i++) {
                   if (
                     i !== 57 && i !== 58 && i !== 59 &&
                     i !== 0 && i !== 1 && i !== 2 && i !== 3
@@ -282,20 +290,58 @@
 
                 // マージ
                 const mergedMesh = BABYLON.Mesh.MergeMeshes(
-                  meshesToMerge,
-                  true,   // source meshesをdispose
-                  true,   // 32bit indices
-                  undefined,
-                  false,  // subdivideWithSubMeshes
-                  true    // multiMultiMaterials
+                  meshesToMerge, true, true, undefined, false, true
                 );
-
                 mergedMesh.position.z = 1.9;
                 mergedMesh.position.y = 0.6;
                 mergedMesh.position.x = 0.5;                
                 mergedMesh.rotation.z = degree(90);
-
                 mergedMesh.name = "clockBody";
+
+                // グランドを作成 
+                createGround(scene);
+
+                // グランドを作成
+                function createGround(scene) {
+                  const terrainTexture = new BABYLON.Texture( "textures/ground.jpg", scene );
+
+                  var t = 0.0;
+                  window.onload = function () {
+                    var terrainSub = 800;
+                    var params = {
+                      terrainSub: terrainSub,
+                    };
+                    var terrain = new BABYLON.DynamicTerrain("t", params, scene);
+                    var terrainMaterial = new BABYLON.StandardMaterial("tm", scene);
+                    terrainMaterial.diffuseTexture = terrainTexture;
+                    terrainMaterial.wireframe = true;
+                    terrainMaterial.diffuseColor = new BABYLON.Color3(0.05, 0.05, 0.05);
+
+                    scene.onBeforeRenderObservable.add(() => {
+                      if (hour >= 5 && hour <= 18) {
+                        terrainMaterial.emissiveColor = new BABYLON.Color3(0.1, 0.3, 1.0);
+                      } else {
+                        terrainMaterial.emissiveColor = new BABYLON.Color3(0.0, 1.5, 2.0);
+                      }
+                    });
+
+                    terrain.mesh.material = terrainMaterial;
+                    terrain.mesh.position.y = -2;
+                    terrain.useCustomVertexFunction = true;
+                    terrain.computeNormals = false;
+                    terrain.refreshEveryFrame = true;
+                    terrain.updateVertex = function (vertex, i, j) {
+                      vertex.position.y =
+                        .5 *
+                        Math.sin((vertex.position.x + t) / 5.0) *
+                        Math.cos((vertex.position.z + 5 * t) / 5.0);
+                    };
+                    terrain.update(true);
+                  };
+                  scene.registerBeforeRender(function () {
+                    t += 0.5;
+                  });
+                }
 
                 return scene;
               break;
