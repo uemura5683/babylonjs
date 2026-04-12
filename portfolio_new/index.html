@@ -34,323 +34,305 @@
       }
       canvas {
         width: 100% !important;
-        height: 100vh !important;        
+        height: 100vh !important;
       }
     </style>
   </head>
   <body>
     <main>
       <div id="Canvas">
-        <canvas
-          id="renderCanvasList" 
-          >
-        </canvas>
+        <canvas id="renderCanvasList"></canvas>
       </div>
-    </main>  
-    <script type="text/javascript">
+    </main>
 
-      // フォトギャラリー一覧・詳細
+    <script type="text/javascript">
       class Carousel {
         constructor() {
-          this.degree();
           this.render();
-          this.createScene();
         }
-        degree(degrees) {
-          // 度数を取得
-          switch(true) {
-            case degrees !== undefined:
-              return degrees * (Math.PI / 180);
-              break;
-            default:
-              return null;
-              break;
-          }
+
+        toRadians(degrees) {
+          return degrees * (Math.PI / 180);
         }
+
+        getCurrentTimeInfo() {
+          const now = new Date();
+          const hour = now.getHours() + now.getMinutes() / 60;
+          const hours = hour + now.getSeconds() / 3600;
+          return { hour, hours };
+        }
+
         async render() {
-          // バナーリストを表示
-          const canvasblog = document.getElementById('renderCanvasList');
-          const engine = new BABYLON.Engine(canvasblog);  
-          const scene = await this.createScene(this.degree, engine, canvasblog);
-          engine.runRenderLoop(() => {
-            scene.render();
-          });
-          window.addEventListener('resize', () => {
+          const canvas = document.getElementById("renderCanvasList");
+          const engine = new BABYLON.Engine(canvas);
+
+          try {
+            const scene = await this.createScene(engine, canvas);
+            engine.runRenderLoop(() => {
+              scene.render();
+            });
+          } catch (error) {
+            console.error("Scene initialization failed:", error);
+          }
+
+          window.addEventListener("resize", () => {
             engine.resize();
           });
         }
-        async createScene(degree, engine, canvasblog) {
-          // シーンを作成
-          switch(true) {
-            case !( degree == undefined ):   
 
-                const now = new Date();
-                const hours = now.getHours() + now.getMinutes() / 60 + now.getSeconds() / 3600;
-                const hour = now.getHours() + now.getMinutes() / 60;
+        async createScene(engine, canvas) {
+          const scene = new BABYLON.Scene(engine);
+          scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
 
-                // シーンを作成
-                const scene = new BABYLON.Scene(engine);
-                scene.clearColor = new BABYLON.Color4(0,0,0,0); 
+          const camera = new BABYLON.ArcRotateCamera(
+            "camera2",
+            -Math.PI / 2,
+            Math.PI / 2,
+            20,
+            BABYLON.Vector3.Zero(),
+            scene
+          );
+          camera.setTarget(BABYLON.Vector3.Zero());
+          camera.attachControl(canvas, true);
+          camera.upperBetaLimit = 0.59 * Math.PI;
+          camera.maxZ = 0.0;
 
-                // カメラを作成
-                const camera = new BABYLON.ArcRotateCamera("camera2", -Math.PI / 2,  Math.PI / 2, 20, BABYLON.Vector3.Zero(), scene);
-                camera.setTarget(BABYLON.Vector3.Zero());
-                camera.attachControl(canvasblog, true);
-                camera.upperBetaLimit = 0.59 * Math.PI;
-                camera.maxZ = 0.0; // 0.0 means use an infinite far plane.
+          const light = new BABYLON.DirectionalLight(
+            "Sun",
+            new BABYLON.Vector3(0, 1, 0).normalize(),
+            scene
+          );
+          light.intensity = Math.PI;
 
-                // ライトを作成
-                const light = new BABYLON.DirectionalLight("Sun", new BABYLON.Vector3(0, 1, 0).normalize(), scene);
-                light.intensity = Math.PI;
+          const defaultRenderingPipeline = new BABYLON.DefaultRenderingPipeline("Default");
+          defaultRenderingPipeline.imageProcessingEnabled = true;
+          defaultRenderingPipeline.imageProcessing.ditheringEnabled = true;
+          defaultRenderingPipeline.imageProcessing.toneMappingEnabled = true;
+          defaultRenderingPipeline.imageProcessing.toneMappingType = 0.1;
 
-                // Recommend: Dithering the scene helps avoid banding in the sky.
-                const defaultRenderingPipeline = new BABYLON.DefaultRenderingPipeline("Default");
-                defaultRenderingPipeline.imageProcessingEnabled = true;
-                defaultRenderingPipeline.imageProcessing.ditheringEnabled = true;
-                defaultRenderingPipeline.imageProcessing.toneMappingEnabled = true;
-                defaultRenderingPipeline.imageProcessing.toneMappingType = 0.1; // ACES
-                
-                // Add atmo.
-                const atmosphere = new ADDONS.Atmosphere("Atmosphere", scene, [ light ]);
-                atmosphere.additionalDiffuseSkyIrradianceIntensity = 0.01;
-                atmosphere.minimumMultiScatteringIntensity = 0.2;
-                atmosphere.physicalProperties.ozoneAbsorptionScale = 2;
-                atmosphere.isLinearSpaceComposition = true;
-                atmosphere.isLinearSpaceLight = true;
-                atmosphere.isAerialPerspectiveLutEnabled = false;
-                atmosphere.isSkyViewLutEnabled = false;
-                 
-                scene.onBeforeRenderObservable.add(() => {
+          const atmosphere = new ADDONS.Atmosphere("Atmosphere", scene, [light]);
+          atmosphere.additionalDiffuseSkyIrradianceIntensity = 0.01;
+          atmosphere.minimumMultiScatteringIntensity = 0.2;
+          atmosphere.physicalProperties.ozoneAbsorptionScale = 2;
+          atmosphere.isLinearSpaceComposition = true;
+          atmosphere.isLinearSpaceLight = true;
+          atmosphere.isAerialPerspectiveLutEnabled = false;
+          atmosphere.isSkyViewLutEnabled = false;
 
-                    // 時間 → 角度変換
-                    const angle = (hours / 24) * 2 * Math.PI - Math.PI / 2;
+          scene.onBeforeRenderObservable.add(() => {
+            const { hour, hours } = this.getCurrentTimeInfo();
 
-                    const x = Math.cos(angle);
-                    const y = Math.sin(angle);
+            const sunAngle = (hours / 24) * 2 * Math.PI - Math.PI / 2;
+            const x = Math.cos(sunAngle);
+            const y = Math.sin(sunAngle);
+            light.direction.copyFromFloats(-x, -y, 0);
 
-                    light.direction.copyFromFloats(-x, -y, 0);                    
+            const minExp = 0.1;
+            const maxExp = 6;
+            let exposure = minExp;
 
-                    // exposure補間（0.1 → 12）
-                    const minExp = 0.1;
-                    const maxExp = 6;
+            if (hour >= 5 && hour <= 18) {
+              const t = (hour - 5) / (18 - 5);
+              const k = Math.sin(t * Math.PI);
+              exposure = minExp + (maxExp - minExp) * k;
+            }
 
-                    var exposure;
+            defaultRenderingPipeline.imageProcessing.exposure = exposure;
+          });
 
-                    if (hour >= 5 && hour <= 18) {
-                        // 5〜18時を 0〜π にマッピング
-                        const t = (hour - 5) / (18 - 5); // 0〜1
-                        const angle = t * Math.PI;
+          if (typeof earcut !== "undefined" && BABYLON.PolygonMeshBuilder) {
+            BABYLON.PolygonMeshBuilder.prototype.bjsEarcut = earcut;
+          }
 
-                        // sinで滑らかに（山型）
-                        const k = Math.sin(angle);
-                        exposure = minExp + (maxExp - minExp) * k;
-                    } else {
-                        // 夜は固定
-                        exposure = minExp;
-                    }
-                    defaultRenderingPipeline.imageProcessing.exposure = exposure;
-                });
+          await this.createClockText(scene, camera, engine);
 
-                // Earcutライブラリの設定
-                if (typeof earcut !== 'undefined' && BABYLON.PolygonMeshBuilder) {
-                  BABYLON.PolygonMeshBuilder.prototype.bjsEarcut = earcut;
-                }
+          const meshesToMerge = [];
 
-                // テキスト作成関数
-                const createTextMesh = async (engine) => {
-                  const sdfFontDefinition = await (
-                      await fetch("https://assets.babylonjs.com/fonts/roboto-regular.json")
-                  ).text();
+          const cylinder = BABYLON.MeshBuilder.CreateCylinder(
+            "cylinder",
+            { height: 6, diameter: 3.5, tessellation: 60 },
+            scene
+          );
+          cylinder.position.set(0, 0.7, 1.9);
+          cylinder.rotation.z = this.toRadians(90);
 
-                  const fontAsset = new ADDONS.FontAsset(
-                      sdfFontDefinition,
-                      "https://assets.babylonjs.com/fonts/roboto-regular.png"
-                  );
+          const cylinderMaterial = new BABYLON.StandardMaterial("cylindermat", scene);
+          cylinderMaterial.diffuseTexture = new BABYLON.VideoTexture("vidtex", "movie.mp4", scene);
+          cylinderMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
+          cylinder.material = cylinderMaterial;
 
-                  let textRenderer = null;
-                  let currentText = "";
-                  let updating = false;
+          const cylinderTop = BABYLON.MeshBuilder.CreateCylinder(
+            "cylindertop",
+            { height: 0.7, diameter: 4, tessellation: 60 },
+            scene
+          );
+          cylinderTop.position.y = 3.8;
 
-                  const formatTime = () => {
-                      const now = new Date();
-                      const hh = String(now.getHours()).padStart(2, "0");
-                      const mm = String(now.getMinutes()).padStart(2, "0");
-                      const ss = String(now.getSeconds()).padStart(2, "0");
-                      return `${hh}:${mm}:${ss}`;
-                  };
+          const clockBodyMaterial = new BABYLON.StandardMaterial("clockBodyMat", scene);
+          clockBodyMaterial.diffuseColor = new BABYLON.Color3(0.1, 0.1, 0.1);
+          clockBodyMaterial.specularColor = new BABYLON.Color3(1, 1, 1);
+          clockBodyMaterial.specularPower = 8;
+          clockBodyMaterial.emissiveColor = new BABYLON.Color3(0.1, 0.1, 0.1);
 
-                  const rebuildText = async (text) => {
-                      const newRenderer = await ADDONS.TextRenderer.CreateTextRendererAsync(fontAsset, engine);
-                      newRenderer.addParagraph(text, {letterSpacing: 5});
-                      newRenderer.color = new BABYLON.Color4(0.1, 0.98, 0.1);
-                      newRenderer.ignoreDepthBuffer = false;
+          cylinderTop.material = clockBodyMaterial;
+          meshesToMerge.push(cylinderTop);
 
-                      if (textRenderer && typeof textRenderer.dispose === "function") {
-                          textRenderer.dispose();
-                      }
+          const cylinderBottom = cylinderTop.clone("cylinderbottom");
+          cylinderBottom.position.y = -2.7;
+          meshesToMerge.push(cylinderBottom);
 
-                      textRenderer = newRenderer;
-                  };
+          this.createClockLines(scene, meshesToMerge);
 
-                  currentText = formatTime();
-                  await rebuildText(currentText);
+          const mergedMesh = BABYLON.Mesh.MergeMeshes(
+            meshesToMerge,
+            true,
+            true,
+            undefined,
+            false,
+            true
+          );
+          mergedMesh.position.set(0.5, 0.6, 1.9);
+          mergedMesh.rotation.z = this.toRadians(90);
+          mergedMesh.name = "clockBody";
 
-                  scene.onAfterRenderObservable.add(() => {
-                      if (textRenderer) {
-                          textRenderer.render(camera.getViewMatrix(), camera.getProjectionMatrix());
-                      }
-                  });
+          this.createGround(scene);
 
-                  setInterval(async () => {
-                      if (updating) return;
+          return scene;
+        }
 
-                      const newText = formatTime();
-                      if (newText === currentText) return;
+        createClockLines(scene, meshesToMerge) {
+          const hiddenLineIndices = new Set([57, 58, 59, 0, 1, 2, 3]);
 
-                      updating = true;
-                      try {
-                          currentText = newText;
-                          await rebuildText(newText);
-                      } finally {
-                          updating = false;
-                      }
-                  }, 1000);
-                };
+          for (let i = 0; i < 60; i++) {
+            if (hiddenLineIndices.has(i)) {
+              continue;
+            }
 
-                createTextMesh(engine);
-                
-                const meshesToMerge = [];
+            const rad = this.toRadians(i * (360 / 60));
+            const tube = BABYLON.MeshBuilder.CreateBox(
+              `clockline_${i}`,
+              { height: 6.5, width: 0.196, depth: 0.01 },
+              scene
+            );
 
-                // 真ん中の動画円柱
-                const cylinder = BABYLON.MeshBuilder.CreateCylinder("cylinder", {
-                  height: 6,
-                  diameter: 3.5,
-                  tessellation: 60
-                }, scene);
-                      cylinder.position.y = 0.7;
-                      cylinder.position.z = 1.9;
-                      cylinder.position.x = 0;                
-                      cylinder.rotation.z = degree(90);
+            tube.rotation.y = rad;
+            tube.position.x = -(60 / 32) * Math.sin(rad);
+            tube.position.y = 0.5;
+            tube.position.z = -(60 / 32) * Math.cos(rad);
 
-                const cylindermat = new BABYLON.StandardMaterial("cylindermat", scene);
-                      cylindermat.diffuseTexture = new BABYLON.VideoTexture("vidtex", "movie.mp4", scene);
-                      cylindermat.emissiveColor = new BABYLON.Color3(1, 1, 1);
-                      cylinder.material = cylindermat;
+            const tubeMaterial = new BABYLON.StandardMaterial(`tubemat_${i}`, scene);
+            tubeMaterial.diffuseColor = new BABYLON.Color3(0.1, 0.1, 0.1);
+            tubeMaterial.specularColor = new BABYLON.Color3(1, 1, 1);
+            tubeMaterial.specularPower = 8;
+            tubeMaterial.emissiveColor = new BABYLON.Color3(0.1, 0.1, 0.1);
+            tubeMaterial.alpha = 1;
+            tube.material = tubeMaterial;
 
-                // 上部の円柱
-                const cylindertop = BABYLON.MeshBuilder.CreateCylinder("cylindertop", {
-                  height: 0.7,
-                  diameter: 4,
-                  tessellation: 60
-                }, scene);
-                cylindertop.position.y = 3.8;
-
-                const cylindertopmat = new BABYLON.StandardMaterial("cylindertopmat", scene);
-                      cylindertopmat.diffuseColor = new BABYLON.Color3(0.1, 0.1, 0.1);
-                      cylindertopmat.specularColor = new BABYLON.Color3(1, 1, 1);
-                      cylindertopmat.specularPower = 8;
-                      cylindertopmat.emissiveColor = new BABYLON.Color3(0.1, 0.1, 0.1);
-                      cylindertop.material = cylindertopmat;
-
-                meshesToMerge.push(cylindertop);
-
-                // 下部の円柱
-                const cylinderbottom = cylindertop.clone("cylinderbottom");
-                      cylinderbottom.position.y = -2.7;
-                      meshesToMerge.push(cylinderbottom);
-
-                // 時計の線
-                for (let i = 0; i < 60; i++) {
-                  if (
-                    i !== 57 && i !== 58 && i !== 59 &&
-                    i !== 0 && i !== 1 && i !== 2 && i !== 3
-                  ) {
-                    const tube = BABYLON.MeshBuilder.CreateBox(`clockline_${i}`, {
-                      height: 6.5,
-                      width: 0.196,
-                      depth: 0.01
-                    }, scene);
-
-                    tube.rotation.y = degree(i * (360 / 60));
-                    tube.position.x = -(60 / 32 * Math.sin(degree(i * (360 / 60))));
-                    tube.position.y = 0.5;
-                    tube.position.z = -(60 / 32 * Math.cos(degree(i * (360 / 60))));
-
-                    const tubemat = new BABYLON.StandardMaterial(`tubemat_${i}`, scene);
-                    tubemat.diffuseColor = new BABYLON.Color3(0.1, 0.1, 0.1);
-                    tubemat.specularColor = new BABYLON.Color3(1, 1, 1);
-                    tubemat.specularPower = 8;
-                    tubemat.emissiveColor = new BABYLON.Color3(0.1, 0.1, 0.1);
-                    tubemat.alpha = 1;
-                    tube.material = tubemat;
-
-                    meshesToMerge.push(tube);
-                  }
-                }
-
-                // マージ
-                const mergedMesh = BABYLON.Mesh.MergeMeshes(
-                  meshesToMerge, true, true, undefined, false, true
-                );
-                mergedMesh.position.z = 1.9;
-                mergedMesh.position.y = 0.6;
-                mergedMesh.position.x = 0.5;                
-                mergedMesh.rotation.z = degree(90);
-                mergedMesh.name = "clockBody";
-
-                // グランドを作成 
-                createGround(scene);
-
-                // グランドを作成
-                function createGround(scene) {
-                  const terrainTexture = new BABYLON.Texture( "textures/ground.jpg", scene );
-
-                  var t = 0.0;
-                  window.onload = function () {
-                    var terrainSub = 800;
-                    var params = {
-                      terrainSub: terrainSub,
-                    };
-                    var terrain = new BABYLON.DynamicTerrain("t", params, scene);
-                    var terrainMaterial = new BABYLON.StandardMaterial("tm", scene);
-                    terrainMaterial.diffuseTexture = terrainTexture;
-                    terrainMaterial.wireframe = true;
-                    terrainMaterial.diffuseColor = new BABYLON.Color3(0.05, 0.05, 0.05);
-
-                    scene.onBeforeRenderObservable.add(() => {
-                      if (hour >= 5 && hour <= 18) {
-                        terrainMaterial.emissiveColor = new BABYLON.Color3(0.1, 0.3, 1.0);
-                      } else {
-                        terrainMaterial.emissiveColor = new BABYLON.Color3(0.0, 1.5, 2.0);
-                      }
-                    });
-
-                    terrain.mesh.material = terrainMaterial;
-                    terrain.mesh.position.y = -2;
-                    terrain.useCustomVertexFunction = true;
-                    terrain.computeNormals = false;
-                    terrain.refreshEveryFrame = true;
-                    terrain.updateVertex = function (vertex, i, j) {
-                      vertex.position.y =
-                        .5 *
-                        Math.sin((vertex.position.x + t) / 5.0) *
-                        Math.cos((vertex.position.z + 5 * t) / 5.0);
-                    };
-                    terrain.update(true);
-                  };
-                  scene.registerBeforeRender(function () {
-                    t += 0.5;
-                  });
-                }
-
-                return scene;
-              break;
-            default:
-              break;
+            meshesToMerge.push(tube);
           }
         }
+
+        async createClockText(scene, camera, engine) {
+          const sdfFontDefinition = await (
+            await fetch("https://assets.babylonjs.com/fonts/roboto-regular.json")
+          ).text();
+
+          const fontAsset = new ADDONS.FontAsset(
+            sdfFontDefinition,
+            "https://assets.babylonjs.com/fonts/roboto-regular.png"
+          );
+
+          let textRenderer = null;
+          let currentText = "";
+          let updating = false;
+
+          const formatTime = () => {
+            const now = new Date();
+            const hh = String(now.getHours()).padStart(2, "0");
+            const mm = String(now.getMinutes()).padStart(2, "0");
+            const ss = String(now.getSeconds()).padStart(2, "0");
+            return `${hh}:${mm}:${ss}`;
+          };
+
+          const rebuildText = async (text) => {
+            const newRenderer = await ADDONS.TextRenderer.CreateTextRendererAsync(fontAsset, engine);
+            newRenderer.addParagraph(text, { letterSpacing: 5 });
+            newRenderer.color = new BABYLON.Color4(0.1, 0.98, 0.1);
+            newRenderer.ignoreDepthBuffer = false;
+
+            if (textRenderer && typeof textRenderer.dispose === "function") {
+              textRenderer.dispose();
+            }
+
+            textRenderer = newRenderer;
+          };
+
+          currentText = formatTime();
+          await rebuildText(currentText);
+
+          scene.onAfterRenderObservable.add(() => {
+            if (textRenderer) {
+              textRenderer.render(camera.getViewMatrix(), camera.getProjectionMatrix());
+            }
+          });
+
+          setInterval(async () => {
+            if (updating) {
+              return;
+            }
+
+            const newText = formatTime();
+            if (newText === currentText) {
+              return;
+            }
+
+            updating = true;
+            try {
+              currentText = newText;
+              await rebuildText(newText);
+            } finally {
+              updating = false;
+            }
+          }, 1000);
+        }
+
+        createGround(scene) {
+          const terrainTexture = new BABYLON.Texture("textures/ground.jpg", scene);
+          const terrain = new BABYLON.DynamicTerrain("terrain", { terrainSub: 800 }, scene);
+
+          const terrainMaterial = new BABYLON.StandardMaterial("terrainMaterial", scene);
+          terrainMaterial.diffuseTexture = terrainTexture;
+          terrainMaterial.wireframe = true;
+          terrainMaterial.diffuseColor = new BABYLON.Color3(0.05, 0.05, 0.05);
+
+          terrain.mesh.material = terrainMaterial;
+          terrain.mesh.position.y = -2;
+          terrain.useCustomVertexFunction = true;
+          terrain.computeNormals = false;
+          terrain.refreshEveryFrame = true;
+
+          let t = 0;
+          terrain.updateVertex = (vertex) => {
+            vertex.position.y =
+              0.5 *
+              Math.sin((vertex.position.x + t) / 5.0) *
+              Math.cos((vertex.position.z + 5 * t) / 5.0);
+          };
+          terrain.update(true);
+
+          scene.onBeforeRenderObservable.add(() => {
+            const { hour } = this.getCurrentTimeInfo();
+            terrainMaterial.emissiveColor =
+              hour >= 5 && hour <= 18
+                ? new BABYLON.Color3(0.1, 0.3, 1.0)
+                : new BABYLON.Color3(0.0, 1.5, 2.0);
+
+            t += 0.5;
+          });
+        }
       }
-      const carousel = new Carousel();
+
+      new Carousel();
     </script>
   </body>
 </html>
