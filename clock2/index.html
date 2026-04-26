@@ -4,22 +4,8 @@
     <meta charset="UTF-8" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Clock</title>
-    <script src="https://assets.babylonjs.com/generated/Assets.js"></script>
-    <script src="https://cdn.babylonjs.com/recast.js"></script>
-    <script src="https://cdn.babylonjs.com/ammo.js"></script>
-    <script src="https://cdn.babylonjs.com/havok/HavokPhysics_umd.js"></script>
-    <script src="https://cdn.babylonjs.com/cannon.js"></script>
-    <script src="https://cdn.babylonjs.com/Oimo.js"></script>
-    <script src="https://cdn.babylonjs.com/earcut.min.js"></script>
     <script src="https://cdn.babylonjs.com/babylon.js"></script>
-    <script src="https://cdn.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
-    <script src="https://cdn.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js"></script>
-    <script src="https://cdn.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min.js"></script>
-    <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.js"></script>
-    <script src="https://cdn.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
-    <script src="https://cdn.babylonjs.com/gui/babylon.gui.min.js"></script>
     <script src="https://cdn.babylonjs.com/addons/babylonjs.addons.min.js"></script>
-    <script src="https://cdn.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
     <script src="https://cdn.rawgit.com/BabylonJS/Extensions/master/DynamicTerrain/dist/babylon.dynamicTerrain.min.js"></script>
     <style>
       body {
@@ -73,31 +59,21 @@
           });
         }
 
-
         getWeatherLabel(code) {
-            if (code === 0) return "晴れ";
-            if (code === 1) return "おおむね晴れ";
-            if (code === 2) return "晴れ時々くもり";
-            if (code === 3) return "くもり";
-
-            if (code === 45 || code === 48) return "霧";
-
-            if (code === 51 || code === 53 || code === 55) return "霧雨";
-            if (code === 56 || code === 57) return "着氷性の霧雨";
-
-            if (code === 61 || code === 63 || code === 65) return "雨";
-            if (code === 66 || code === 67) return "着氷性の雨";
-
-            if (code === 71 || code === 73 || code === 75) return "雪";
-            if (code === 77) return "細かい雪";
-
-            if (code === 80 || code === 81 || code === 82) return "にわか雨";
-            if (code === 85 || code === 86) return "にわか雪";
-
-            if (code === 95) return "雷雨";
-            if (code === 96 || code === 99) return "ひょうを伴う雷雨";
-
-            return "不明";
+            if (code === 0 || code === 1) return "Sunny";
+            if (code === 2) return "Partly Cloudy";            
+            if (code === 3) return "Cloudy";
+            if (code === 45 || code === 48) return "Fog";
+            if (
+              (code >= 51 && code <= 67) ||
+              (code >= 80 && code <= 82)
+            ) return "Rain";
+            if (
+              (code >= 71 && code <= 77) ||
+              (code >= 85 && code <= 86)
+            ) return "Snow";
+            if (code === 95 || code === 96 || code === 99) return "Thunderstorm";
+            return "Unknown";
         };
 
 
@@ -129,22 +105,35 @@
                 camera.upperBetaLimit = 0.59 * Math.PI;
                 camera.maxZ = 0.0;
 
-          const pos = await this.getLocation();
+          let lat = 35.68;   // Tokyo fallback
+          let lon = 139.69;
 
-          const lat = pos.coords.latitude;
-          const lon = pos.coords.longitude;
+          try {
+            const pos = await this.getLocation();
 
-          const weather = await fetch(
-            `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`
-          ).then(r => r.json());
+            lat = pos.coords.latitude;
+            lon = pos.coords.longitude;
 
-          const weathercode = weather.current_weather.weathercode;
-          const light = new BABYLON.DirectionalLight(
-            "Sun",
-            new BABYLON.Vector3(0, 1, 0).normalize(),
-            scene
-          );
-          light.intensity = Math.PI;
+          } catch (e) {
+            console.warn("位置情報拒否 -> 東京を使用");
+          }
+
+          let weather = await fetch( `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true` ).then(r=>r.json());          
+
+          scene.onBeforeRenderObservable.add(() => {
+            setInterval(async () => { 
+              try {
+                weather = await fetch( `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true` ).then(
+                r => r.json());
+              } catch(e) { 
+                console.warn(e);
+              }
+            }, 1000 * 60 * 60 );
+          });
+
+          const weathercode = weather?.current_weather?.weathercode ?? 1;
+          const light = new BABYLON.DirectionalLight( "Sun", new BABYLON.Vector3(0, 1, 0).normalize(), scene );
+                light.intensity = Math.PI;
 
           const defaultRenderingPipeline = new BABYLON.DefaultRenderingPipeline("Default");
                 defaultRenderingPipeline.imageProcessingEnabled = true;
@@ -155,11 +144,49 @@
           const atmosphere = new ADDONS.Atmosphere("Atmosphere", scene, [light]);
                 atmosphere.additionalDiffuseSkyIrradianceIntensity = 0.01;
                 atmosphere.minimumMultiScatteringIntensity = 0.2;
-                atmosphere.physicalProperties.ozoneAbsorptionScale = 2;
-                atmosphere.isLinearSpaceComposition = true;
-                atmosphere.isLinearSpaceLight = true;
-                atmosphere.isAerialPerspectiveLutEnabled = false;
-                atmosphere.isSkyViewLutEnabled = false;
+
+          const getweather = await this.getWeatherLabel(weathercode);
+          switch(getweather) {
+            case 'Sunny':
+              atmosphere.physicalProperties.mieScatteringScale = 1.0,
+              atmosphere.physicalProperties.ozoneAbsorptionScale = 2.4,
+              atmosphere.multiScatteringIntensity = 1;  
+              break;  
+            case 'Partly Cloudy':
+              atmosphere.physicalProperties.mieScatteringScale = 10.0,
+              atmosphere.physicalProperties.ozoneAbsorptionScale = 2.4,
+              atmosphere.multiScatteringIntensity = 0.5;  
+              break;  
+            case 'Cloudy': 
+              atmosphere.physicalProperties.mieScatteringScale = 20.0;
+              atmosphere.physicalProperties.ozoneAbsorptionScale = 2.4;
+              atmosphere.multiScatteringIntensity = 0.2;
+              break;                
+            case 'Rain':     
+              atmosphere.physicalProperties.mieScatteringScale = 40.0;
+              atmosphere.physicalProperties.ozoneAbsorptionScale = 2.4;
+              atmosphere.multiScatteringIntensity = 0;
+              break;   
+            case 'Snow':     
+              atmosphere.physicalProperties.mieScatteringScale = 60.0;
+              atmosphere.physicalProperties.ozoneAbsorptionScale = 2.4;
+              atmosphere.multiScatteringIntensity = 0;
+              break;                 
+            case 'Thunderstorm':
+              atmosphere.physicalProperties.mieScatteringScale = 100.0;
+              atmosphere.physicalProperties.ozoneAbsorptionScale = 10.0;
+              atmosphere.multiScatteringIntensity = 0;         
+              break;   
+            default: 
+              atmosphere.physicalProperties.mieScatteringScale = 1.0,
+              atmosphere.physicalProperties.ozoneAbsorptionScale = 2.4,
+              atmosphere.multiScatteringIntensity = 1;             
+          }
+
+          atmosphere.isLinearSpaceComposition = true;
+          atmosphere.isLinearSpaceLight = true;
+          atmosphere.isAerialPerspectiveLutEnabled = false;
+          atmosphere.isSkyViewLutEnabled = false;
 
           scene.onBeforeRenderObservable.add(() => {
             const { hour, hours } = this.getCurrentTimeInfo();
@@ -186,16 +213,16 @@
             BABYLON.PolygonMeshBuilder.prototype.bjsEarcut = earcut;
           }
 
-          await this.createClockText(scene, camera, engine);
+          await this.createClockText(scene, camera, engine, weather);
 
           const meshesToMerge = [];
 
           const cylinder = BABYLON.MeshBuilder.CreateCylinder(
             "cylinder",
-            { height: 6, diameter: 3.5, tessellation: 60 },
+            { height: 12, diameter: 7, tessellation: 60 },
             scene
           );
-          cylinder.position.set(0, 0.7, 1.9);
+          cylinder.position.set(0, -0.7, 1.9);
           cylinder.rotation.z = this.toRadians(90);
 
           const cylinderMaterial = new BABYLON.StandardMaterial("cylindermat", scene);
@@ -203,8 +230,8 @@
                 cylinderMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
                 cylinder.material = cylinderMaterial;
 
-          const cylinderTop = BABYLON.MeshBuilder.CreateCylinder( "cylindertop", { height: 0.7, diameter: 4, tessellation: 60 }, scene );
-                cylinderTop.position.y = 3.8;
+          const cylinderTop = BABYLON.MeshBuilder.CreateCylinder( "cylindertop", { height: 0.7, diameter: 8, tessellation: 60 }, scene );
+                cylinderTop.position.y = 6.8;
 
           const clockBodyMaterial = new BABYLON.StandardMaterial("clockBodyMat", scene);
                 clockBodyMaterial.diffuseColor = new BABYLON.Color3(0.1, 0.1, 0.1);
@@ -216,13 +243,13 @@
           meshesToMerge.push(cylinderTop);
 
           const cylinderBottom = cylinderTop.clone("cylinderbottom");
-          cylinderBottom.position.y = -2.7;
+          cylinderBottom.position.y = -5.8;
           meshesToMerge.push(cylinderBottom);
 
           this.createClockLines(scene, meshesToMerge);
 
           const mergedMesh = BABYLON.Mesh.MergeMeshes( meshesToMerge, true, true, undefined, false, true );
-                mergedMesh.position.set(0.5, 0.6, 1.9);
+                mergedMesh.position.set(0.5, -0.8, 1.9);
                 mergedMesh.rotation.z = this.toRadians(90);
                 mergedMesh.name = "clockBody";
 
@@ -232,7 +259,7 @@
         }
 
         createClockLines(scene, meshesToMerge) {
-          const hiddenLineIndices = new Set([57, 58, 59, 0, 1, 2, 3]);
+          const hiddenLineIndices = new Set([54, 55, 56, 57, 58, 59, 0, 1, 2, 3, 4, 5, 6]);
 
           for (let i = 0; i < 60; i++) {
             if (hiddenLineIndices.has(i)) {
@@ -242,14 +269,14 @@
             const rad = this.toRadians(i * (360 / 60));
             const tube = BABYLON.MeshBuilder.CreateBox(
               `clockline_${i}`,
-              { height: 6.5, width: 0.196, depth: 0.01 },
+              { height: 13, width: .4, depth: .025 },
               scene
             );
 
             tube.rotation.y = rad;
-            tube.position.x = -(60 / 32) * Math.sin(rad);
+            tube.position.x = -(60 / 16) * Math.sin(rad);
             tube.position.y = 0.5;
-            tube.position.z = -(60 / 32) * Math.cos(rad);
+            tube.position.z = -(60 / 16) * Math.cos(rad);
 
             const tubeMaterial = new BABYLON.StandardMaterial(`tubemat_${i}`, scene);
             tubeMaterial.diffuseColor = new BABYLON.Color3(0.1, 0.1, 0.1);
@@ -263,7 +290,7 @@
           }
         }
 
-        async createClockText(scene, camera, engine) {
+        async createClockText(scene, camera, engine, weather) {
           const sdfFontDefinition = await (
             await fetch("https://assets.babylonjs.com/fonts/roboto-regular.json")
           ).text();
@@ -285,9 +312,20 @@
             return `${hh}:${mm}:${ss}`;
           };
 
-          const rebuildText = async (text) => {
+          const rebuildText = async (text, weather) => {
+
+            const temperature = weather?.current_weather?.temperature ?? "--";
+            const windspeed = weather?.current_weather?.windspeed ?? "--";
+            const getweather = weather?.current_weather
+                                ? this.getWeatherLabel(weather.current_weather.weathercode)
+                                : "Unknown";              
+
             const newRenderer = await ADDONS.TextRenderer.CreateTextRendererAsync(fontAsset, engine);
-                  newRenderer.addParagraph(text, { letterSpacing: 5 });
+                  newRenderer.addParagraph(
+                    `Time: ${text}
+                     Temperature: ${temperature}F
+                     Weather: ${getweather} 
+                     Speed: ${windspeed} m/s`, { letterSpacing: 5 });
                   newRenderer.color = new BABYLON.Color4(0.1, 0.98, 0.1);
                   newRenderer.ignoreDepthBuffer = false;
 
@@ -299,7 +337,8 @@
           };
 
           currentText = formatTime();
-          await rebuildText(currentText);
+
+          await rebuildText(currentText, weather);
 
           scene.onAfterRenderObservable.add(() => {
             if (textRenderer) {
@@ -320,7 +359,7 @@
             updating = true;
             try {
               currentText = newText;
-              await rebuildText(newText);
+              await rebuildText(newText, weather);
             } finally {
               updating = false;
             }
@@ -337,12 +376,13 @@
                 terrainMaterial.diffuseColor = new BABYLON.Color3(0.05, 0.05, 0.05);
 
                 terrain.mesh.material = terrainMaterial;
-                terrain.mesh.position.y = -2;
+                terrain.mesh.position.y = -6;
                 terrain.useCustomVertexFunction = true;
                 terrain.computeNormals = false;
                 terrain.refreshEveryFrame = true;
 
-          const windspeed = weather ? weather.current_weather.windspeed : 10;
+          const windspeed = weather?.current_weather?.windspeed ?? 5;
+
 
           let t = 0;
           terrain.updateVertex = (vertex) => {
