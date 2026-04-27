@@ -99,7 +99,7 @@
           const scene = new BABYLON.Scene(engine);
           scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
 
-          const camera = new BABYLON.ArcRotateCamera( "camera2", -Math.PI / 2, Math.PI / 2, 20, BABYLON.Vector3.Zero(), scene );
+          const camera = new BABYLON.ArcRotateCamera( "camera2", -Math.PI / 2, Math.PI / 2, 15, BABYLON.Vector3.Zero(), scene );
                 camera.setTarget(BABYLON.Vector3.Zero());
                 camera.attachControl(canvas, true);
                 camera.upperBetaLimit = 0.59 * Math.PI;
@@ -118,18 +118,26 @@
             console.warn("位置情報拒否 -> 東京を使用");
           }
 
-          let weather = await fetch( `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true` ).then(r=>r.json());          
+          let weather = null;
 
-          scene.onBeforeRenderObservable.add(() => {
-            setInterval(async () => { 
-              try {
-                weather = await fetch( `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true` ).then(
-                r => r.json());
-              } catch(e) { 
-                console.warn(e);
-              }
-            }, 1000 * 60 * 60 );
-          });
+          const updateWeather = async () => {
+            try{
+              weather = await fetch(
+                `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`
+              ).then(r=>r.json());
+
+              console.log(weather);
+
+            }catch(e){
+              console.warn(e);
+            }
+          };
+
+          // 初回
+          await updateWeather();
+
+          // 10分おき
+          setInterval(updateWeather,1000*60*30);
 
           const weathercode = weather?.current_weather?.weathercode ?? 1;
           const light = new BABYLON.DirectionalLight( "Sun", new BABYLON.Vector3(0, 1, 0).normalize(), scene );
@@ -368,7 +376,7 @@
 
         createGround(scene, weather) {
           const terrainTexture = new BABYLON.Texture("https://babylonjs-two.vercel.app/clock2/textures/ground.jpg", scene);
-          const terrain = new BABYLON.DynamicTerrain("terrain", { terrainSub: 800 }, scene);
+          const terrain = new BABYLON.DynamicTerrain("terrain", { terrainSub: 200 }, scene);
 
           const terrainMaterial = new BABYLON.StandardMaterial("terrainMaterial", scene);
                 terrainMaterial.diffuseTexture = terrainTexture;
