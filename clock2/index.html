@@ -341,7 +341,7 @@
                     `Time: ${text}
                      Temperature: ${temperature}F
                      Weather: ${weatherLabel} 
-                     Speed: ${windspeed} m/s`, { letterSpacing: 5 });
+                     WindSpeed: ${windspeed} m/s`, { letterSpacing: 5 });
                   newRenderer.color = new BABYLON.Color4(0.1, 0.98, 0.1);
                   newRenderer.ignoreDepthBuffer = false;
 
@@ -384,7 +384,7 @@
 
         createGround(scene, getWeather) {
           const terrainTexture = new BABYLON.Texture("https://babylonjs-two.vercel.app/clock2/textures/ground.jpg", scene);
-          const terrain = new BABYLON.DynamicTerrain("terrain", { terrainSub: 200 }, scene);
+          const terrain = new BABYLON.DynamicTerrain("terrain", { terrainSub: 800 }, scene);
 
           const terrainMaterial = new BABYLON.StandardMaterial("terrainMaterial", scene);
                 terrainMaterial.diffuseTexture = terrainTexture;
