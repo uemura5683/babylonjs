@@ -99,7 +99,7 @@
           const scene = new BABYLON.Scene(engine);
           scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
 
-          const camera = new BABYLON.ArcRotateCamera( "camera2", -Math.PI / 2, Math.PI / 2, 25, BABYLON.Vector3.Zero(), scene );
+          const camera = new BABYLON.ArcRotateCamera( "camera2", -Math.PI / 2, Math.PI / 2, 30, BABYLON.Vector3.Zero(), scene );
                 camera.setTarget(BABYLON.Vector3.Zero());
                 camera.attachControl(canvas, true);
                 camera.upperBetaLimit = 0.59 * Math.PI;
