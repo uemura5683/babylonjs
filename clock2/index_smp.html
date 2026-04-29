@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Clock</title>
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script src="https://cdn.babylonjs.com/addons/babylonjs.addons.min.js"></script>
+    <script src="https://cdn.rawgit.com/BabylonJS/Extensions/master/DynamicTerrain/dist/babylon.dynamicTerrain.min.js"></script>
+    <style>
+      body {
+        margin: 0;
+      }
+      #Canvas {
+        width: 100% !important;
+        height: 100vh !important;
+        background: #000000;
+        background-size: 100% 100%, 800px 600px, 500px 500px;
+        background-attachment: fixed;
+      }
+      canvas {
+        width: 100% !important;
+        height: 100vh !important;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div id="Canvas">
+        <canvas id="renderCanvasList"></canvas>
+      </div>
+    </main>
+
+    <script type="text/javascript">
+      class Carousel {
+        constructor() {
+          this.render();
+        }
+
+        toRadians(degrees) {
+          return degrees * (Math.PI / 180);
+        }
+
+        getCurrentTimeInfo() {
+          const now = new Date();
+          const hour = now.getHours() + now.getMinutes() / 60;
+          const hours = hour + now.getSeconds() / 3600;
+          return { hour, hours };
+        }
+
+        getLocation() {
+          return new Promise((resolve, reject) => {
+            if (!navigator.geolocation) {
+              reject(new Error("Geolocation is not supported by this browser."));
+              return;
+            }
+
+            navigator.geolocation.getCurrentPosition(resolve, reject);
+          });
+        }
+
+        getWeatherLabel(code) {
+            if (code === 0 || code === 1) return "Sunny";
+            if (code === 2) return "Partly Cloudy";            
+            if (code === 3) return "Cloudy";
+            if (code === 45 || code === 48) return "Fog";
+            if (
+              (code >= 51 && code <= 67) ||
+              (code >= 80 && code <= 82)
+            ) return "Rain";
+            if (
+              (code >= 71 && code <= 77) ||
+              (code >= 85 && code <= 86)
+            ) return "Snow";
+            if (code === 95 || code === 96 || code === 99) return "Thunderstorm";
+            return "Unknown";
+        };
+
+
+        async render() {
+          const canvas = document.getElementById("renderCanvasList");
+          const engine = new BABYLON.Engine(canvas);
+
+          try {
+            const scene = await this.createScene(engine, canvas);
+            engine.runRenderLoop(() => {
+              scene.render();
+            });
+          } catch (error) {
+            console.error("Scene initialization failed:", error);
+          }
+
+          window.addEventListener("resize", () => {
+            engine.resize();
+          });
+        }
+
+        async createScene(engine, canvas) {
+          const scene = new BABYLON.Scene(engine);
+          scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
+
+          const camera = new BABYLON.ArcRotateCamera( "camera2", -Math.PI / 2, Math.PI / 2, 25, BABYLON.Vector3.Zero(), scene );
+                camera.setTarget(BABYLON.Vector3.Zero());
+                camera.attachControl(canvas, true);
+                camera.upperBetaLimit = 0.59 * Math.PI;
+                camera.maxZ = 0.0;
+
+          let lat = 35.68;   // Tokyo fallback
+          let lon = 139.69;
+
+          try {
+            const pos = await this.getLocation();
+
+            lat = pos.coords.latitude;
+            lon = pos.coords.longitude;
+
+          } catch (e) {
+            console.warn("位置情報拒否 -> 東京を使用");
+          }
+
+          let weather = null;
+
+          const updateWeather = async () => {
+            try{
+              weather = await fetch(
+                `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`
+              ).then(r=>r.json());
+
+              console.log(weather);
+
+            }catch(e){
+              console.warn(e);
+            }
+          };
+
+          // 初回
+          await updateWeather();
+
+          // 30分おき
+          setInterval(async () => {
+            await updateWeather();
+            await applyWeatherToAtmosphere();
+          },1000*60*30);
+
+          const light = new BABYLON.DirectionalLight( "Sun", new BABYLON.Vector3(0, 1, 0).normalize(), scene );
+                light.intensity = Math.PI;
+
+          const defaultRenderingPipeline = new BABYLON.DefaultRenderingPipeline("Default");
+                defaultRenderingPipeline.imageProcessingEnabled = true;
+                defaultRenderingPipeline.imageProcessing.ditheringEnabled = true;
+                defaultRenderingPipeline.imageProcessing.toneMappingEnabled = true;
+                defaultRenderingPipeline.imageProcessing.toneMappingType = 0.1;
+
+          const atmosphere = new ADDONS.Atmosphere("Atmosphere", scene, [light]);
+                atmosphere.additionalDiffuseSkyIrradianceIntensity = 0.01;
+                atmosphere.minimumMultiScatteringIntensity = 0.2;
+
+          const applyWeatherToAtmosphere = async () => {
+            const weathercode = weather?.current_weather?.weathercode ?? 1;
+            const getweather = await this.getWeatherLabel(weathercode);
+
+            switch(getweather) {
+            case 'Sunny':
+              atmosphere.physicalProperties.mieScatteringScale = 1.0,
+              atmosphere.physicalProperties.ozoneAbsorptionScale = 2.4,
+              atmosphere.multiScatteringIntensity = 1;  
+              break;  
+            case 'Partly Cloudy':
+              atmosphere.physicalProperties.mieScatteringScale = 10.0,
+              atmosphere.physicalProperties.ozoneAbsorptionScale = 2.4,
+              atmosphere.multiScatteringIntensity = 0.5;  
+              break;  
+            case 'Cloudy': 
+              atmosphere.physicalProperties.mieScatteringScale = 20.0;
+              atmosphere.physicalProperties.ozoneAbsorptionScale = 2.4;
+              atmosphere.multiScatteringIntensity = 0.2;
+              break;                
+            case 'Rain':     
+              atmosphere.physicalProperties.mieScatteringScale = 40.0;
+              atmosphere.physicalProperties.ozoneAbsorptionScale = 2.4;
+              atmosphere.multiScatteringIntensity = 0;
+              break;   
+            case 'Snow':     
+              atmosphere.physicalProperties.mieScatteringScale = 60.0;
+              atmosphere.physicalProperties.ozoneAbsorptionScale = 2.4;
+              atmosphere.multiScatteringIntensity = 0;
+              break;                 
+            case 'Thunderstorm':
+              atmosphere.physicalProperties.mieScatteringScale = 100.0;
+              atmosphere.physicalProperties.ozoneAbsorptionScale = 10.0;
+              atmosphere.multiScatteringIntensity = 0;         
+              break;   
+            default: 
+              atmosphere.physicalProperties.mieScatteringScale = 1.0,
+              atmosphere.physicalProperties.ozoneAbsorptionScale = 2.4,
+              atmosphere.multiScatteringIntensity = 1;             
+            }
+          };
+
+          await applyWeatherToAtmosphere();
+
+          atmosphere.isLinearSpaceComposition = true;
+          atmosphere.isLinearSpaceLight = true;
+          atmosphere.isAerialPerspectiveLutEnabled = false;
+          atmosphere.isSkyViewLutEnabled = false;
+
+          scene.onBeforeRenderObservable.add(() => {
+            const { hour, hours } = this.getCurrentTimeInfo();
+
+            const sunAngle = (hours / 24) * 2 * Math.PI - Math.PI / 2;
+            const x = Math.cos(sunAngle);
+            const y = Math.sin(sunAngle);
+            light.direction.copyFromFloats(-x, -y, 0);
+
+            const minExp = 0.1;
+            const maxExp = 6;
+            let exposure = minExp;
+
+            if (hour >= 5 && hour <= 18) {
+              const t = (hour - 5) / (18 - 5);
+              const k = Math.sin(t * Math.PI);
+              exposure = minExp + (maxExp - minExp) * k;
+            }
+
+            defaultRenderingPipeline.imageProcessing.exposure = exposure;
+          });
+
+          if (typeof earcut !== "undefined" && BABYLON.PolygonMeshBuilder) {
+            BABYLON.PolygonMeshBuilder.prototype.bjsEarcut = earcut;
+          }
+
+          await this.createClockText(scene, camera, engine, () => weather);
+
+          const meshesToMerge = [];
+
+          const cylinder = BABYLON.MeshBuilder.CreateCylinder(
+            "cylinder",
+            { height: 12, diameter: 7, tessellation: 60 },
+            scene
+          );
+          cylinder.position.set(0, -0.7, 1.9);
+          cylinder.rotation.z = this.toRadians(90);
+
+          const cylinderMaterial = new BABYLON.StandardMaterial("cylindermat", scene);
+                cylinderMaterial.diffuseTexture = new BABYLON.VideoTexture("vidtex", "https://babylonjs-two.vercel.app/clock2/movie_smp.mp4", scene);
+                cylinderMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
+                cylinder.material = cylinderMaterial;
+
+          const cylinderTop = BABYLON.MeshBuilder.CreateCylinder( "cylindertop", { height: 0.7, diameter: 8, tessellation: 60 }, scene );
+                cylinderTop.position.y = 6.8;
+
+          const clockBodyMaterial = new BABYLON.StandardMaterial("clockBodyMat", scene);
+                clockBodyMaterial.diffuseColor = new BABYLON.Color3(0.1, 0.1, 0.1);
+                clockBodyMaterial.specularColor = new BABYLON.Color3(1, 1, 1);
+                clockBodyMaterial.specularPower = 8;
+                clockBodyMaterial.emissiveColor = new BABYLON.Color3(0.1, 0.1, 0.1);
+
+          cylinderTop.material = clockBodyMaterial;
+          meshesToMerge.push(cylinderTop);
+
+          const cylinderBottom = cylinderTop.clone("cylinderbottom");
+          cylinderBottom.position.y = -5.8;
+          meshesToMerge.push(cylinderBottom);
+
+          this.createClockLines(scene, meshesToMerge);
+
+          const mergedMesh = BABYLON.Mesh.MergeMeshes( meshesToMerge, true, true, undefined, false, true );
+                mergedMesh.position.set(0.5, -0.8, 1.9);
+                mergedMesh.rotation.z = this.toRadians(90);
+                mergedMesh.name = "clockBody";
+
+          this.createGround(scene, () => weather);
+
+          return scene;
+        }
+
+        createClockLines(scene, meshesToMerge) {
+          const hiddenLineIndices = new Set([54, 55, 56, 57, 58, 59, 0, 1, 2, 3, 4, 5, 6]);
+
+          for (let i = 0; i < 60; i++) {
+            if (hiddenLineIndices.has(i)) {
+              continue;
+            }
+
+            const rad = this.toRadians(i * (360 / 60));
+            const tube = BABYLON.MeshBuilder.CreateBox(
+              `clockline_${i}`,
+              { height: 13, width: .4, depth: .025 },
+              scene
+            );
+
+            tube.rotation.y = rad;
+            tube.position.x = -(60 / 16) * Math.sin(rad);
+            tube.position.y = 0.5;
+            tube.position.z = -(60 / 16) * Math.cos(rad);
+
+            const tubeMaterial = new BABYLON.StandardMaterial(`tubemat_${i}`, scene);
+            tubeMaterial.diffuseColor = new BABYLON.Color3(0.1, 0.1, 0.1);
+            tubeMaterial.specularColor = new BABYLON.Color3(1, 1, 1);
+            tubeMaterial.specularPower = 8;
+            tubeMaterial.emissiveColor = new BABYLON.Color3(0.1, 0.1, 0.1);
+            tubeMaterial.alpha = 1;
+            tube.material = tubeMaterial;
+
+            meshesToMerge.push(tube);
+          }
+        }
+
+        async createClockText(scene, camera, engine, getWeather) {
+          const sdfFontDefinition = await (
+            await fetch("https://assets.babylonjs.com/fonts/roboto-regular.json")
+          ).text();
+
+          const fontAsset = new ADDONS.FontAsset(
+            sdfFontDefinition,
+            "https://assets.babylonjs.com/fonts/roboto-regular.png"
+          );
+
+          let textRenderer = null;
+          let currentText = "";
+          let updating = false;
+
+          const formatTime = () => {
+            const now = new Date();
+            const hh = String(now.getHours()).padStart(2, "0");
+            const mm = String(now.getMinutes()).padStart(2, "0");
+            const ss = String(now.getSeconds()).padStart(2, "0");
+            return `${hh}:${mm}:${ss}`;
+          };
+
+          const rebuildText = async (text) => {
+            const weather = getWeather();
+            const temperature = weather?.current_weather?.temperature ?? "--";
+            const windspeed = weather?.current_weather?.windspeed ?? "--";
+            const weatherLabel = weather?.current_weather
+                                ? await this.getWeatherLabel(weather.current_weather.weathercode)
+                                : "Unknown";              
+
+            const newRenderer = await ADDONS.TextRenderer.CreateTextRendererAsync(fontAsset, engine);
+                  newRenderer.addParagraph(
+                    `Time: ${text}
+                     Temperature: ${temperature}F
+                     Weather: ${weatherLabel} 
+                     Speed: ${windspeed} m/s`, { letterSpacing: 5 });
+                  newRenderer.color = new BABYLON.Color4(0.1, 0.98, 0.1);
+                  newRenderer.ignoreDepthBuffer = false;
+
+            if (textRenderer && typeof textRenderer.dispose === "function") {
+              textRenderer.dispose();
+            }
+
+            textRenderer = newRenderer;
+          };
+
+          currentText = formatTime();
+
+          await rebuildText(currentText);
+
+          scene.onAfterRenderObservable.add(() => {
+            if (textRenderer) {
+              textRenderer.render(camera.getViewMatrix(), camera.getProjectionMatrix());
+            }
+          });
+
+          setInterval(async () => {
+            if (updating) {
+              return;
+            }
+
+            const newText = formatTime();
+            if (newText === currentText) {
+              return;
+            }
+
+            updating = true;
+            try {
+              currentText = newText;
+              await rebuildText(newText);
+            } finally {
+              updating = false;
+            }
+          }, 1000);
+        }
+
+        createGround(scene, getWeather) {
+          const terrainTexture = new BABYLON.Texture("https://babylonjs-two.vercel.app/clock2/textures/ground.jpg", scene);
+          const terrain = new BABYLON.DynamicTerrain("terrain", { terrainSub: 100 }, scene);
+
+          const terrainMaterial = new BABYLON.StandardMaterial("terrainMaterial", scene);
+                terrainMaterial.diffuseTexture = terrainTexture;
+                terrainMaterial.wireframe = true;
+                terrainMaterial.diffuseColor = new BABYLON.Color3(0.05, 0.05, 0.05);
+
+                terrain.mesh.material = terrainMaterial;
+                terrain.mesh.position.y = -6;
+                terrain.useCustomVertexFunction = true;
+                terrain.computeNormals = false;
+                terrain.refreshEveryFrame = true;
+
+          let t = 0;
+          terrain.updateVertex = (vertex) => {
+            const weather = getWeather();
+            const windspeed = weather?.current_weather?.windspeed ?? 5;
+            vertex.position.y =
+              windspeed / 10 *
+              Math.sin((vertex.position.x + t) / 10) *
+              Math.cos((vertex.position.z + 5 * t) / 10);
+          };
+          terrain.update(true);
+
+          scene.onBeforeRenderObservable.add(() => {
+            const { hour } = this.getCurrentTimeInfo();
+            terrainMaterial.emissiveColor =
+              hour >= 5 && hour <= 18
+                ? new BABYLON.Color3(0.1, 0.3, 1.0)
+                : new BABYLON.Color3(0.0, 1.5, 2.0);
+
+            t += 0.5;
+          });
+        }
+      }
+
+      new Carousel();
+    </script>
+  </body>
+</html>
