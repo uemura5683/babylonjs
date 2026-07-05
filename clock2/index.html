@@ -4,9 +4,9 @@
     <meta charset="UTF-8" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Clock</title>
-    <script src="https://cdn.babylonjs.com/babylon.js"></script>
-    <script src="https://cdn.babylonjs.com/addons/babylonjs.addons.min.js"></script>
-    <script src="https://cdn.rawgit.com/BabylonJS/Extensions/master/DynamicTerrain/dist/babylon.dynamicTerrain.min.js"></script>
+    <script defer src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script defer src="https://cdn.babylonjs.com/addons/babylonjs.addons.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/gh/BabylonJS/Extensions@master/DynamicTerrain/dist/babylon.dynamicTerrain.min.js"></script>
     <style>
       body {
         margin: 0;
@@ -155,45 +155,131 @@
                 atmosphere.additionalDiffuseSkyIrradianceIntensity = 0.01;
                 atmosphere.minimumMultiScatteringIntensity = 0.2;
 
+          // Rain particles
+          const rainSystem = new BABYLON.ParticleSystem("rain", 5000, scene);
+          rainSystem.particleTexture = new BABYLON.Texture("https://assets.babylonjs.com/textures/flare.png", scene);
+          rainSystem.emitter = new BABYLON.Vector3(0, 25, 0);
+          rainSystem.minEmitBox = new BABYLON.Vector3(-30, 0, -30);
+          rainSystem.maxEmitBox = new BABYLON.Vector3(30, 0, 30);
+          rainSystem.color1 = new BABYLON.Color4(0.7, 0.85, 1.0, 0.8);
+          rainSystem.color2 = new BABYLON.Color4(0.5, 0.7, 0.95, 0.6);
+          rainSystem.colorDead = new BABYLON.Color4(0.5, 0.7, 1.0, 0.0);
+          rainSystem.minSize = 0.08;
+          rainSystem.maxSize = 0.12;
+          rainSystem.minScaleX = 0.15;
+          rainSystem.maxScaleX = 0.25;
+          rainSystem.minScaleY = 4.0;
+          rainSystem.maxScaleY = 7.0;
+          rainSystem.minLifeTime = 0.4;
+          rainSystem.maxLifeTime = 0.9;
+          rainSystem.gravity = new BABYLON.Vector3(0, -30, 0);
+          rainSystem.direction1 = new BABYLON.Vector3(-0.3, -1, 0.2);
+          rainSystem.direction2 = new BABYLON.Vector3(0.3, -1, -0.2);
+          rainSystem.minEmitPower = 10;
+          rainSystem.maxEmitPower = 18;
+          rainSystem.updateSpeed = 0.01;
+
+          // Snow particles
+          const snowSystem = new BABYLON.ParticleSystem("snow", 1500, scene);
+          snowSystem.particleTexture = new BABYLON.Texture("https://assets.babylonjs.com/textures/flare.png", scene);
+          snowSystem.emitter = new BABYLON.Vector3(0, 25, 0);
+          snowSystem.minEmitBox = new BABYLON.Vector3(-30, 0, -30);
+          snowSystem.maxEmitBox = new BABYLON.Vector3(30, 0, 30);
+          snowSystem.color1 = new BABYLON.Color4(1.0, 1.0, 1.0, 0.9);
+          snowSystem.color2 = new BABYLON.Color4(0.9, 0.95, 1.0, 0.7);
+          snowSystem.colorDead = new BABYLON.Color4(1, 1, 1, 0.0);
+          snowSystem.minSize = 0.15;
+          snowSystem.maxSize = 0.4;
+          snowSystem.minLifeTime = 3.0;
+          snowSystem.maxLifeTime = 7.0;
+          snowSystem.emitRate = 400;
+          snowSystem.gravity = new BABYLON.Vector3(0, -1.5, 0);
+          snowSystem.direction1 = new BABYLON.Vector3(-2, -1, 2);
+          snowSystem.direction2 = new BABYLON.Vector3(2, -1, -2);
+          snowSystem.minAngularSpeed = 0;
+          snowSystem.maxAngularSpeed = Math.PI;
+          snowSystem.minEmitPower = 1;
+          snowSystem.maxEmitPower = 3;
+          snowSystem.updateSpeed = 0.004;
+
+          // Lightning light for thunderstorm
+          const lightningLight = new BABYLON.PointLight("lightning", new BABYLON.Vector3(0, 20, 0), scene);
+          lightningLight.diffuse = new BABYLON.Color3(0.9, 0.9, 1.0);
+          lightningLight.specular = new BABYLON.Color3(1, 1, 1);
+          lightningLight.intensity = 0;
+          let lightningTimeout = null;
+
+          const stopAllWeatherEffects = () => {
+            rainSystem.stop();
+            snowSystem.stop();
+            if (lightningTimeout) { clearTimeout(lightningTimeout); lightningTimeout = null; }
+            lightningLight.intensity = 0;
+          };
+
+          const scheduleLightning = () => {
+            const delay = 2000 + Math.random() * 8000;
+            lightningTimeout = setTimeout(() => {
+              lightningLight.intensity = 25;
+              setTimeout(() => {
+                lightningLight.intensity = 0;
+                setTimeout(() => {
+                  lightningLight.intensity = 18;
+                  setTimeout(() => {
+                    lightningLight.intensity = 0;
+                    scheduleLightning();
+                  }, 60 + Math.random() * 80);
+                }, 80 + Math.random() * 120);
+              }, 40 + Math.random() * 60);
+            }, delay);
+          };
+
           const applyWeatherToAtmosphere = async () => {
             const weathercode = weather?.current_weather?.weathercode ?? 1;
             const getweather = await this.getWeatherLabel(weathercode);
 
+            stopAllWeatherEffects();
+
             switch(getweather) {
             case 'Sunny':
-              atmosphere.physicalProperties.mieScatteringScale = 1.0,
-              atmosphere.physicalProperties.ozoneAbsorptionScale = 2.4,
-              atmosphere.multiScatteringIntensity = 1;  
-              break;  
+              atmosphere.physicalProperties.mieScatteringScale = 1.0;
+              atmosphere.physicalProperties.ozoneAbsorptionScale = 2.4;
+              atmosphere.multiScatteringIntensity = 1;
+              break;
             case 'Partly Cloudy':
-              atmosphere.physicalProperties.mieScatteringScale = 10.0,
-              atmosphere.physicalProperties.ozoneAbsorptionScale = 2.4,
-              atmosphere.multiScatteringIntensity = 0.5;  
-              break;  
-            case 'Cloudy': 
+              atmosphere.physicalProperties.mieScatteringScale = 10.0;
+              atmosphere.physicalProperties.ozoneAbsorptionScale = 2.4;
+              atmosphere.multiScatteringIntensity = 0.5;
+              break;
+            case 'Cloudy':
               atmosphere.physicalProperties.mieScatteringScale = 20.0;
               atmosphere.physicalProperties.ozoneAbsorptionScale = 2.4;
               atmosphere.multiScatteringIntensity = 0.2;
-              break;                
-            case 'Rain':     
+              break;
+            case 'Rain':
               atmosphere.physicalProperties.mieScatteringScale = 40.0;
               atmosphere.physicalProperties.ozoneAbsorptionScale = 2.4;
               atmosphere.multiScatteringIntensity = 0;
-              break;   
-            case 'Snow':     
+              rainSystem.emitRate = 3000;
+              rainSystem.start();
+              break;
+            case 'Snow':
               atmosphere.physicalProperties.mieScatteringScale = 60.0;
               atmosphere.physicalProperties.ozoneAbsorptionScale = 2.4;
               atmosphere.multiScatteringIntensity = 0;
-              break;                 
+              snowSystem.start();
+              break;
             case 'Thunderstorm':
               atmosphere.physicalProperties.mieScatteringScale = 100.0;
               atmosphere.physicalProperties.ozoneAbsorptionScale = 10.0;
-              atmosphere.multiScatteringIntensity = 0;         
-              break;   
-            default: 
-              atmosphere.physicalProperties.mieScatteringScale = 1.0,
-              atmosphere.physicalProperties.ozoneAbsorptionScale = 2.4,
-              atmosphere.multiScatteringIntensity = 1;             
+              atmosphere.multiScatteringIntensity = 0;
+              rainSystem.emitRate = 6000;
+              rainSystem.start();
+              scheduleLightning();
+              break;
+            default:
+              atmosphere.physicalProperties.mieScatteringScale = 1.0;
+              atmosphere.physicalProperties.ozoneAbsorptionScale = 2.4;
+              atmosphere.multiScatteringIntensity = 1;
             }
           };
 
@@ -242,7 +328,7 @@
           cylinder.rotation.z = this.toRadians(90);
 
           const cylinderMaterial = new BABYLON.StandardMaterial("cylindermat", scene);
-                cylinderMaterial.diffuseTexture = new BABYLON.VideoTexture("vidtex", "https://babylonjs-two.vercel.app/clock2/movie.mp4", scene);
+                cylinderMaterial.diffuseTexture = new BABYLON.VideoTexture("vidtex", "movie.mp4", scene);
                 cylinderMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
                 cylinder.material = cylinderMaterial;
 
@@ -420,7 +506,7 @@
         }
       }
 
-      new Carousel();
+      document.addEventListener('DOMContentLoaded', () => new Carousel());
     </script>
   </body>
 </html>
