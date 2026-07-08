@@ -233,9 +233,23 @@
             }, delay);
           };
 
+          // 天気ごとの露出倍率（曇り/雨/雷ほど正午の白飛び・逆光を抑える）
+          let weatherExposureScale = 1;
+
           const applyWeatherToAtmosphere = async () => {
             const weathercode = weather?.current_weather?.weathercode ?? 1;
             const getweather = await this.getWeatherLabel(weathercode);
+
+            const exposureScaleByWeather = {
+              'Sunny': 1.0,
+              'Partly Cloudy': 0.7,
+              'Cloudy': 0.5,
+              'Fog': 0.5,
+              'Rain': 0.45,
+              'Snow': 0.6,
+              'Thunderstorm': 0.35,
+            };
+            weatherExposureScale = exposureScaleByWeather[getweather] ?? 1.0;
 
             stopAllWeatherEffects();
 
@@ -296,7 +310,8 @@
             const sunAngle = (hours / 24) * 2 * Math.PI - Math.PI / 2;
             const x = Math.cos(sunAngle);
             const y = Math.sin(sunAngle);
-            light.direction.copyFromFloats(-x, -y, 0);
+            // 東(日の出)から西(日の入り)へ移動するようX方向を反転
+            light.direction.copyFromFloats(x, -y, 0);
 
             const minExp = 0.1;
             const maxExp = 6;
@@ -305,7 +320,7 @@
             if (hour >= 5 && hour <= 18) {
               const t = (hour - 5) / (18 - 5);
               const k = Math.sin(t * Math.PI);
-              exposure = minExp + (maxExp - minExp) * k;
+              exposure = minExp + (maxExp - minExp) * k * weatherExposureScale;
             }
 
             defaultRenderingPipeline.imageProcessing.exposure = exposure;
@@ -443,7 +458,8 @@
           await rebuildText(currentText);
 
           scene.onAfterRenderObservable.add(() => {
-            if (textRenderer) {
+            // 裏側（デフォルト正面の反対）に回り込んだときは文字を描画しない
+            if (textRenderer && camera.position.z < 0) {
               textRenderer.render(camera.getViewMatrix(), camera.getProjectionMatrix());
             }
           });
