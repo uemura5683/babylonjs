@@ -230,11 +230,9 @@
           camera.upperBetaLimit = 1.45;
           this.mapCameraHome = { alpha: -Math.PI / 2, beta: 0.95, radius: 20, target: BABYLON.Vector3.Zero() };
 
-          const hemi = new BABYLON.HemisphericLight("mapHemi", new BABYLON.Vector3(0.2, 1, -0.3), scene);
-          hemi.intensity = 1.0;
-          hemi.groundColor = new BABYLON.Color3(0.1, 0.15, 0.2);
-          const dir = new BABYLON.DirectionalLight("mapDir", new BABYLON.Vector3(-0.4, -1, 0.6), scene);
-          dir.intensity = 0.8;
+          // 詳細ページと同じ大気（Atmosphere）の光源。太陽光で列島を照らす。
+          const light = new BABYLON.DirectionalLight("Sun", new BABYLON.Vector3(0, 1, 0).normalize(), scene);
+          light.intensity = Math.PI;
 
           // 地図配置（水平なジオラマ）
           // baseY: 日本列島全体の高さ（水面より上に持ち上げて水没を防ぐ）
@@ -247,15 +245,16 @@
           this.mapRoot = root;
 
           // 表面テクスチャ（緑の日本）＋ シルエットを不透明マスクにして海をくり抜く
+          // 昼夜で明るさが変わらないよう、太陽光に依存しない自発光（disableLighting）で表示する
           const mapMat = new BABYLON.StandardMaterial("japanMapMat", scene);
           const diffuse = new BABYLON.Texture("textures/japan_ground.png", scene);
           mapMat.diffuseTexture = diffuse;
           const opacity = new BABYLON.Texture("textures/japan_silet.png", scene);
           opacity.getAlphaFromRGB = true; // 白=陸(不透明) / 黒=海(透明)
           mapMat.opacityTexture = opacity;
-          mapMat.specularColor = new BABYLON.Color3(0.05, 0.05, 0.05);
-          mapMat.diffuseColor = new BABYLON.Color3(0.85, 1.0, 0.85);
-          mapMat.emissiveColor = new BABYLON.Color3(0.12, 0.28, 0.11);
+          mapMat.emissiveTexture = diffuse;                          // 地表テクスチャをそのまま自発光
+          mapMat.emissiveColor = new BABYLON.Color3(1, 1, 1);
+          mapMat.disableLighting = true;                             // 太陽の昼夜に左右されず常に一定
           mapMat.backFaceCulling = false;
 
           // ハイトマップ（白い日本＝陸地を隆起）で立体化
@@ -276,34 +275,72 @@
           map.parent = root;
           map.isPickable = false;
 
-          // 空（水面に映り込む）
-          const skybox = BABYLON.MeshBuilder.CreateBox("skyBox", { size: 1000 }, scene);
-          const skyboxMaterial = new BABYLON.StandardMaterial("skyBoxMat", scene);
-          skyboxMaterial.backFaceCulling = false;
-          skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("https://playground.babylonjs.com/textures/skybox", scene);
-          skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
-          skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
-          skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-          skyboxMaterial.disableLighting = true;
-          skybox.material = skyboxMaterial;
-          skybox.infiniteDistance = true;
-          skybox.isPickable = false;
+          // 空（詳細ページと同じ ADDONS.Atmosphere。時間帯で色が変化する物理ベースの大気）
+          const defaultRenderingPipeline = new BABYLON.DefaultRenderingPipeline("Default", true, scene, [camera]);
+          defaultRenderingPipeline.imageProcessingEnabled = true;
+          defaultRenderingPipeline.imageProcessing.ditheringEnabled = true;
+          defaultRenderingPipeline.imageProcessing.toneMappingEnabled = true;
+          defaultRenderingPipeline.imageProcessing.toneMappingType = 0.1;
+
+          const atmosphere = new ADDONS.Atmosphere("Atmosphere", scene, [light]);
+          atmosphere.additionalDiffuseSkyIrradianceIntensity = 0.01;
+          atmosphere.minimumMultiScatteringIntensity = 0.2;
+          atmosphere.physicalProperties.mieScatteringScale = 1.0;
+          atmosphere.physicalProperties.ozoneAbsorptionScale = 2.4;
+          atmosphere.multiScatteringIntensity = 1;
+          atmosphere.isLinearSpaceComposition = true;
+          atmosphere.isLinearSpaceLight = true;
+          atmosphere.isAerialPerspectiveLutEnabled = false;
+          atmosphere.isSkyViewLutEnabled = false;
+
+          // 空は露出カーブで昼夜を表現。陸・ピンは露出を打ち消す自発光にして明るさを一定に保つ。
+          // 明るさ(landBright/k)を露出の最小値(minExp)以下に揃えると emissiveColor が 1 を超えず
+          // （エンジンのクランプを回避でき）、昼夜で陸の見た目が変わらなくなる。
+          const minExp = 1.0;
+          const maxExp = 6.0;
+          const landBright = 0.9;
+          scene.onBeforeRenderObservable.add(() => {
+            const { hour, hours } = this.getCurrentTimeInfo();
+            const sunAngle = (hours / 24) * 2 * Math.PI - Math.PI / 2;
+            light.direction.copyFromFloats(Math.cos(sunAngle), -Math.sin(sunAngle), 0);
+
+            let exposure = minExp;
+            if (hour >= 5 && hour <= 18) {
+              const t = (hour - 5) / (18 - 5);
+              exposure = minExp + (maxExp - minExp) * Math.sin(t * Math.PI);
+            }
+            defaultRenderingPipeline.imageProcessing.exposure = exposure;
+
+            // 露出を打ち消して陸・ピンを一定の明るさに保つ（inv ≤ 1 なのでクランプされない）
+            const inv = landBright / exposure;
+            mapMat.emissiveColor.set(inv, inv, inv);
+            (this.pinMats || []).forEach((pm) => {
+              pm.emissiveColor.copyFrom(pm.metadata.base.scale(pm.metadata.k / exposure));
+            });
+          });
 
           // 海（WaterMaterial）— 黒(海)部分の下に広い水面を敷く
           const waterMesh = BABYLON.MeshBuilder.CreateGround("waterMesh", { width: 200, height: 200, subdivisions: 32 }, scene);
           waterMesh.position.y = -0.05;
           waterMesh.isPickable = false;
-          const water = new BABYLON.WaterMaterial("water", scene, new BABYLON.Vector2(512, 512));
+          // 詳細（時計）ページの海と同じ表現に揃える
+          const water = new BABYLON.WaterMaterial("water", scene, new BABYLON.Vector2(1024, 1024));
           water.backFaceCulling = true;
           water.bumpTexture = new BABYLON.Texture("https://assets.babylonjs.com/textures/waterbump.png", scene);
-          water.windForce = -3;
-          water.waveHeight = 0.02;
-          water.bumpHeight = 0.05;
-          water.waveLength = 0.05;
+          water.bumpSuperimpose = true;
+          water.fresnelSeparate = true;
+          water.waveLength = 0.1;
           water.windDirection = new BABYLON.Vector2(1, 0.4);
-          water.waterColor = new BABYLON.Color3(0.06, 0.24, 0.44);
-          water.colorBlendFactor = 0.88;
-          water.addToRenderList(skybox);
+          water.waterColor = new BABYLON.Color3(0.05, 0.2, 0.38);
+          water.colorBlendFactor = 0.7;
+          water.waterColor2 = new BABYLON.Color3(0.08, 0.28, 0.42);
+          water.colorBlendFactor2 = 0.7;
+          water.windForce = -5;
+          // 陸地が水面ギリギリに浮いているため、波の山で列島が水没しないよう
+          // 上下動(waveHeight)は小さく。見た目のさざ波は bumpHeight 側で担保する。
+          water.waveHeight = 0.02;
+          water.bumpHeight = 0.22;
+          water.waveSpeed = 3;
           water.addToRenderList(map);
           waterMesh.material = water;
 
@@ -323,8 +360,13 @@
 
             const pinMat = new BABYLON.StandardMaterial("pinMat_" + r.region, scene);
             pinMat.diffuseColor = baseColor;
-            pinMat.emissiveColor = baseColor.scale(0.55);
+            pinMat.emissiveColor = baseColor.scale(0.5);
             pinMat.specularColor = new BABYLON.Color3(0.2, 0.2, 0.2);
+            // 陸と同様、太陽光に依存しない自発光＋露出補正で昼夜の明るさを一定に保つ。
+            // k はホバー時の発光強度（描画ループが k/露出 で反映する）。
+            pinMat.disableLighting = true;
+            pinMat.metadata = { base: baseColor, k: 0.5 };
+            (this.pinMats = this.pinMats || []).push(pinMat);
 
             const pin = BABYLON.MeshBuilder.CreateCylinder(
               "pin_" + r.region,
@@ -345,7 +387,7 @@
 
             const setHover = (on) => {
               if (this.view !== "map") return;
-              pinMat.emissiveColor = baseColor.scale(on ? 1.1 : 0.55);
+              pinMat.metadata.k = on ? 0.62 : 0.5; // 実際の発光は描画ループが露出補正して反映
               group.scaling.setAll(on ? 1.0 : 1.0);
               this.canvas.style.cursor = on ? "pointer" : "default";
               if (on) {
@@ -767,37 +809,71 @@
         }
 
         createGround(scene, getWeather) {
-          const terrainTexture = new BABYLON.Texture("https://babylonjs-two.vercel.app/clock2/textures/ground.jpg", scene);
           const terrain = new BABYLON.DynamicTerrain("terrain", { terrainSub: 800 }, scene);
 
-          const terrainMaterial = new BABYLON.StandardMaterial("terrainMaterial", scene);
-          terrainMaterial.diffuseTexture = terrainTexture;
-          terrainMaterial.wireframe = true;
-          terrainMaterial.diffuseColor = new BABYLON.Color3(0.05, 0.05, 0.05);
+          // 一覧ページの海と同じ WaterMaterial で水面にする
+          const water = new BABYLON.WaterMaterial("clockWater", scene, new BABYLON.Vector2(1024, 1024));
+          water.backFaceCulling = true;
+          water.bumpTexture = new BABYLON.Texture("https://assets.babylonjs.com/textures/waterbump.png", scene);
+          // 二重のさざ波＋フレネル分離で自然に。波は広め(waveLength大)にして
+          // 水平に近い視点でも地平線がギザギザにならないようにする。
+          water.bumpSuperimpose = true;
+          water.fresnelSeparate = true;
+          // 波長を小さくして繰り返しを増やし、菱形のタイル模様を細かいさざ波に馴染ませる
+          water.waveLength = 0.1;
+          water.windDirection = new BABYLON.Vector2(1, 0.4);
+          water.waterColor = new BABYLON.Color3(0.05, 0.2, 0.38);
+          // 空の映り込み先が無いため水色を主体に（0=反射主体で暗くなる, 1=水色主体）
+          water.colorBlendFactor = 0.7;
+          water.waterColor2 = new BABYLON.Color3(0.08, 0.28, 0.42);
+          water.colorBlendFactor2 = 0.7;
 
-          terrain.mesh.material = terrainMaterial;
+          // 時計本体などを水面に映り込ませる
+          scene.meshes.forEach((m) => {
+            if (m !== terrain.mesh) water.addToRenderList(m);
+          });
+
+          // 遠くの水面を空へ溶け込ませ、地平線のギザギザを隠す（リアリティ向上）
+          scene.fogMode = BABYLON.Scene.FOGMODE_EXP2;
+          scene.fogColor = new BABYLON.Color3(0.62, 0.73, 0.85);
+          scene.fogDensity = 0.012;
+
+          terrain.mesh.material = water;
           terrain.mesh.position.y = -6;
           terrain.useCustomVertexFunction = true;
-          terrain.computeNormals = false;
+          terrain.computeNormals = true; // 水面のライティング用に法線を再計算
           terrain.refreshEveryFrame = true;
 
           let t = 0;
           terrain.updateVertex = (vertex) => {
             const weather = getWeather();
             const windspeed = weather?.current_weather?.windspeed ?? 5;
+            // 頂点変位は「ゆるやかなうねり」程度に抑える（大きくするとポリゴン感が出る）。
+            // 波長を長め(/24)にして分割数に対し滑らかに、振幅も控えめ＆上限でクランプ。
+            const amp = Math.min(0.05 + windspeed * 0.02, 0.6);
             vertex.position.y =
-              (windspeed / 10) *
-              Math.sin((vertex.position.x + t) / 10) *
-              Math.cos((vertex.position.z + 5 * t) / 10);
+              amp *
+              Math.sin((vertex.position.x + t) / 24) *
+              Math.cos((vertex.position.z + 5 * t) / 24);
           };
           terrain.update(true);
 
           scene.onBeforeRenderObservable.add(() => {
             const { hour } = this.getCurrentTimeInfo();
-            terrainMaterial.emissiveColor =
+            const windspeed = getWeather()?.current_weather?.windspeed ?? 5;
+
+            // 「荒れ」の表現はポリゴンにならない WaterMaterial 側（ピクセル単位）で行う。
+            // 値を上げすぎると地平線がギザギザになるので控えめ＆上限クランプ。
+            water.windForce = -(2 + windspeed * 0.4); // 強風ほど流れが速い
+            water.waveHeight = Math.min(0.02 + windspeed * 0.008, 0.2); // さざ波の揺らぎの強さ
+            water.bumpHeight = Math.min(0.1 + windspeed * 0.015, 0.45); // 強風ほど細かい波紋を強調
+            water.waveSpeed = 1 + windspeed * 0.3; // 波の伝播速度
+
+            // 昼は深い青、夜は明るい水色で水面の色を切り替える
+            water.waterColor =
               hour >= 5 && hour <= 18
-                ? new BABYLON.Color3(0.1, 0.3, 1.0)
-                : new BABYLON.Color3(0.0, 1.5, 2.0);
+                ? new BABYLON.Color3(0.06, 0.24, 0.44)
+                : new BABYLON.Color3(0.0, 0.35, 0.55);
             t += 0.5;
           });
         }
