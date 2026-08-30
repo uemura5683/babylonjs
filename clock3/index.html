@@ -298,7 +298,7 @@
           // （エンジンのクランプを回避でき）、昼夜で陸の見た目が変わらなくなる。
           const minExp = 1.0;
           const maxExp = 6.0;
-          const landBright = 0.9;
+          const landBright = 1.0;
           scene.onBeforeRenderObservable.add(() => {
             const { hour, hours } = this.getCurrentTimeInfo();
             const sunAngle = (hours / 24) * 2 * Math.PI - Math.PI / 2;
@@ -348,7 +348,7 @@
         }
 
         placePins(scene, root, map) {
-          const baseColor = new BABYLON.Color3(0.92, 0.16, 0.16);
+          const baseColor = new BABYLON.Color3(1.0, 0.24, 0.22);
           const hoverName = document.getElementById("hoverName");
           // 全ピン共通の高さ（地形の起伏に依存させず一定にする）
           const pinBaseY = this.MAP.maxHeight + 0.15;
@@ -360,12 +360,12 @@
 
             const pinMat = new BABYLON.StandardMaterial("pinMat_" + r.region, scene);
             pinMat.diffuseColor = baseColor;
-            pinMat.emissiveColor = baseColor.scale(0.5);
+            pinMat.emissiveColor = baseColor.scale(0.9);
             pinMat.specularColor = new BABYLON.Color3(0.2, 0.2, 0.2);
             // 陸と同様、太陽光に依存しない自発光＋露出補正で昼夜の明るさを一定に保つ。
             // k はホバー時の発光強度（描画ループが k/露出 で反映する）。
             pinMat.disableLighting = true;
-            pinMat.metadata = { base: baseColor, k: 0.5 };
+            pinMat.metadata = { base: baseColor, k: 0.9 };
             (this.pinMats = this.pinMats || []).push(pinMat);
 
             const pin = BABYLON.MeshBuilder.CreateCylinder(
@@ -387,7 +387,7 @@
 
             const setHover = (on) => {
               if (this.view !== "map") return;
-              pinMat.metadata.k = on ? 0.62 : 0.5; // 実際の発光は描画ループが露出補正して反映
+              pinMat.metadata.k = on ? 1.05 : 0.9; // 実際の発光は描画ループが露出補正して反映
               group.scaling.setAll(on ? 1.0 : 1.0);
               this.canvas.style.cursor = on ? "pointer" : "default";
               if (on) {
