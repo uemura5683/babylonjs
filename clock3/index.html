@@ -103,6 +103,105 @@
         font-weight: bold;
         letter-spacing: 2px;
       }
+      /* 傘メモ（コードで判定・Jev不使用） */
+      #umbrellaNote {
+        top: 66px;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        width: max-content;
+        max-width: 82%;
+        font-size: 14px;
+        letter-spacing: 1px;
+        color: #9fe8ff;
+        text-shadow: 0 0 6px rgba(120, 200, 255, 0.5);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      /* お出かけ判断（Jev・自由文入力） */
+      #outingBox {
+        bottom: 24px;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        width: max-content;
+        max-width: 88%;
+        padding: 12px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        align-items: center;
+      }
+      #outingBox .ob-row {
+        display: flex;
+        gap: 8px;
+      }
+      #outingInput {
+        width: min(60vw, 360px);
+        padding: 8px 12px;
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(60, 220, 60, 0.6);
+        border-radius: 8px;
+        color: #cffccf;
+        font-size: 14px;
+        outline: none;
+        user-select: text;
+      }
+      #outingInput::placeholder {
+        color: rgba(120, 220, 120, 0.5);
+      }
+      #outingBtn {
+        padding: 8px 16px;
+        background: rgba(30, 240, 30, 0.15);
+        border: 1px solid rgba(60, 220, 60, 0.6);
+        border-radius: 8px;
+        color: #1cf01c;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background 0.2s, box-shadow 0.2s;
+      }
+      #outingBtn:hover {
+        background: rgba(30, 240, 30, 0.3);
+        box-shadow: 0 0 12px rgba(30, 240, 30, 0.5);
+      }
+      #outingPresets {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        justify-content: center;
+      }
+      #outingPresets .chip {
+        padding: 4px 10px;
+        border: 1px solid rgba(60, 220, 60, 0.4);
+        border-radius: 999px;
+        font-size: 12px;
+        color: #9df09d;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      #outingPresets .chip:hover {
+        background: rgba(30, 240, 30, 0.2);
+      }
+      #outingResult {
+        margin-top: 2px;
+        text-align: center;
+        transition: color 0.3s ease, text-shadow 0.3s ease;
+      }
+      #outingResult .cmt {
+        font-size: 16px;
+        font-weight: bold;
+      }
+      #outingResult .cmt2 {
+        font-size: 13px;
+        line-height: 1.5;
+        margin-top: 3px;
+        opacity: 0.9;
+      }
+      #outingResult .sub {
+        font-size: 12px;
+        opacity: 0.7;
+        margin-top: 2px;
+      }
 
       /* 暗転フェード */
       #fadeOverlay {
@@ -135,6 +234,20 @@
       <!-- 時計ビュー -->
       <div id="backBtn" class="overlay panel fade-ui hidden">← 日本地図へ戻る</div>
       <div id="regionLabel" class="overlay panel fade-ui hidden"></div>
+      <div id="umbrellaNote" class="overlay fade-ui hidden"></div>
+      <div id="outingBox" class="overlay panel fade-ui hidden">
+        <div class="ob-row">
+          <input id="outingInput" type="text" placeholder="お出かけの予定（例：犬の散歩に行きたい）" />
+          <button id="outingBtn">判定</button>
+        </div>
+        <div id="outingPresets">
+          <span class="chip">犬の散歩に行きたい</span>
+          <span class="chip">洗濯物を外に干したい</span>
+          <span class="chip">子どもと公園で遊びたい</span>
+          <span class="chip">ジョギングしたい</span>
+        </div>
+        <div id="outingResult" class="hidden"></div>
+      </div>
 
       <!-- 暗転 -->
       <div id="fadeOverlay"></div>
@@ -192,6 +305,156 @@
           }
         }
 
+        /* ============ デモ用の天気上書き ============ */
+        // 本物の東京が雨のときしか判定が出ないので、検証用にURLで強制的に雨にできる。
+        //   例) ?demoRain=1&wind=12&winddir=210&temp=15
+        applyDemoOverride(weather) {
+          const p = new URLSearchParams(location.search);
+          if (p.get("demoRain") !== "1") return weather;
+          const cw = { ...(weather?.current_weather || {}) };
+          cw.weathercode = 63; // 雨
+          if (p.has("wind")) cw.windspeed = parseFloat(p.get("wind"));
+          if (p.has("winddir")) cw.winddirection = parseFloat(p.get("winddir"));
+          if (p.has("temp")) cw.temperature = parseFloat(p.get("temp"));
+          if (cw.windspeed == null) cw.windspeed = 10;
+          if (cw.winddirection == null) cw.winddirection = 200;
+          if (cw.temperature == null) cw.temperature = 16;
+          return { ...(weather || {}), current_weather: cw };
+        }
+
+        /* ============ 傘メモ（コードで判定・Jev不使用） ============ */
+        // 「雨か + 風速」の単一軸なのでしきい値で十分。ここは意図的にJevを使わない。
+        // updateUmbrellaNote(weather) {
+        //   const el = document.getElementById("umbrellaNote");
+        //   const cw = weather?.current_weather;
+        //   const label = this.getWeatherLabel(cw?.weathercode ?? 1);
+        //   const raining = label === "Rain" || label === "Thunderstorm";
+        //   if (!raining) {
+        //     el.classList.add("hidden");
+        //     el.style.opacity = "0";
+        //     return;
+        //   }
+        //   const w = cw.windspeed ?? 0;
+        //   let note;
+        //   if (w < 5) note = "☔ 傘があれば十分";
+        //   else if (w < 10) note = "☔ 傘がやや煽られる・風強め";
+        //   else if (w < 15) note = "🌂 横殴りの雨・傘が効きにくい";
+        //   else note = "⚠ 暴風雨・傘は危険";
+        //   el.textContent = `${note}（風速 ${w} m/s）`;
+        //   el.classList.remove("hidden");
+        //   el.style.opacity = "1";
+        // }
+
+        /* ============ お出かけ判断（Jev・自由文の目的 × 天気） ============ */
+        // 自由文の「目的」を天気と突き合わせて適性をScoreで判定。if文では書けない領域。
+        async askOuting(purpose) {
+          const el = document.getElementById("outingResult");
+          const cur = this._current;
+          purpose = (purpose || "").trim();
+          if (!cur?.weather?.current_weather || !purpose) {
+            el.classList.add("hidden");
+            return;
+          }
+          const cw = cur.weather.current_weather;
+          const state = {
+            地域: `${cur.r.region}（${cur.r.city}）`,
+            天気: this.getWeatherLabel(cw.weathercode ?? 1),
+            気温: cw.temperature,
+            風速_ms: cw.windspeed,
+            風向_deg: cw.winddirection,
+            現地時刻: cw.time,
+            目的: purpose,
+          };
+          el.classList.remove("hidden");
+          el.style.color = "#1cf01c";
+          el.style.textShadow = "none";
+          el.innerHTML = `<div class="cmt">🤔 判定中…</div>`;
+          try {
+            const res = await fetch("/api/judge", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(state),
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+            this.renderOuting(el, data, purpose);
+          } catch (e) {
+            el.innerHTML =
+              `<div class="cmt">判定を取得できませんでした</div>` +
+              `<div class="sub">${e.message ?? e}</div>`;
+          }
+        }
+
+        // Jevのscore(0..4／高いほど好適)を2文のコメントに組み立てる。
+        // 1文目=判定（Jev由来）、2文目=天気の実データから理由（コード由来）。文生成はコード側の仕事。
+        renderOuting(el, data, purpose) {
+          const levels = [
+            { verdict: "今はやめておきましょう。", tail: "落ち着いてからの方が安心です。", color: "#f0401c" },
+            { verdict: "あまりおすすめできません。", tail: "どうしてもなら短時間で切り上げを。", color: "#f0a01c" },
+            { verdict: "まあまあ、といったところ。", tail: "大きな支障はありませんが快適とまでは言えません。", color: "#d8f01c" },
+            { verdict: "問題なく楽しめそうです。", tail: "気持ちよく出かけられます。", color: "#7cf01c" },
+            { verdict: "絶好のコンディションです！", tail: "迷わず出かけましょう。", color: "#1cf01c" },
+          ];
+          const idx = Math.max(0, Math.min(levels.length - 1, Math.round(data.score ?? 0)));
+          const lv = levels[idx];
+          const pct = Math.round((data.confidence ?? 0) * 100);
+
+          // 天気の実データを日本語フレーズに（コードで組み立て）
+          const cw = this._current?.weather?.current_weather || {};
+          const w = cw.windspeed;
+          const t = cw.temperature;
+          const weatherJa = {
+            Sunny: "晴れ", "Partly Cloudy": "薄曇り", Cloudy: "曇り", Fog: "霧",
+            Rain: "雨", Snow: "雪", Thunderstorm: "雷雨", Unknown: "不明",
+          }[this.getWeatherLabel(cw.weathercode ?? 1)];
+          const windPhrase =
+            w == null ? "" :
+            w >= 15 ? `暴風（${w}m/s）` :
+            w >= 10 ? `強い風（${w}m/s）` :
+            w >= 5 ? `やや風あり（${w}m/s）` : `穏やかな風（${w}m/s）`;
+          const tempPhrase =
+            t == null ? "" :
+            t >= 30 ? "厳しい暑さ" :
+            t >= 25 ? "やや暑い" :
+            t >= 15 ? "過ごしやすい気温" :
+            t >= 5 ? "肌寒い" : "厳しい寒さ";
+          const cond = [weatherJa, windPhrase, tempPhrase].filter(Boolean).join("・");
+
+          el.style.color = lv.color;
+          el.style.textShadow = `0 0 6px ${lv.color}99`;
+          el.innerHTML =
+            `<div class="cmt">「${purpose}」なら、${lv.verdict}</div>` +
+            `<div class="cmt2">今は${cond}。${lv.tail}</div>` +
+            `<div class="sub">おすすめ度 ${(data.score ?? 0).toFixed(2)}/4 ・ 確信度 ${pct}%</div>`;
+        }
+
+        // 入力欄・ボタン・プリセットの配線（DOMは読み込み済み）
+        wireOutingUI() {
+          const input = document.getElementById("outingInput");
+          const btn = document.getElementById("outingBtn");
+          const run = () => this.askOuting(input.value);
+          btn.addEventListener("click", run);
+          input.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") run();
+          });
+          document.querySelectorAll("#outingPresets .chip").forEach((chip) => {
+            chip.addEventListener("click", () => {
+              input.value = chip.textContent;
+              this.askOuting(chip.textContent);
+            });
+          });
+        }
+
+        resetOutingBox() {
+          const input = document.getElementById("outingInput");
+          const result = document.getElementById("outingResult");
+          if (input) input.value = "";
+          if (result) {
+            result.classList.add("hidden");
+            result.innerHTML = "";
+          }
+        }
+
         sleep(ms) { return new Promise((r) => setTimeout(r, ms)); }
 
         /* ============ 起動 ============ */
@@ -215,6 +478,7 @@
 
           // 戻るボタン
           document.getElementById("backBtn").addEventListener("click", () => this.goToMap());
+          this.wireOutingUI();
         }
 
         /* ============ 地図シーン ============ */
@@ -424,6 +688,13 @@
         showClockUI(on) {
           document.getElementById("backBtn").classList.toggle("hidden", !on);
           document.getElementById("regionLabel").classList.toggle("hidden", !on);
+          document.getElementById("outingBox").classList.toggle("hidden", !on);
+          if (!on) {
+            const note = document.getElementById("umbrellaNote");
+            note.classList.add("hidden");
+            note.style.opacity = "0";
+            this.resetOutingBox();
+          }
         }
 
         animateCamera(camera, to, ms) {
@@ -721,7 +992,11 @@
           // 地域を切り替える
           const setRegion = async (r) => {
             state.weather = await this.fetchWeather(r.latitude, r.longitude);
+            state.weather = this.applyDemoOverride(state.weather);
             applyWeatherToAtmosphere();
+            this._current = { r, weather: state.weather };
+            // this.updateUmbrellaNote(state.weather); // 傘メモ（コード）
+            this.resetOutingBox();                  // お出かけ入力はリセット
           };
 
           return { scene, camera, setRegion };
